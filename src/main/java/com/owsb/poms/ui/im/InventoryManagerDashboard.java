@@ -43,7 +43,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
             .addGap(0, 329, Short.MAX_VALUE)
         );
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_END);
+        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
