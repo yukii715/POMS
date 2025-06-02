@@ -1,27 +1,29 @@
 package com.owsb.poms.ui.admin;
 
-import com.owsb.poms.ui.common.CommonEvent;
-import com.owsb.poms.ui.common.CommonMethod;
-import com.owsb.poms.ui.common.ResizablePanel;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Image;  
-import java.awt.Point;
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.plaf.basic.BasicSplitPaneDivider;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
+import com.owsb.poms.system.model.*;
+import com.owsb.poms.ui.common.*;
+import java.awt.*;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.plaf.basic.*;
+import javax.swing.table.*;
 
 public class AdminDashboard extends javax.swing.JFrame {
     private Point initialClick;
     private boolean maximise = false;
     private boolean summary = false;  
     private String currentTab = "Dashboard"; 
+    private int SelectedItemsRow = -1;
+    private Item selectedItem = new Item();
+    private List<Item> itemList;
+    
+    //Inventory
+    private DefaultTableModel itemsModel = new DefaultTableModel(){
+       public boolean isCellEditable(int row, int column){
+           return false;
+       } 
+    } ;
+    private String[] itemsColumnName = {"ID", "Category", "Type", "Name", "Price", "Stock", "Status"};
 
     public AdminDashboard(){
         initComponents();
@@ -51,6 +53,8 @@ public class AdminDashboard extends javax.swing.JFrame {
         divider.setBorder(BorderFactory.createLineBorder(new java.awt.Color(243, 220, 220), 5));
         divider.setCursor(new Cursor(Cursor.HAND_CURSOR));
         divider.repaint();
+        
+        Inventory();
     });
 
         
@@ -138,6 +142,27 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlSales = new javax.swing.JPanel();
         pnlOrders = new javax.swing.JPanel();
         pnlInventory = new javax.swing.JPanel();
+        srlItems = new javax.swing.JScrollPane();
+        tblItems = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        lblItemID = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        lblItemCategory = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        lblItemType = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        lblItemPrice = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        lblItemStock = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        lblItemStatus = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        lblItemName = new javax.swing.JLabel();
+        btnNewItem = new javax.swing.JButton();
+        btnRemoveItem = new javax.swing.JButton();
+        btnEditItem = new javax.swing.JButton();
+        btnUpdateStock = new javax.swing.JButton();
+        btnUpdateStatus = new javax.swing.JButton();
         pnlSuppliers = new javax.swing.JPanel();
         pnlSummary = new javax.swing.JPanel();
         pnlSummaryDivider = new javax.swing.JPanel();
@@ -886,15 +911,214 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         pnlInventory.setBackground(new java.awt.Color(255, 153, 51));
 
+        tblItems.setBackground(new java.awt.Color(255, 255, 204));
+        tblItems.setForeground(new java.awt.Color(0, 0, 0));
+        tblItems.setModel(itemsModel);
+        tblItems.setGridColor(java.awt.Color.gray);
+        tblItems.setSelectionBackground(new java.awt.Color(255, 153, 153));
+        tblItems.setShowGrid(true);
+        tblItems.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tblItemsMouseReleased(evt);
+            }
+        });
+        srlItems.setViewportView(tblItems);
+
+        jLabel1.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel1.setText("ID:");
+
+        lblItemID.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblItemID.setForeground(new java.awt.Color(0, 0, 0));
+        lblItemID.setText("[Item ID]");
+
+        jLabel2.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel2.setText("Category:");
+
+        lblItemCategory.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblItemCategory.setForeground(new java.awt.Color(0, 0, 0));
+        lblItemCategory.setText("[Category]");
+
+        jLabel3.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel3.setText("Type:");
+
+        lblItemType.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblItemType.setForeground(new java.awt.Color(0, 0, 0));
+        lblItemType.setText("[Type]");
+
+        jLabel4.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel4.setText("Price:");
+
+        lblItemPrice.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblItemPrice.setForeground(new java.awt.Color(0, 0, 0));
+        lblItemPrice.setText("[Price]");
+
+        jLabel5.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel5.setText("Stock");
+
+        lblItemStock.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblItemStock.setForeground(new java.awt.Color(0, 0, 0));
+        lblItemStock.setText("[Stock]");
+
+        jLabel6.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel6.setText("Status:");
+
+        lblItemStatus.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblItemStatus.setForeground(new java.awt.Color(0, 0, 0));
+        lblItemStatus.setText("[Status]");
+
+        jLabel7.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel7.setText("Name:");
+
+        lblItemName.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblItemName.setForeground(new java.awt.Color(0, 0, 0));
+        lblItemName.setText("[Name]");
+
+        btnNewItem.setBackground(new java.awt.Color(255, 204, 204));
+        btnNewItem.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnNewItem.setForeground(new java.awt.Color(0, 0, 0));
+        btnNewItem.setText("New Item");
+        btnNewItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewItemActionPerformed(evt);
+            }
+        });
+
+        btnRemoveItem.setBackground(new java.awt.Color(255, 204, 204));
+        btnRemoveItem.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnRemoveItem.setForeground(new java.awt.Color(0, 0, 0));
+        btnRemoveItem.setText("Remove Item");
+        btnRemoveItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveItemActionPerformed(evt);
+            }
+        });
+
+        btnEditItem.setBackground(new java.awt.Color(255, 204, 204));
+        btnEditItem.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnEditItem.setForeground(new java.awt.Color(0, 0, 0));
+        btnEditItem.setText("Edit Item");
+        btnEditItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditItemActionPerformed(evt);
+            }
+        });
+
+        btnUpdateStock.setBackground(new java.awt.Color(255, 204, 204));
+        btnUpdateStock.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnUpdateStock.setForeground(new java.awt.Color(0, 0, 0));
+        btnUpdateStock.setText("Update Stock");
+        btnUpdateStock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateStockActionPerformed(evt);
+            }
+        });
+
+        btnUpdateStatus.setBackground(new java.awt.Color(255, 204, 204));
+        btnUpdateStatus.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnUpdateStatus.setForeground(new java.awt.Color(0, 0, 0));
+        btnUpdateStatus.setText("Update Status");
+        btnUpdateStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateStatusActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlInventoryLayout = new javax.swing.GroupLayout(pnlInventory);
         pnlInventory.setLayout(pnlInventoryLayout);
         pnlInventoryLayout.setHorizontalGroup(
             pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 995, Short.MAX_VALUE)
+            .addGroup(pnlInventoryLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(srlItems, javax.swing.GroupLayout.PREFERRED_SIZE, 604, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25)
+                .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlInventoryLayout.createSequentialGroup()
+                        .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel7))
+                        .addGap(66, 66, 66)
+                        .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblItemName)
+                            .addComponent(lblItemType)))
+                    .addGroup(pnlInventoryLayout.createSequentialGroup()
+                        .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addGap(49, 49, 49)
+                        .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblItemID)
+                            .addComponent(lblItemCategory)))
+                    .addGroup(pnlInventoryLayout.createSequentialGroup()
+                        .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel4))
+                        .addGap(67, 67, 67)
+                        .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblItemStock)
+                            .addComponent(lblItemPrice)
+                            .addComponent(lblItemStatus)))
+                    .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(btnNewItem, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnRemoveItem, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnEditItem, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnUpdateStock, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnUpdateStatus, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)))
+                .addContainerGap(184, Short.MAX_VALUE))
         );
         pnlInventoryLayout.setVerticalGroup(
             pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 700, Short.MAX_VALUE)
+            .addGroup(pnlInventoryLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlInventoryLayout.createSequentialGroup()
+                        .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(lblItemID))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblItemCategory)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(lblItemType))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(lblItemName))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblItemPrice))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(lblItemStock))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblItemStatus)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(44, 44, 44)
+                        .addComponent(btnNewItem, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnRemoveItem, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEditItem, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnUpdateStock, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnUpdateStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 160, Short.MAX_VALUE))
+                    .addComponent(srlItems))
+                .addContainerGap())
         );
 
         pnlMainContent.add(pnlInventory, "Inventory");
@@ -1246,6 +1470,99 @@ public class AdminDashboard extends javax.swing.JFrame {
     private void pnlOrdersTabMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlOrdersTabMouseExited
         tabExited(pnlOrdersTab, pnlOrdersIndicator);
     }//GEN-LAST:event_pnlOrdersTabMouseExited
+
+    private void tblItemsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblItemsMouseReleased
+        SelectedItemsRow = tblItems.getSelectedRow();
+        selectedItem.setItemID(String.valueOf(itemsModel.getValueAt(SelectedItemsRow, 0)));
+        selectedItem.setItemCategory(String.valueOf(itemsModel.getValueAt(SelectedItemsRow, 1)));
+        selectedItem.setItemType(String.valueOf(itemsModel.getValueAt(SelectedItemsRow, 2)));
+        selectedItem.setItemName(String.valueOf(itemsModel.getValueAt(SelectedItemsRow, 3)));
+        selectedItem.setSellPrice(Double.parseDouble(String.valueOf(itemsModel.getValueAt(SelectedItemsRow, 4))));
+        selectedItem.setStock(Integer.parseInt(String.valueOf(itemsModel.getValueAt(SelectedItemsRow, 5))));
+        selectedItem.setStatus(Item.Status.valueOf(String.valueOf(itemsModel.getValueAt(SelectedItemsRow, 6))));
+        
+        lblItemID.setText(selectedItem.getItemID());
+        lblItemCategory.setText(selectedItem.getItemCategory());
+        lblItemType.setText(selectedItem.getItemType());
+        lblItemName.setText(selectedItem.getItemName());
+        lblItemPrice.setText(String.valueOf(selectedItem.getSellPrice()));
+        lblItemStock.setText(String.valueOf(selectedItem.getStock()));
+        lblItemStatus.setText(selectedItem.getStatus().name());
+    }//GEN-LAST:event_tblItemsMouseReleased
+
+    private void btnNewItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewItemActionPerformed
+        NewItem newItem = new NewItem(this, true);
+        newItem.setVisible(true);
+        Inventory();
+    }//GEN-LAST:event_btnNewItemActionPerformed
+
+    private void btnRemoveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveItemActionPerformed
+        if (SelectedItemsRow == -1)
+        {
+            JOptionPane.showMessageDialog(this, "Please select an item to remove", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        int result = JOptionPane.showConfirmDialog(this, "Are you sure to remove this item?", "Remove Item", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (result == JOptionPane.YES_OPTION)
+        {
+            itemsModel.removeRow(SelectedItemsRow);
+            selectedItem.setStatus(Item.Status.REMOVED);
+            selectedItem.updateStatus();
+            SelectedItemsRow = -1;
+            Inventory();
+        }
+    }//GEN-LAST:event_btnRemoveItemActionPerformed
+
+    private void btnEditItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditItemActionPerformed
+        if (SelectedItemsRow == -1)
+        {
+            JOptionPane.showMessageDialog(this, "Please select an item to edit", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        EditItem editItem = new EditItem(this, true, selectedItem);
+        editItem.setVisible(true);
+        SelectedItemsRow = -1;
+        Inventory();
+    }//GEN-LAST:event_btnEditItemActionPerformed
+
+    private void btnUpdateStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateStockActionPerformed
+        if (SelectedItemsRow == -1)
+        {
+            JOptionPane.showMessageDialog(this, "Please select an item to update stock", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        String input = JOptionPane.showInputDialog(this, String.format("Stock: %d", selectedItem.getStock()), "Update Stock", JOptionPane.INFORMATION_MESSAGE);
+        
+        if (input != null) {
+            try {
+                int newStock = Integer.parseInt(input.trim());
+                if (newStock < 0) {
+                    JOptionPane.showMessageDialog(this, "Stock cannot be negative!", "Invalid Input", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    selectedItem.setStock(newStock);
+                    selectedItem.updateStock(); 
+                    JOptionPane.showMessageDialog(this, "Stock updated successfully!");
+                    SelectedItemsRow = -1;
+                    Inventory();
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid integer!", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnUpdateStockActionPerformed
+
+    private void btnUpdateStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateStatusActionPerformed
+        if (SelectedItemsRow == -1)
+        {
+            JOptionPane.showMessageDialog(this, "Please select an item to update status", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        UpdateStatus updateStatus = new UpdateStatus(this, true, selectedItem);
+        updateStatus.setVisible(true);
+        SelectedItemsRow = -1;
+        Inventory();
+    }//GEN-LAST:event_btnUpdateStatusActionPerformed
         
     private void tabEntered(JPanel tab, JPanel tabIndicator){
         if (!currentTab.equals(tab.getName())){
@@ -1279,33 +1596,58 @@ public class AdminDashboard extends javax.swing.JFrame {
         }
     }
     
+    //Inventory tab
+    private void Inventory(){
+        itemsModel.setRowCount(0);
+        
+        lblItemID.setText("None");
+        lblItemCategory.setText("None");
+        lblItemType.setText("None");
+        lblItemName.setText("None");
+        lblItemPrice.setText("None");
+        lblItemStock.setText("None");
+        lblItemStatus.setText("None");
+        
+        itemsModel.setColumnIdentifiers(itemsColumnName);
+        JTableHeader header = tblItems.getTableHeader();
+        header.setBackground(new java.awt.Color(255, 255, 204));
+        
+        srlItems.getViewport().setBackground(new java.awt.Color(255, 255, 204));
+        
+        tblItems.getColumnModel().getColumn(1).setPreferredWidth(100);
+        tblItems.getColumnModel().getColumn(2).setPreferredWidth(100);
+        tblItems.getColumnModel().getColumn(3).setPreferredWidth(150);
+        tblItems.getColumnModel().getColumn(6).setPreferredWidth(100);
+        
+        itemList = Item.toList();
+        
+        for (Item item : itemList) {
+            if (item.getStatus() != Item.Status.REMOVED)
+            {
+                itemsModel.addRow(new String[]{
+                    item.getItemID(),
+                    item.getItemCategory(),
+                    item.getItemType(),
+                    item.getItemName(),
+                    String.format("%.2f", item.getSellPrice()),
+                    String.valueOf(item.getStock()),
+                    item.getStatus().name()
+                });
+            }
+        }
+        
+        // Create a single “center” renderer:
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Apply it as the default for any Object‐typed cell:
+        tblItems.setDefaultRenderer(Object.class, centerRenderer);
+    }
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AdminDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AdminDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AdminDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AdminDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -1315,6 +1657,18 @@ public class AdminDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnEditItem;
+    private javax.swing.JButton btnNewItem;
+    private javax.swing.JButton btnRemoveItem;
+    private javax.swing.JButton btnUpdateStatus;
+    private javax.swing.JButton btnUpdateStock;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel lblClose;
     private javax.swing.JLabel lblDashboard;
     private javax.swing.JLabel lblDashboardDivider1;
@@ -1325,6 +1679,13 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel lblInventoryDivider1;
     private javax.swing.JLabel lblInventoryDivider2;
     private javax.swing.JLabel lblInventoryIcon;
+    private javax.swing.JLabel lblItemCategory;
+    private javax.swing.JLabel lblItemID;
+    private javax.swing.JLabel lblItemName;
+    private javax.swing.JLabel lblItemPrice;
+    private javax.swing.JLabel lblItemStatus;
+    private javax.swing.JLabel lblItemStock;
+    private javax.swing.JLabel lblItemType;
     private javax.swing.JLabel lblLogo;
     private javax.swing.JLabel lblLogout1;
     private javax.swing.JLabel lblMaximise;
@@ -1391,5 +1752,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel pnlUsersTab;
     private javax.swing.JPanel pnlWestMargin;
     private javax.swing.JPanel pnlWindowControls;
+    private javax.swing.JScrollPane srlItems;
+    private javax.swing.JTable tblItems;
     // End of variables declaration//GEN-END:variables
 }
