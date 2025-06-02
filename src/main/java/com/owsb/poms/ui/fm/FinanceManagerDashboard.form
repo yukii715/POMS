@@ -255,12 +255,12 @@
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="approvePORefreshButton" alignment="0" pref="154" max="32767" attributes="0"/>
-                              <Component id="approvePORejectButton" alignment="0" pref="154" max="32767" attributes="0"/>
-                              <Component id="approvePOButton" pref="154" max="32767" attributes="0"/>
+                              <Component id="approvePORefreshButton" alignment="0" max="32767" attributes="0"/>
+                              <Component id="approvePORejectButton" alignment="0" max="32767" attributes="0"/>
+                              <Component id="approvePOButton" max="32767" attributes="0"/>
                               <Component id="approvePOEditButton" alignment="0" pref="0" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="117" max="32767" attributes="0"/>
+                          <EmptySpace pref="124" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>

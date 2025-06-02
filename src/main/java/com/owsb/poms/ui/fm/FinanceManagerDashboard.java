@@ -1,6 +1,7 @@
 
 package com.owsb.poms.ui.fm;
 
+import com.owsb.poms.system.model.Item;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -27,6 +29,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         initRequisitionView();
         initSupplierView();
         initGenerateReportFunctionality();
+        
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -255,11 +258,11 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                     .addComponent(approvePOStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 766, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(approvePOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(approvePORefreshButton, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
-                    .addComponent(approvePORejectButton, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
-                    .addComponent(approvePOButton, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+                    .addComponent(approvePORefreshButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(approvePORejectButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(approvePOButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(approvePOEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(117, Short.MAX_VALUE))
+                .addContainerGap(124, Short.MAX_VALUE))
         );
         approvePOPanelLayout.setVerticalGroup(
             approvePOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -706,7 +709,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_BankAccNumberTextfieldActionPerformed
 
     private void approvePORejectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_approvePORejectButtonActionPerformed
-        updatePOStatus("Rejected");
+        updatePOStatus("REJECTED");
     }//GEN-LAST:event_approvePORejectButtonActionPerformed
 
     private void logOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logOutButtonActionPerformed
@@ -737,7 +740,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_selectPOComboBoxActionPerformed
 
     private void approvePOButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_approvePOButtonActionPerformed
-        updatePOStatus("Approved");
+        updatePOStatus("APPROVED");
         initProcessPaymentFunctionality();
     }//GEN-LAST:event_approvePOButtonActionPerformed
 
@@ -795,19 +798,23 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     
     private void loadApprovePODataFromMainList() {
         approvePOTableModel.setRowCount(0);
-        for (Object[] row : purchaseOrderList) {
-            String status = row[5].toString();
-            if (status.equals("Pending")) {
+        List<Item> items = Item.toList();
+        for (Item item : items) {
+            if (item.getStatus() == Item.Status.NEW) {
                 approvePOTableModel.addRow(new Object[]{
-                    row[0],row[2],row[3],row[4],row[6],row[5]
+                    item.getItemID(),
+                    item.getItemName(),
+                    item.getStock(),
+                    "-",
+                    item.getSellPrice(),
+                    item.getStatus().toString()
                 });
             }
         }
     }
-    
     private void updatePOStatus(String status) {
         int selectedRow = approvePOTable.getSelectedRow();
-    
+        
         if (selectedRow == -1) {
             approvePOStatusLabel.setText("Status: Please select a row.");
             return;
@@ -816,56 +823,58 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         String poID = approvePOTableModel.getValueAt(selectedRow, 0).toString();
         String currentStatus = approvePOTableModel.getValueAt(selectedRow, 5).toString();
 
-        if (!currentStatus.equals("Pending")) {
+        if (!currentStatus.equalsIgnoreCase(Item.Status.NEW.name())) {
             approvePOStatusLabel.setText("Status: Cannot update. Already " + currentStatus + ".");
             return;
         }
+        Item updatedItem = new Item();
+        updatedItem.setItemID(poID);
+        updatedItem.setStatus(Item.Status.valueOf(status.toUpperCase()));
+        updatedItem.updateStatus();
         
-        approvePOTableModel.setValueAt(status, selectedRow, 5);
         approvePOStatusLabel.setText("Status: Order " + status.toLowerCase() + " successfully.");
-        
-        for (Object[] row : purchaseOrderList) {
-            if (row[0].toString().equals(poID)) {
-                row[5] = status;
-                break;
-            }
-        }
+        refreshApprovePOList();
         refreshPurchaseOrderTable(viewPOComboBox.getSelectedItem().toString());
+        
     }
     
     private void editPOQuantity() {
         int selectedRow = approvePOTable.getSelectedRow();
-
     if (selectedRow == -1) {
         approvePOStatusLabel.setText("Status: Please select a row.");
         return;
     }
     
     String status = approvePOTableModel.getValueAt(selectedRow, 5).toString();
-    
-    if (!status.equals("Pending")) {
+    if (!status.equals("NEW")) {
         approvePOStatusLabel.setText("Status: Cannot edit. Order is already " + status + ".");
         return;
     }
     String input = JOptionPane.showInputDialog(this, "Enter new quantity:");
-
     try {
         int quantity = Integer.parseInt(input);
-
         if (quantity <= 0) {
             approvePOStatusLabel.setText("Status: Quantity must be greater than 0.");
             return;
         }   
-        approvePOTableModel.setValueAt(quantity, selectedRow, 2);
+        String itemID = approvePOTableModel.getValueAt(selectedRow, 0).toString();
+        List<Item> items = Item.toList();
+        for (Item item : items) {
+            if (item.getItemID().equals(itemID)) {
+                item.setStock(quantity);
+                item.updateStock(); 
+                break;
+            }
+        }
+        refreshApprovePOList();
         approvePOStatusLabel.setText("Status: Quantity updated.");
-        } 
-    catch (NumberFormatException e) {
-        approvePOStatusLabel.setText("Status: Invalid input. Please enter a number.");
+    }catch (NumberFormatException e) {
+            approvePOStatusLabel.setText("Status: Invalid input. Please enter a number.");
         }
     }
     private void refreshApprovePOList(){
-    loadApprovePODataFromMainList();
-    approvePOStatusLabel.setText("Status: List refreshed. Only pending orders shown.");
+        loadApprovePODataFromMainList();
+        approvePOStatusLabel.setText("Status: List refreshed. Only NEW orders shown.");
     }
     
     private Object[] getRowData(DefaultTableModel model, int rowIndex) {
@@ -885,18 +894,14 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     private void initProcessPaymentFunctionality() {
         selectPOComboBox.removeAllItems();
         approvedPOMap.clear();
+        
         boolean hasVerified = false;
-        for (Object[] row : purchaseOrderList) {
-            String poID = row[0].toString();
-            String item = row[2].toString();
-            int quantity = Integer.parseInt(row[3].toString());
-            String supplier = row[4].toString();
-            String status = row[5].toString();
-            double unitPrice = Double.parseDouble(row[6].toString());
-
-            if (status.equals("Verified") && !isPOAlreadyPaid(poID)) {
-                String label = poID + " - " + item;
-                approvedPOMap.put(label, new Object[]{poID, item, quantity, unitPrice});
+        List<Item> items = Item.toList();
+        
+        for (Item item : items) {
+            if (item.getStatus() == Item.Status.SHORTAGE && !isPOAlreadyPaid(item.getItemID())) {
+                String label = item.getItemID() + " - " + item.getItemName();
+                approvedPOMap.put(label, new Object[]{item.getItemID(), item.getItemName(), item.getStock(), item.getSellPrice()});
                 selectPOComboBox.addItem(label);
                 hasVerified = true;
             }
@@ -965,12 +970,10 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         transactionList.add(new Object[]{transactionID, bank, accountnumber, dateTime, amount});
         Object[] poDetails = approvedPOMap.get(selected);
         String poID = poDetails[0].toString();
-        for (Object[] po : purchaseOrderList) {
-            if (po[0].toString().equals(poID)) {
-                po[5] = "Paid";
-                break;
-            }
-        }
+        Item paidItem = new Item();
+        paidItem.setItemID(poID);
+        paidItem.setStatus(Item.Status.REMOVED);
+        paidItem.updateStatus();
                 
         approvedPOMap.remove(selected);
         selectPOComboBox.removeItemAt(index);
@@ -1008,7 +1011,6 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     }
     
     DefaultTableModel purchaseOrderTableModel;
-    ArrayList<Object[]> purchaseOrderList = new ArrayList<>();
 
     DefaultTableModel requisitionTableModel;
     ArrayList<Object[]> requisitionList = new ArrayList<>();
@@ -1016,27 +1018,20 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     DefaultTableModel supplierTableModel;
     ArrayList<Object[]> supplierList = new ArrayList<>();
     
-    private void loadDummyPurchaseOrders() {
-        purchaseOrderList.clear();
-        purchaseOrderList.add(new Object[]{"PO001", "Food", "Rice", 50, "SupplierA", "Approved", 2.50});
-        purchaseOrderList.add(new Object[]{"PO002", "Tool", "Hammer", 20, "SupplierB", "Pending", 3.00});
-        purchaseOrderList.add(new Object[]{"PO003", "Food", "Sugar", 30, "SupplierC", "Rejected", 1.20});
-        purchaseOrderList.add(new Object[]{"PO004", "Office", "Printer Paper", 100, "SupplierD", "Pending", 0.15});
-        purchaseOrderList.add(new Object[]{"PO005", "Office", "Ink Cartridge", 15, "SupplierE", "Approved", 12.50});
-        purchaseOrderList.add(new Object[]{"PO006", "Food", "Milk", 40, "SupplierA", "Verified", 2.80});
-        purchaseOrderList.add(new Object[]{"PO007", "Tool", "Screwdriver", 25, "SupplierB", "Pending", 4.75});
-        purchaseOrderList.add(new Object[]{"PO008", "Tool", "Wrench", 10, "SupplierB", "Verified", 6.90});
-        purchaseOrderList.add(new Object[]{"PO009", "Food", "Flour", 80, "SupplierC", "Rejected", 1.00});
-        purchaseOrderList.add(new Object[]{"PO010", "Office", "Notebook", 60, "SupplierD", "Pending", 1.80});
-    }
     
-    private void refreshPurchaseOrderTable(String typeFilter) {
+    
+    private void refreshPurchaseOrderTable(String categoryFilter) {
+        List<Item> items = Item.toList();
         purchaseOrderTableModel.setRowCount(0);
-        for (Object[] row : purchaseOrderList) {
-            String type = row[1].toString();
-            if (typeFilter.equals("All") || type.equalsIgnoreCase(typeFilter)) {
+        for (Item item : items) {
+            if (categoryFilter.equals("All") || item.getItemCategory().equalsIgnoreCase(categoryFilter)) {
                 purchaseOrderTableModel.addRow(new Object[]{
-                    row[0],row[1],row[2],row[3],row[4],row[5]
+                    item.getItemID(),
+                    item.getItemCategory(),
+                    item.getItemName(),
+                    item.getStock(),
+                    "-",
+                    item.getStatus().toString()
                 });
             }
         }
@@ -1050,14 +1045,11 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             }
         };
         viewPOTable.setModel(purchaseOrderTableModel);
-        loadDummyPurchaseOrders();
         viewPOComboBox.removeAllItems();
         viewPOComboBox.addItem("All");
-        Set<String> typeSet = new TreeSet<>();
-        for (Object[] row : purchaseOrderList) {
-            typeSet.add(row[1].toString());
-        }for (String type : typeSet) {
-            viewPOComboBox.addItem(type);
+        List<String> allCategories = Item.getAllCategories();
+        for (String category : allCategories) {
+            viewPOComboBox.addItem(category);
         }
         refreshPurchaseOrderTable("All");
         initProcessPaymentFunctionality();
@@ -1141,13 +1133,13 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         double amount = (double) tx[4];
         
         String poID = transactionID.substring(0, 5);
-        for (Object[] po : purchaseOrderList) {
-            if (po[0].equals(poID)) {
-                String supplier = po[4].toString();
-                String itemID = po[2].toString();
-                int qty = Integer.parseInt(po[3].toString());
-                double unitPrice = Double.parseDouble(po[6].toString());
-                
+        for (Item item : Item.toList()) {
+            if (item.getItemID().equals(poID)) {
+                String supplier = "-";
+                String itemID = item.getItemID();
+                String itemName = item.getItemName();
+                int qty = item.getStock();
+                double unitPrice = item.getSellPrice();
                 String invoiceID = "INV" + transactionID.substring(2);
                 String fm = "FM1";
                 String im = "IM1";
@@ -1206,7 +1198,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             reportTableModel.setRowCount(0); 
 
             for (Object[] row : purchasereportList) {
-                LocalDate reportDate = LocalDate.parse(row[8].toString());;
+                LocalDate reportDate = LocalDate.parse(row[8].toString());
             if (!reportDate.isBefore(start) && !reportDate.isAfter(end)) {
                     reportTableModel.addRow(row);
                 }
