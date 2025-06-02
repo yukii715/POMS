@@ -23,6 +23,10 @@ public class NewItem extends javax.swing.JDialog {
         setTitle("New Item");
         txtCategory.setVisible(false);
         txtType.setVisible(false);
+        var categories = Item.getAllCategories();
+        for (String category : categories) {
+            cmbCategory.addItem(category);
+        }
     }
     
     /**
@@ -140,14 +144,28 @@ public class NewItem extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmbCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCategoryActionPerformed
+        for (int i = cmbType.getItemCount() - 1; i >= 1; i--) {
+            cmbType.removeItemAt(i);
+        }
         if (cmbCategory.getSelectedIndex() == 0){
             txtCategory.setVisible(true);
+        }
+        else{
+            txtCategory.setVisible(false);
+            var types = Item.getAllTypes(cmbCategory.getSelectedItem().toString());
+            for (String type : types) {
+                cmbType.addItem(type);
+            }
         }
     }//GEN-LAST:event_cmbCategoryActionPerformed
 
     private void cmbTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTypeActionPerformed
         if (cmbType.getSelectedIndex() == 0){
             txtType.setVisible(true);
+        }
+        else
+        {
+            txtType.setVisible(false);
         }
     }//GEN-LAST:event_cmbTypeActionPerformed
 
@@ -182,9 +200,7 @@ public class NewItem extends javax.swing.JDialog {
         int result = JOptionPane.showConfirmDialog(this, "Are you sure to add this new item?", "Add New Item", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (result == JOptionPane.YES_OPTION){
             Item item = new Item(category, type, name, price);
-            List<Item> items = Item.toList();
-            items.add(item);
-            item.saveToFile(items);
+            item.add();
             JOptionPane.showMessageDialog(this, "Successfully added a new item!");
             this.dispose();
         }

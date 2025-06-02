@@ -3,6 +3,7 @@ package com.owsb.poms.ui.admin;
 import com.owsb.poms.system.model.*;
 import com.owsb.poms.ui.common.*;
 import java.awt.*;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.plaf.basic.*;
 import javax.swing.table.*;
@@ -14,6 +15,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private String currentTab = "Dashboard"; 
     private int SelectedItemsRow = -1;
     private Item selectedItem = new Item();
+    private List<Item> itemList;
     
     //Inventory
     private DefaultTableModel itemsModel = new DefaultTableModel(){
@@ -1498,15 +1500,16 @@ public class AdminDashboard extends javax.swing.JFrame {
         if (SelectedItemsRow == -1)
         {
             JOptionPane.showMessageDialog(this, "Please select an item to remove", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-        else{
-            int result = JOptionPane.showConfirmDialog(this, "Are you sure to remove this item?", "Remove Item", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-            if (result == JOptionPane.YES_OPTION)
-            {
-                itemsModel.removeRow(SelectedItemsRow);
-                SelectedItemsRow = -1;
-                Inventory();
-            }
+        int result = JOptionPane.showConfirmDialog(this, "Are you sure to remove this item?", "Remove Item", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (result == JOptionPane.YES_OPTION)
+        {
+            itemsModel.removeRow(SelectedItemsRow);
+            selectedItem.setStatus(Item.Status.REMOVED);
+            selectedItem.updateStatus();
+            SelectedItemsRow = -1;
+            Inventory();
         }
     }//GEN-LAST:event_btnRemoveItemActionPerformed
 
@@ -1514,19 +1517,51 @@ public class AdminDashboard extends javax.swing.JFrame {
         if (SelectedItemsRow == -1)
         {
             JOptionPane.showMessageDialog(this, "Please select an item to edit", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-        else{
-            EditItem editItem = new EditItem(this, true, selectedItem);
-            editItem.setVisible(true);
-        }
+        EditItem editItem = new EditItem(this, true, selectedItem);
+        editItem.setVisible(true);
+        SelectedItemsRow = -1;
+        Inventory();
     }//GEN-LAST:event_btnEditItemActionPerformed
 
     private void btnUpdateStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateStockActionPerformed
-        // TODO add your handling code here:
+        if (SelectedItemsRow == -1)
+        {
+            JOptionPane.showMessageDialog(this, "Please select an item to update stock", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        String input = JOptionPane.showInputDialog(this, String.format("Stock: %d", selectedItem.getStock()), "Update Stock", JOptionPane.INFORMATION_MESSAGE);
+        
+        if (input != null) {
+            try {
+                int newStock = Integer.parseInt(input.trim());
+                if (newStock < 0) {
+                    JOptionPane.showMessageDialog(this, "Stock cannot be negative!", "Invalid Input", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    selectedItem.setStock(newStock);
+                    selectedItem.updateStock(); 
+                    JOptionPane.showMessageDialog(this, "Stock updated successfully!");
+                    SelectedItemsRow = -1;
+                    Inventory();
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid integer!", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnUpdateStockActionPerformed
 
     private void btnUpdateStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateStatusActionPerformed
-        // TODO add your handling code here:
+        if (SelectedItemsRow == -1)
+        {
+            JOptionPane.showMessageDialog(this, "Please select an item to update status", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        UpdateStatus updateStatus = new UpdateStatus(this, true, selectedItem);
+        updateStatus.setVisible(true);
+        SelectedItemsRow = -1;
+        Inventory();
     }//GEN-LAST:event_btnUpdateStatusActionPerformed
         
     private void tabEntered(JPanel tab, JPanel tabIndicator){
@@ -1584,7 +1619,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         tblItems.getColumnModel().getColumn(3).setPreferredWidth(150);
         tblItems.getColumnModel().getColumn(6).setPreferredWidth(100);
         
-        var itemList = Item.toList();
+        itemList = Item.toList();
         
         for (Item item : itemList) {
             if (item.getStatus() != Item.Status.REMOVED)
