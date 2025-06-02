@@ -1,0 +1,6 @@
+ITM00001	Stainless Steel Pan	Kitchenware	Durable Goods	120.0	0	NEW
+ITM00002	Organic Green Tea	Beverage	Consumable	15.75	0	NEW
+ITM00003	LED Desk Lamp	Electronics	Lighting	90.0	0	NEW
+ITM00004	Cotton Face Masks	Hygiene	Protective Equipment	1.2	0	NEW
+ITM00005	Hand Sanitizer 500ml	Hygiene	Cleaning Supplies	10.0	0	NEW
+ITM00006	Plastic Storage Box	Home	Storage	35.0	0	NEW
