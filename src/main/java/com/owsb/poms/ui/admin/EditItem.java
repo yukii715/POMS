@@ -4,10 +4,17 @@ import com.owsb.poms.system.model.Item;
 import javax.swing.JOptionPane;
 
 public class EditItem extends javax.swing.JDialog {
+    private String name;
+    private double price;
+    private boolean validName;
+    private boolean validPrice;
+    private Item item;
 
     public EditItem(java.awt.Frame parent, boolean modal, Item item) {
         super(parent, modal);
         initComponents();
+        
+        this.item = item;
         setTitle(String.format("%s %s %s", item.getItemCategory(), item.getItemType(), item.getItemID()));
         txtName.setText(item.getItemName());
         txtPrice.setText(String.valueOf(item.getSellPrice()));
@@ -28,7 +35,7 @@ public class EditItem extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
         txtPrice = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnOK = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -54,13 +61,13 @@ public class EditItem extends javax.swing.JDialog {
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel6.setText("RM");
 
-        jButton1.setBackground(new java.awt.Color(255, 153, 0));
-        jButton1.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(252, 251, 249));
-        jButton1.setText("OK");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnOK.setBackground(new java.awt.Color(255, 153, 0));
+        btnOK.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnOK.setForeground(new java.awt.Color(252, 251, 249));
+        btnOK.setText("OK");
+        btnOK.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnOKActionPerformed(evt);
             }
         });
 
@@ -72,7 +79,7 @@ public class EditItem extends javax.swing.JDialog {
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlMainLayout.createSequentialGroup()
                         .addGap(137, 137, 137)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnOK, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlMainLayout.createSequentialGroup()
                         .addGap(50, 50, 50)
                         .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -106,7 +113,7 @@ public class EditItem extends javax.swing.JDialog {
                             .addComponent(jLabel5)
                             .addComponent(jLabel6))))
                 .addGap(42, 42, 42)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnOK, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -124,13 +131,45 @@ public class EditItem extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JOptionPane.showConfirmDialog(this, "Are you sure to add this new item?", "Add New Item", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOKActionPerformed
+        name = txtName.getText().trim();
+        validName = !(name == null || name.isBlank());
+       
+        try{
+            price = Double.parseDouble(txtPrice.getText().trim());
+            if (price <= 0){
+                validPrice = false;
+            }
+            else{
+                validPrice = true;
+            }
+        } catch (NumberFormatException e){
+            validPrice = false;
+        }
+        
+        if (!validName){
+            JOptionPane.showMessageDialog(this, "Invalid Name", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (!validPrice){
+            JOptionPane.showMessageDialog(this, "Invalid Price", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        int result = JOptionPane.showConfirmDialog(this, "Are you sure edit this item?", "Edit Item", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (result == JOptionPane.YES_OPTION){
+            item.setItemName(name);
+            item.setSellPrice(price);
+            item.edit();
+            JOptionPane.showMessageDialog(this, "Successfully make change for this item!");
+            this.dispose();
+        }
+    }//GEN-LAST:event_btnOKActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnOK;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;

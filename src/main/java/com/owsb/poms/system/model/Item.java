@@ -3,7 +3,7 @@ package com.owsb.poms.system.model;
 import com.owsb.poms.system.functions.*;
 import java.util.List;
 
-public class Item implements CommonModel{
+public class Item implements CommonModel<Item>{
     
     private String itemID;
     private String itemName;
@@ -13,7 +13,7 @@ public class Item implements CommonModel{
     private int stock;
     private Status status;
     
-    private static String filePath = "data/Items/items.txt";
+    private static final String filePath = "data/Items/items.txt";
     
     public enum Status{
         NEW,
@@ -94,7 +94,6 @@ public class Item implements CommonModel{
         this.status = status;
     }
 
-    // toString for easy printing
     @Override
     public String toString() {
         return itemID + "\t" + itemName + "\t" + itemCategory + "\t" + itemType + "\t" +
@@ -116,6 +115,7 @@ public class Item implements CommonModel{
         return item;
     }
     
+    @Override
     public String generateID(){
         String prefix = "ITM";
         int length = 5;
@@ -123,11 +123,57 @@ public class Item implements CommonModel{
         return IdGenerator.generateID(prefix, length, startNum);
     }
     
+    @Override
     public void saveToFile(List<Item> list){
         FileHandler.saveToFile(filePath, list, Item::toString);
     }
     
     public static List<Item> toList(){
         return FileHandler.readFromFile(filePath, Item::fromString);
+    }
+    
+    public static List<String> getAllCategories(){
+        return DataHandler.extractUniqueField(toList(), Item::getItemCategory);
+    }
+    
+    public static List<String> getAllTypes(String category){
+        return DataHandler.filterAndExtractUnique(toList(), item -> item.getItemCategory().equals(category), Item::getItemType);
+    }
+    
+    @Override
+    public void add(){
+        var items = toList();
+        items.add(this);
+        this.saveToFile(items);
+    }
+    
+    public void updateStatus(){
+        DataHandler.updateFieldAndSave(
+                toList(),
+                item -> item.getItemID().equals(this.getItemID()),              
+                item -> item.setStatus(this.getStatus()),           
+                list -> this.saveToFile(list)
+        );
+    }
+    
+    public void updateStock(){
+        DataHandler.updateFieldAndSave(
+                toList(),
+                item -> item.getItemID().equals(this.getItemID()),              
+                item -> item.setStock(this.getStock()),           
+                list -> this.saveToFile(list)
+        );
+    }
+    
+    public void edit(){
+        DataHandler.updateFieldAndSave(
+                toList(),
+                item -> item.getItemID().equals(this.getItemID()),              
+                item -> {
+                    item.setItemName(this.getItemName());
+                    item.setSellPrice(this.getSellPrice());
+                    },           
+                list -> this.saveToFile(list)
+        );
     }
 }

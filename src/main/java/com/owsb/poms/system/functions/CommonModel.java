@@ -1,7 +1,9 @@
 package com.owsb.poms.system.functions;
 
-public interface CommonModel{
+import java.util.*;
+
+public interface CommonModel <T>{
     String generateID();
-    @Override
-    String toString();
+    void saveToFile(List<T> list);
+    void add();
 }
