@@ -5,7 +5,6 @@ public class User {
     private int UID;
     private String username;
     private String email;
-    private String password;
     private String passwordHash;
     private String role;
     private LocalDateTime creationDateTime;

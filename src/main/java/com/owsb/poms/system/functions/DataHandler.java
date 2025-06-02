@@ -1,0 +1,48 @@
+package com.owsb.poms.system.functions;
+
+import java.util.*;
+import java.util.function.*;
+
+public class DataHandler {
+    // A Set automatically rejects duplicates
+    public static <T, R> List<R> extractUniqueField(List<T> list, Function<T, R> extractor) {
+        Set<R> uniqueSet = new LinkedHashSet<>();
+
+        for (T element : list) {
+            uniqueSet.add(extractor.apply(element));
+        }
+
+        return new ArrayList<>(uniqueSet);
+    }
+    
+    public static <T, R> List<R> filterAndExtractUnique(
+        List<T> list,
+        Predicate<T> filter,
+        Function<T, R> extractor) {
+
+        Set<R> resultSet = new LinkedHashSet<>();
+
+        for (T element : list) {
+            if (filter.test(element)) {
+                resultSet.add(extractor.apply(element));
+            }
+        }
+
+        return new ArrayList<>(resultSet);
+    }
+    
+    public static <T> void updateFieldAndSave(
+        List<T> list,
+        Predicate<T> matcher,
+        Consumer<T> updater,
+        Consumer<List<T>> saver) {
+
+        for (T element : list) {
+            if (matcher.test(element)) {
+                updater.accept(element);
+                saver.accept(list);
+                break;
+            }
+        }
+    }
+}

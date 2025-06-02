@@ -1,9 +1,21 @@
 package com.owsb.poms.ui.common;
 
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.Point;
+import java.io.File;
+import com.owsb.poms.ui.common.CommonEvent;
+
 public class Login extends javax.swing.JFrame {
+    private Point initialClick;
     
     public Login() {
         initComponents();
+        
+        new CommonMethod().setFrameIcon("/icons/logo.png", 330, 330, Image.SCALE_SMOOTH, this);
+        new CommonMethod().setLabelIcon("/icons/logo.png", 330, 330, Image.SCALE_SMOOTH, lblLogo);
+        new CommonMethod().setLabelIcon("/icons/user.png", 25, 25, Image.SCALE_SMOOTH, lblUserIcon);
+        new CommonMethod().setLabelIcon("/icons/padlock.png", 25, 25, Image.SCALE_SMOOTH, lblPwdIcon);
     }
 
     /**
@@ -15,28 +27,196 @@ public class Login extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        pnlLogo = new javax.swing.JPanel();
+        lblLogo = new javax.swing.JLabel();
+        pnlInfo = new javax.swing.JPanel();
+        lblClose = new javax.swing.JLabel();
+        lblLoginTitle = new javax.swing.JLabel();
+        lblUserIcon = new javax.swing.JLabel();
+        lblUser = new javax.swing.JLabel();
+        txtUser = new javax.swing.JTextField();
+        lblPwdIcon = new javax.swing.JLabel();
+        lblPassword = new javax.swing.JLabel();
+        txtPassword = new javax.swing.JPasswordField();
+        btnLogin = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("POMS");
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setMinimumSize(new java.awt.Dimension(800, 550));
+        setName(""); // NOI18N
+        setUndecorated(true);
+        setPreferredSize(new java.awt.Dimension(800, 550));
+        setResizable(false);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel1.setBackground(new java.awt.Color(255, 204, 204));
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        pnlLogo.setBackground(new java.awt.Color(255, 204, 204));
+        pnlLogo.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                pnlLogoMouseDragged(evt);
+            }
+        });
+        pnlLogo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                pnlLogoMousePressed(evt);
+            }
+        });
 
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setForeground(new java.awt.Color(51, 51, 51));
-        jLabel1.setText("Username: ");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 30, -1, 30));
+        lblLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblLogo.setToolTipText("");
 
-        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
+        javax.swing.GroupLayout pnlLogoLayout = new javax.swing.GroupLayout(pnlLogo);
+        pnlLogo.setLayout(pnlLogoLayout);
+        pnlLogoLayout.setHorizontalGroup(
+            pnlLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlLogoLayout.createSequentialGroup()
+                .addContainerGap(35, Short.MAX_VALUE)
+                .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(35, 35, 35))
+        );
+        pnlLogoLayout.setVerticalGroup(
+            pnlLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlLogoLayout.createSequentialGroup()
+                .addGap(81, 81, 81)
+                .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(139, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(pnlLogo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 400, 550));
+
+        pnlInfo.setBackground(new java.awt.Color(253, 221, 221));
+        pnlInfo.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                pnlInfoMouseDragged(evt);
+            }
+        });
+        pnlInfo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                pnlInfoMousePressed(evt);
+            }
+        });
+        pnlInfo.setLayout(null);
+
+        lblClose.setBackground(new java.awt.Color(255, 186, 186));
+        lblClose.setFont(new java.awt.Font("Franklin Gothic Heavy", 1, 24)); // NOI18N
+        lblClose.setForeground(new java.awt.Color(0, 0, 0));
+        lblClose.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblClose.setText("X");
+        lblClose.setOpaque(true);
+        lblClose.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblCloseMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                lblCloseMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                lblCloseMouseExited(evt);
+            }
+        });
+        pnlInfo.add(lblClose);
+        lblClose.setBounds(350, 0, 50, 40);
+
+        lblLoginTitle.setFont(new java.awt.Font("Engravers MT", 1, 24)); // NOI18N
+        lblLoginTitle.setForeground(new java.awt.Color(0, 0, 0));
+        lblLoginTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblLoginTitle.setText("Staff Login");
+        pnlInfo.add(lblLoginTitle);
+        lblLoginTitle.setBounds(70, 50, 270, 75);
+
+        lblUserIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblUserIcon.setIcon(new javax.swing.ImageIcon("D:\\Downloads\\user.png")); // NOI18N
+        lblUserIcon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        pnlInfo.add(lblUserIcon);
+        lblUserIcon.setBounds(60, 170, 25, 25);
+
+        lblUser.setFont(new java.awt.Font("Dubai Medium", 0, 14)); // NOI18N
+        lblUser.setForeground(new java.awt.Color(0, 0, 0));
+        lblUser.setText("UID/Username/Email");
+        pnlInfo.add(lblUser);
+        lblUser.setBounds(90, 170, 151, 30);
+
+        txtUser.setBackground(new java.awt.Color(250, 236, 236));
+        txtUser.setFont(new java.awt.Font("Dubai", 0, 14)); // NOI18N
+        txtUser.setForeground(new java.awt.Color(0, 0, 0));
+        txtUser.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtUser.setCaretColor(new java.awt.Color(204, 204, 204));
+        pnlInfo.add(txtUser);
+        txtUser.setBounds(64, 199, 270, 30);
+
+        lblPwdIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblPwdIcon.setIcon(new javax.swing.ImageIcon("D:\\Downloads\\user.png")); // NOI18N
+        lblPwdIcon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        pnlInfo.add(lblPwdIcon);
+        lblPwdIcon.setBounds(60, 260, 25, 25);
+
+        lblPassword.setFont(new java.awt.Font("Dubai Medium", 0, 14)); // NOI18N
+        lblPassword.setForeground(new java.awt.Color(0, 0, 0));
+        lblPassword.setText("Password");
+        pnlInfo.add(lblPassword);
+        lblPassword.setBounds(90, 260, 151, 30);
+
+        txtPassword.setBackground(new java.awt.Color(250, 236, 236));
+        txtPassword.setForeground(new java.awt.Color(0, 0, 0));
+        pnlInfo.add(txtPassword);
+        txtPassword.setBounds(64, 288, 270, 30);
+
+        btnLogin.setBackground(new java.awt.Color(255, 204, 204));
+        btnLogin.setFont(new java.awt.Font("Eras Medium ITC", 0, 12)); // NOI18N
+        btnLogin.setForeground(new java.awt.Color(0, 0, 0));
+        btnLogin.setText("Log in");
+        btnLogin.setFocusPainted(false);
+        pnlInfo.add(btnLogin);
+        btnLogin.setBounds(145, 378, 108, 39);
+
+        getContentPane().add(pnlInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 0, 400, 550));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
+    private void lblCloseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCloseMouseClicked
+        System.exit(0);
+    }//GEN-LAST:event_lblCloseMouseClicked
+
+    private void lblCloseMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCloseMouseEntered
+        lblClose.setBackground(Color.red);
+        lblClose.setForeground(Color.white);
+    }//GEN-LAST:event_lblCloseMouseEntered
+
+    private void lblCloseMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCloseMouseExited
+        lblClose.setBackground(new java.awt.Color(255, 186, 186));
+        lblClose.setForeground(new java.awt.Color(0, 0, 0));
+    }//GEN-LAST:event_lblCloseMouseExited
+
+    private void pnlLogoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlLogoMousePressed
+        initialClick = evt.getPoint();
+    }//GEN-LAST:event_pnlLogoMousePressed
+
+    private void pnlLogoMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlLogoMouseDragged
+        CommonEvent.mouseDragWindow(this, evt, initialClick);
+    }//GEN-LAST:event_pnlLogoMouseDragged
+
+    private void pnlInfoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlInfoMousePressed
+        initialClick = evt.getPoint();
+    }//GEN-LAST:event_pnlInfoMousePressed
+
+    private void pnlInfoMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlInfoMouseDragged
+        CommonEvent.mouseDragWindow(this, evt, initialClick);
+    }//GEN-LAST:event_pnlInfoMouseDragged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton btnLogin;
+    private javax.swing.JLabel lblClose;
+    private javax.swing.JLabel lblLoginTitle;
+    private javax.swing.JLabel lblLogo;
+    private javax.swing.JLabel lblPassword;
+    private javax.swing.JLabel lblPwdIcon;
+    private javax.swing.JLabel lblUser;
+    private javax.swing.JLabel lblUserIcon;
+    private javax.swing.JPanel pnlInfo;
+    private javax.swing.JPanel pnlLogo;
+    private javax.swing.JPasswordField txtPassword;
+    private javax.swing.JTextField txtUser;
     // End of variables declaration//GEN-END:variables
 }
