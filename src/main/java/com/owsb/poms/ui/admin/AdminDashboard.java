@@ -17,7 +17,15 @@ public class AdminDashboard extends javax.swing.JFrame {
     private boolean summary = false;  
     private String currentTab = "Dashboard";
     
-    //Inventory
+    // Users
+    
+    // Sales
+    
+    // Orders
+    private int seletedOrderRow;
+    
+    
+    // Inventory
     private int selectedItemRow;
     private Item selectedItem = new Item();
     private List<Item> itemList;
@@ -28,7 +36,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     } ;
     private String[] itemsColumnName = {"ID", "Category", "Type", "Name", "Supplier", "Price", "Stock", "Status"};
     
-    //Suppliers
+    // Suppliers
     private int selectedSupplierRow;
     private Supplier selectedSupplier = new Supplier();
     private List<Supplier> suppliersList;
