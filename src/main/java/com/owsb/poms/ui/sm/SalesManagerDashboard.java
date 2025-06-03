@@ -1,14 +1,25 @@
 package com.owsb.poms.ui.sm;
 
+import com.owsb.poms.system.model.*;
+import java.io.*;
+import java.time.LocalDate;
 import java.util.*;
+import javax.swing.JComboBox;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 public class SalesManagerDashboard extends javax.swing.JFrame {
     
-    /**
-     * Creates new form SalesManagerDashboard
-     */
+    private List<Item> itemList = Item.toList();
+    private String[] itemListHeader = {"Item ID", "Item Name", "Item Category", "Item Type", "Price (RM)", "Stock", "Status"};
+    private DefaultTableModel itemListTableModel = new DefaultTableModel(itemListHeader, 0);
+    boolean itemEntryIsValid;
+    
     public SalesManagerDashboard() {
         initComponents();
+        
+        displayItemList();
+        initItemCategoryComboBox();
     }
 
     /**
@@ -67,14 +78,10 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         radItemCategory = new javax.swing.JRadioButton();
         cmbItemCategory = new javax.swing.JComboBox<>();
         txtItemCategory = new javax.swing.JTextField();
-        jLabel29 = new javax.swing.JLabel();
-        txtItemCategoryPrefix = new javax.swing.JTextField();
         jLabel12 = new javax.swing.JLabel();
         radItemType = new javax.swing.JRadioButton();
         cmbItemType = new javax.swing.JComboBox<>();
         txtItemType = new javax.swing.JTextField();
-        jLabel28 = new javax.swing.JLabel();
-        txtItemTypePrefix = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
         txtItemName = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
@@ -200,19 +207,38 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
             }
         });
 
+        tblDailyItemSales.setBackground(new java.awt.Color(153, 153, 153));
         tblDailyItemSales.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "Item ID", "Item Name", "Date", "Quantity", "Amount (RM)"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tblDailyItemSales.setOpaque(false);
         jScrollPane1.setViewportView(tblDailyItemSales);
+        if (tblDailyItemSales.getColumnModel().getColumnCount() > 0) {
+            tblDailyItemSales.getColumnModel().getColumn(0).setHeaderValue("Item ID");
+            tblDailyItemSales.getColumnModel().getColumn(1).setHeaderValue("Item Name");
+            tblDailyItemSales.getColumnModel().getColumn(2).setHeaderValue("Date");
+            tblDailyItemSales.getColumnModel().getColumn(3).setHeaderValue("Quantity");
+        }
 
         btnSalesReturn.setFont(new java.awt.Font("KaiTi", 0, 12)); // NOI18N
         btnSalesReturn.setText("Return");
@@ -227,18 +253,15 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         frmDailyItemSalesLayout.setHorizontalGroup(
             frmDailyItemSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(frmDailyItemSalesLayout.createSequentialGroup()
+                .addContainerGap(40, Short.MAX_VALUE)
                 .addGroup(frmDailyItemSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(frmDailyItemSalesLayout.createSequentialGroup()
-                        .addGap(100, 100, 100)
                         .addComponent(btnSalesReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(100, 100, 100)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 580, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(87, 87, 87)
-                        .addComponent(btnSalesUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(frmDailyItemSalesLayout.createSequentialGroup()
-                        .addContainerGap(40, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1076, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnSalesUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1076, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(40, Short.MAX_VALUE))
         );
         frmDailyItemSalesLayout.setVerticalGroup(
@@ -465,32 +488,7 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
             }
         });
 
-        tblItemList.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "Item ID", "Item Category", "Item Name", "Item Type", "Price (RM)", "Stock", "Status"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Double.class, java.lang.Integer.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        tblItemList.setModel(itemListTableModel);
         tblItemList.setOpaque(false);
         jScrollPane5.setViewportView(tblItemList);
 
@@ -562,17 +560,27 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         radItemCategory.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         radItemCategory.setSelected(true);
         radItemCategory.setText("Existing Category");
+        radItemCategory.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                radItemCategoryItemStateChanged(evt);
+            }
+        });
 
         cmbItemCategory.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cmbItemCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbItemCategory.setMaximumRowCount(100000);
+        cmbItemCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Category" }));
+        cmbItemCategory.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbItemCategoryItemStateChanged(evt);
+            }
+        });
 
         txtItemCategory.setEnabled(false);
-
-        jLabel29.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
-        jLabel29.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel29.setText("Prefix:");
-
-        txtItemCategoryPrefix.setEnabled(false);
+        txtItemCategory.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtItemCategoryKeyTyped(evt);
+            }
+        });
 
         jLabel12.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
@@ -582,18 +590,24 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         radItemType.setSelected(true);
         radItemType.setText("Existing Type");
         radItemType.setEnabled(false);
+        radItemType.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                radItemTypeItemStateChanged(evt);
+            }
+        });
 
         cmbItemType.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cmbItemType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbItemType.setMaximumRowCount(100000);
+        cmbItemType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Type" }));
         cmbItemType.setEnabled(false);
+        cmbItemType.setFocusable(false);
+        cmbItemType.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbItemTypeItemStateChanged(evt);
+            }
+        });
 
         txtItemType.setEnabled(false);
-
-        jLabel28.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
-        jLabel28.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel28.setText("Prefix:");
-
-        txtItemTypePrefix.setEnabled(false);
 
         jLabel11.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
@@ -630,25 +644,16 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
                                 .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(jPanel2Layout.createSequentialGroup()
                                     .addComponent(radItemType, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(29, 29, 29)
-                                    .addComponent(cmbItemType, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(txtItemName, javax.swing.GroupLayout.PREFERRED_SIZE, 522, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addComponent(txtItemCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txtItemCategoryPrefix, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addComponent(txtItemType, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txtItemTypePrefix))))))
-                .addContainerGap(143, Short.MAX_VALUE))
+                                    .addComponent(cmbItemType, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(0, 0, Short.MAX_VALUE))
+                                .addComponent(txtItemName)
+                                .addComponent(txtItemType)
+                                .addComponent(txtItemCategory)))))
+                .addGap(143, 143, 143))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -659,20 +664,14 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
                     .addComponent(radItemCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cmbItemCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtItemCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtItemCategoryPrefix, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(txtItemCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(radItemType, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cmbItemType, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtItemType, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtItemTypePrefix, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(txtItemType, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -685,6 +684,11 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         );
 
         btnNewItemConfirm.setText("Confirm");
+        btnNewItemConfirm.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnNewItemConfirmMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout frmNewItemLayout = new javax.swing.GroupLayout(frmNewItem);
         frmNewItem.setLayout(frmNewItemLayout);
@@ -716,7 +720,7 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
                 .addComponent(btnNewItemConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         mainFrame.add(frmNewItem, "frmNewItem");
@@ -730,23 +734,25 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         jLabel4.setText("Edit Item");
 
         btnEditItemCancel.setText("Cancel");
+        btnEditItemCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditItemCancelActionPerformed(evt);
+            }
+        });
 
         btnEditItemSave.setText("Save");
 
         tblEditItem.setFont(new java.awt.Font("Palatino Linotype", 0, 14)); // NOI18N
         tblEditItem.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
                 "Item ID", "Item Name", "Price (RM)"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.Double.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
                 false, true, true
@@ -904,15 +910,27 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
 
         tblSupplierList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
                 "Supplier ID", "Supplier Name", "Date Added"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tblSupplierList.setOpaque(false);
         jScrollPane3.setViewportView(tblSupplierList);
 
@@ -967,18 +985,35 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
 
         btnPurchaseReqDetails.setFont(new java.awt.Font("KaiTi", 0, 14)); // NOI18N
         btnPurchaseReqDetails.setText("Details");
+        btnPurchaseReqDetails.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPurchaseReqDetailsActionPerformed(evt);
+            }
+        });
 
         tblPurchaseReq.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "PR ID", "Item ID", "Supplier ID", "Quantity", "Requested By", "Request Time", "Status"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tblPurchaseReq.setOpaque(false);
         jScrollPane4.setViewportView(tblPurchaseReq);
 
@@ -1023,7 +1058,7 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
 
         mainFrame.add(frmPurchaseReq, "frmPurchaseReq");
 
-        frmManagePurchaseReq.setBackground(new java.awt.Color(153, 204, 255));
+        frmManagePurchaseReq.setBackground(new java.awt.Color(255, 255, 153));
         frmManagePurchaseReq.setName("frmManagePurchaseReq"); // NOI18N
 
         jLabel23.setFont(new java.awt.Font("High Tower Text", 0, 36)); // NOI18N
@@ -1033,6 +1068,11 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
 
         btnManagePRReturn.setFont(new java.awt.Font("KaiTi", 0, 12)); // NOI18N
         btnManagePRReturn.setText("Return");
+        btnManagePRReturn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnManagePRReturnActionPerformed(evt);
+            }
+        });
 
         jLabel31.setFont(new java.awt.Font("Palatino Linotype", 0, 24)); // NOI18N
         jLabel31.setForeground(new java.awt.Color(0, 0, 0));
@@ -1116,15 +1156,27 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
 
         tblManagePurchaseReq.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+
             },
             new String [] {
                 "PR ID", "Item ID", "Supplier ID", "Quantity", "Time Requested", "Status"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane6.setViewportView(tblManagePurchaseReq);
 
         btnSentPRDelete.setFont(new java.awt.Font("KaiTi", 0, 12)); // NOI18N
@@ -1232,18 +1284,19 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         backgroundLayout.setHorizontalGroup(
             backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(backgroundLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(mainFrame, javax.swing.GroupLayout.PREFERRED_SIZE, 1160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(backgroundLayout.createSequentialGroup()
-                .addGap(120, 120, 120)
-                .addComponent(btnDailyItemSales, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(120, 120, 120)
-                .addComponent(btnItemList, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(120, 120, 120)
-                .addComponent(btnSupplierList, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(120, 120, 120)
-                .addComponent(btnPurchaseReq, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(backgroundLayout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(mainFrame, javax.swing.GroupLayout.PREFERRED_SIZE, 1160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(backgroundLayout.createSequentialGroup()
+                        .addGap(120, 120, 120)
+                        .addComponent(btnDailyItemSales, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(120, 120, 120)
+                        .addComponent(btnItemList, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(120, 120, 120)
+                        .addComponent(btnSupplierList, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(120, 120, 120)
+                        .addComponent(btnPurchaseReq, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         backgroundLayout.setVerticalGroup(
@@ -1317,6 +1370,120 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         SalesManagerUtilities.getFrame(mainFrame, frmDailyItemSales);
     }//GEN-LAST:event_btnSaleEntryCancelActionPerformed
 
+    private void btnEditItemCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditItemCancelActionPerformed
+        SalesManagerUtilities.getFrame(mainFrame, frmItemList);
+    }//GEN-LAST:event_btnEditItemCancelActionPerformed
+
+    private void btnPurchaseReqDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPurchaseReqDetailsActionPerformed
+        SalesManagerUtilities.getFrame(mainFrame, frmManagePurchaseReq);
+    }//GEN-LAST:event_btnPurchaseReqDetailsActionPerformed
+
+    private void btnManagePRReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManagePRReturnActionPerformed
+        SalesManagerUtilities.getFrame(mainFrame, frmPurchaseReq);
+    }//GEN-LAST:event_btnManagePRReturnActionPerformed
+
+    private void radItemCategoryItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_radItemCategoryItemStateChanged
+        if(radItemCategory.isSelected()){
+            cmbItemCategory.setEnabled(true);
+            txtItemCategory.setEnabled(false);
+        } else{
+            radItemType.setSelected(false);
+            cmbItemCategory.setSelectedIndex(0);
+            cmbItemCategory.setEnabled(false);
+            txtItemCategory.setEnabled(true);
+        }
+    }//GEN-LAST:event_radItemCategoryItemStateChanged
+
+    private void radItemTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_radItemTypeItemStateChanged
+        if(radItemType.isSelected()){
+            cmbItemType.setEnabled(true);
+            txtItemType.setEnabled(false);
+        } else{
+            cmbItemType.setSelectedIndex(0);
+            cmbItemType.setEnabled(false);
+            txtItemType.setEnabled(true);
+        }
+    }//GEN-LAST:event_radItemTypeItemStateChanged
+
+    private void cmbItemTypeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbItemTypeItemStateChanged
+        if(cmbItemType.getSelectedIndex() == 0){
+            txtItemName.setEnabled(false);
+            txtItemPrice.setEnabled(false);
+        } else{
+            txtItemName.setEnabled(true);
+            txtItemPrice.setEnabled(true);
+        }
+    }//GEN-LAST:event_cmbItemTypeItemStateChanged
+
+    private void cmbItemCategoryItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbItemCategoryItemStateChanged
+        cmbItemType.setSelectedItem(0);
+        txtItemName.setEnabled(false);
+        txtItemPrice.setEnabled(false);
+        if(cmbItemCategory.getSelectedIndex() == 0){
+            radItemType.setEnabled(false);
+            cmbItemType.setEnabled(false);
+            txtItemType.setEnabled(false);
+        } else{
+            String selectedCategory = (String) cmbItemCategory.getSelectedItem();
+            cmbItemType.removeAllItems();
+            cmbItemType.addItem("Select Type");
+
+            if (!"Select Category".equals(selectedCategory)) {
+                for (String type : Item.getAllTypes(selectedCategory)) {
+                    cmbItemType.addItem(type);
+                }
+            }
+            radItemType.setEnabled(true);
+            cmbItemType.setEnabled(true);
+        }
+    }//GEN-LAST:event_cmbItemCategoryItemStateChanged
+
+    private void btnNewItemConfirmMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNewItemConfirmMouseClicked
+        String category, type, name;
+        category = cmbItemCategory.getSelectedIndex() != 0 && cmbItemCategory.getSelectedItem() != null ? cmbItemCategory.getSelectedItem().toString() : txtItemCategory.getText().trim();
+        type = cmbItemType.getSelectedIndex() != 0 && cmbItemType.getSelectedItem() != null ? cmbItemType.getSelectedItem().toString() : txtItemType.getText().trim();
+        name = txtItemName.getText().trim();
+
+        Item newItem = new Item("Seafood", "Fish", "Salmon", 50.0);
+        newItem.add(); // Automatically adds and saves to file
+    }//GEN-LAST:event_btnNewItemConfirmMouseClicked
+
+    private void txtItemCategoryKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtItemCategoryKeyTyped
+        itemEntryIsValid = txtItemCategory.getText().matches("^[a-zA-Z]+$");
+        if(txtItemCategory.getText() == ""){
+            txtItemType.setEnabled(false);
+        } else{
+            txtItemType.setEnabled(true);
+        }
+    }//GEN-LAST:event_txtItemCategoryKeyTyped
+    
+    private void displayItemList(){        
+        for(Item item : itemList){
+            if (item.getStatus() != Item.Status.REMOVED)
+            {
+                String[] row = {
+                    item.getItemID(),
+                    item.getItemName(),
+                    item.getItemCategory(),
+                    item.getItemType(),
+                    String.format("%.2f", item.getSellPrice()),
+                    String.valueOf(item.getStock()),
+                    item.getStatus().name()
+                };
+                itemListTableModel.addRow(row);
+            }
+        }
+    }
+    
+    private void initItemCategoryComboBox(){
+        cmbItemCategory.removeAllItems();
+        cmbItemCategory.addItem("Select Category");
+
+        for (String category : Item.getAllCategories()) {
+            cmbItemCategory.addItem(category);
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -1417,8 +1584,6 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel27;
-    private javax.swing.JLabel jLabel28;
-    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
@@ -1452,11 +1617,9 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel temp;
     private javax.swing.JTextField txtEditItemSearch;
     private javax.swing.JTextField txtItemCategory;
-    private javax.swing.JTextField txtItemCategoryPrefix;
     private javax.swing.JTextField txtItemName;
     private javax.swing.JTextField txtItemPrice;
     private javax.swing.JTextField txtItemType;
-    private javax.swing.JTextField txtItemTypePrefix;
     private javax.swing.JTextField txtNewPRQuantity;
     private javax.swing.JTextField txtSaleEntryName;
     private javax.swing.JTextField txtSaleEntryPrice;

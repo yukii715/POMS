@@ -330,12 +330,9 @@ public class AdminDashboard extends javax.swing.JFrame {
         getContentPane().add(pnlEastMargin, java.awt.BorderLayout.EAST);
 
         mainSplitPane.setBackground(new java.awt.Color(255, 237, 237));
-        mainSplitPane.setBorder(null);
         mainSplitPane.setDividerLocation(200);
-        mainSplitPane.setDividerSize(5);
         mainSplitPane.setForeground(new java.awt.Color(255, 204, 204));
         mainSplitPane.setToolTipText("");
-        mainSplitPane.setContinuousLayout(true);
         mainSplitPane.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         mainSplitPane.setPreferredSize(new java.awt.Dimension(1200, 800));
 
@@ -850,14 +847,14 @@ public class AdminDashboard extends javax.swing.JFrame {
             .addGroup(pnlDashboardLayout.createSequentialGroup()
                 .addGap(257, 257, 257)
                 .addComponent(lbltest, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(332, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlDashboardLayout.setVerticalGroup(
             pnlDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlDashboardLayout.createSequentialGroup()
-                .addGap(150, 150, 150)
+                .addGap(144, 144, 144)
                 .addComponent(lbltest, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(249, Short.MAX_VALUE))
+                .addContainerGap(255, Short.MAX_VALUE))
         );
 
         pnlMainContent.add(pnlDashboard, "Dashboard");
@@ -868,11 +865,11 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlUsers.setLayout(pnlUsersLayout);
         pnlUsersLayout.setHorizontalGroup(
             pnlUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 995, Short.MAX_VALUE)
+            .addGap(0, 814, Short.MAX_VALUE)
         );
         pnlUsersLayout.setVerticalGroup(
             pnlUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 700, Short.MAX_VALUE)
+            .addGap(0, 698, Short.MAX_VALUE)
         );
 
         pnlMainContent.add(pnlUsers, "Users");
@@ -884,11 +881,11 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlSales.setLayout(pnlSalesLayout);
         pnlSalesLayout.setHorizontalGroup(
             pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 995, Short.MAX_VALUE)
+            .addGap(0, 814, Short.MAX_VALUE)
         );
         pnlSalesLayout.setVerticalGroup(
             pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 700, Short.MAX_VALUE)
+            .addGap(0, 698, Short.MAX_VALUE)
         );
 
         pnlMainContent.add(pnlSales, "Sales");
@@ -900,11 +897,11 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlOrders.setLayout(pnlOrdersLayout);
         pnlOrdersLayout.setHorizontalGroup(
             pnlOrdersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 995, Short.MAX_VALUE)
+            .addGap(0, 814, Short.MAX_VALUE)
         );
         pnlOrdersLayout.setVerticalGroup(
             pnlOrdersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 700, Short.MAX_VALUE)
+            .addGap(0, 698, Short.MAX_VALUE)
         );
 
         pnlMainContent.add(pnlOrders, "Orders");
@@ -1071,7 +1068,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                         .addComponent(btnEditItem, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnUpdateStock, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnUpdateStatus, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)))
-                .addContainerGap(184, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlInventoryLayout.setVerticalGroup(
             pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1116,7 +1113,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                         .addComponent(btnUpdateStock, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnUpdateStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 160, Short.MAX_VALUE))
+                        .addGap(0, 170, Short.MAX_VALUE))
                     .addComponent(srlItems))
                 .addContainerGap())
         );
@@ -1129,11 +1126,11 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlSuppliers.setLayout(pnlSuppliersLayout);
         pnlSuppliersLayout.setHorizontalGroup(
             pnlSuppliersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 995, Short.MAX_VALUE)
+            .addGap(0, 814, Short.MAX_VALUE)
         );
         pnlSuppliersLayout.setVerticalGroup(
             pnlSuppliersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 700, Short.MAX_VALUE)
+            .addGap(0, 698, Short.MAX_VALUE)
         );
 
         pnlMainContent.add(pnlSuppliers, "Suppliers");
