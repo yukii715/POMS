@@ -37,7 +37,7 @@ public class Report implements hasFile<Report>{
 
     public static Report fromString(String line) {
         String[] parts = line.split("\t");
-        if (parts.length != 3) {
+        if (parts.length != 2) {
             throw new IllegalArgumentException("Invalid input line for PurchaseRequisition: " + line);
         }
 

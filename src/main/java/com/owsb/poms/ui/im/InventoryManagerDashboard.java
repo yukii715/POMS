@@ -757,8 +757,10 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
  
     
     private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed
-        //generateStocklist();
-        //JOptionPane.showMessageDialog(this,"Stock report saved: " + filePath);
+        itemList = Item.toList();
+        List<StockReport> reportList = StockReport.generateStockList(itemList);       
+        new StockReport().save(reportList);
+        JOptionPane.showMessageDialog(this,"Stock report generated" );
     }//GEN-LAST:event_btnGenerateActionPerformed
      
     public static String getItemNameByID(String itemID, List<Item> itemList) {
