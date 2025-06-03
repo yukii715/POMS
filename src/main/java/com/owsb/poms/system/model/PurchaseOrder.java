@@ -1,0 +1,185 @@
+package com.owsb.poms.system.model;
+
+import com.owsb.poms.system.functions.*;
+import java.time.*;
+import java.util.List;
+
+public class PurchaseOrder implements CommonModel<PurchaseOrder>{
+    private String POID;
+    private String PRID;
+    private double totalPrice;
+    private String supplierID;
+    private LocalDateTime generateDateTime;
+    private LocalDate deliveryDate;
+    private Status status;
+    private String createBy;
+    private String approvedBy;
+    
+    private static final String filePath = "data/PO/purchase_order.txt";
+    
+    public enum Status{
+        NEW,
+        APPROVED,
+        REJECTED,
+        PROCESSING,
+        EXTENDED,
+        ARRIVED,
+        VERIFIED,
+        COMPLETED,
+        CANCELLED
+    }
+    
+    public PurchaseOrder(){
+    }
+
+    public PurchaseOrder(String PRID, double totalPrice, String supplierID, LocalDate deliveryDate, String createBy, String approvedBy) {
+        this.POID = generateID();
+        this.PRID = PRID;
+        this.totalPrice = totalPrice;
+        this.supplierID = supplierID;
+        this.generateDateTime = LocalDateTime.now();
+        this.deliveryDate = deliveryDate;
+        this.status = status.NEW;
+        this.createBy = createBy;
+        this.approvedBy = approvedBy;
+    }
+
+    public String getPOID() {
+        return POID;
+    }
+
+    public void setPOID(String POID) {
+        this.POID = POID;
+    }
+
+    public String getPRID() {
+        return PRID;
+    }
+
+    public void setPRID(String PRID) {
+        this.PRID = PRID;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public String getSupplierID() {
+        return supplierID;
+    }
+
+    public void setSupplierID(String supplierID) {
+        this.supplierID = supplierID;
+    }
+
+    public LocalDateTime getGenerateDateTime() {
+        return generateDateTime;
+    }
+
+    public void setGenerateDateTime(LocalDateTime generateDateTime) {
+        this.generateDateTime = generateDateTime;
+    }
+
+    public LocalDate getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(LocalDate deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public String getApprovedBy() {
+        return approvedBy;
+    }
+
+    public void setApprovedBy(String approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+    
+    @Override
+    public String toString() {
+        return POID + "\t"
+             + PRID + "\t"
+             + totalPrice + "\t"
+             + supplierID + "\t"
+             + generateDateTime.toString() + "\t"
+             + deliveryDate.toString() + "\t"
+             + status.name() + "\t"
+             + createBy + "\t"
+             + approvedBy;
+    }
+    
+    public static PurchaseOrder fromString(String line) {
+        String[] parts = line.split("\t");
+        if (parts.length != 9) {
+            throw new IllegalArgumentException("Invalid input line for PurchaseOrder: " + line);
+        }
+
+        PurchaseOrder po = new PurchaseOrder();
+        po.setPOID(parts[0]);
+        po.setPRID(parts[1]);
+        po.setTotalPrice(Double.parseDouble(parts[2]));
+        po.setSupplierID(parts[3]);
+        po.setGenerateDateTime(LocalDateTime.parse(parts[4]));
+        po.setDeliveryDate(LocalDate.parse(parts[5]));
+        po.setStatus(Status.valueOf(parts[6]));
+        po.setCreateBy(parts[7]);
+        po.setApprovedBy(parts[8]);
+
+        return po;
+    }
+
+    
+    @Override
+    public String generateID() {
+        String prefix = "PR";
+        int length = 5;
+        int startNum = IdGenerator.getTotal(filePath);
+        return IdGenerator.generateID(prefix, length, startNum);
+    }
+
+    @Override
+    public void saveToFile(List<PurchaseOrder> list) {
+        FileHandler.saveToFile(filePath, list, PurchaseOrder::toString);
+    }
+    
+    public static List<PurchaseOrder> toList(){
+        return FileHandler.readFromFile(filePath, PurchaseOrder::fromString);
+    }
+
+    @Override
+    public void add() {
+        var pos = toList();
+        pos.add(this);
+        this.saveToFile(pos);
+    }
+    
+    public void updateStatus(){
+        DataHandler.updateFieldAndSave(
+                toList(),
+                po -> po.getPOID().equals(this.getPOID()),              
+                po -> po.setStatus(this.getStatus()),           
+                list -> this.saveToFile(list)
+        );
+    }
+}

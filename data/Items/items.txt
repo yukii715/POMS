@@ -1,7 +1,6 @@
-ITM00001	Stainless Steel Pan	Kitchenware	Durable Goods	120.0	10	SHORTAGE
-ITM00002	Organic Green Tea	Beverage	Consumable	15.75	10	SUFFICIENT
-ITM00003	LED Desk Lamp	Electronics	Lighting	90.0	0	NEW
-ITM00004	Cotton Face Masks	Hygiene	Protective Equipment	1.2	0	NEW
-ITM00005	Hand Sanitizer 500ml	Hygiene	Cleaning Supplies	10.0	0	NEW
-ITM00006	Plastic Storage Box	Home	Storage	35.0	100	SUFFICIENT
-ITM00007	Nice Life Shampoo 200ml	Hygiene	Cleaning Supplies	20.0	0	SUFFICIENT
+ITM00001	GoodHealth Shampoo 200ml	Hygiene	Cleaning Supplies	SUP003	9.9	0	NEW
+ITM00002	SunGro Premium Rice 5kg	Grocery	Staple Food	SUP001	25.9	0	NEW
+ITM00003	SunGro Brown Sugar 1kg	Grocery	Dry Ingredient	SUP001	4.7	0	NEW
+ITM00004	LiteTech Wireless Mouse	Electronics	Peripheral	SUP004	49.9	0	NEW
+ITM00005	Green Basket Green Tea 500ml	Beverage	Tea	SUP002	14.5	0	NEW
+ITM00006	MegaTools Hammer 16oz	Hardware	Hand Tool	SUP005	22.0	0	NEW
