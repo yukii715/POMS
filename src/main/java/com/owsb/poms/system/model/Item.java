@@ -189,4 +189,8 @@ public class Item implements hasFile<Item>, hasId, hasStatus{
                 list -> this.saveToFile(list)
         );
     }
+    
+    public static List<Item> getItemsFromSupplier(String supplierID){
+        return DataHandler.getValuesByKey(toList(), Item::getSupplierID, supplierID);
+    }
 }

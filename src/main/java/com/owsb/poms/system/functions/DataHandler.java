@@ -50,12 +50,27 @@ public class DataHandler {
                                         Function<T, K> keyExtractor,
                                         K keyToMatch,
                                         Function<T, V> valueExtractor) {
-    for (T item : list) {
-        if (keyExtractor.apply(item).equals(keyToMatch)) {
-            return valueExtractor.apply(item);
+        for (T item : list) {
+            if (keyExtractor.apply(item).equals(keyToMatch)) {
+                return valueExtractor.apply(item);
+            }
         }
+        return null;
     }
-    return null;
-}
+    
+    public static <T, K> List<T> getValuesByKey(List<T> list,
+                                           Function<T, K> keyExtractor,
+                                           K keyToMatch) {
+        List<T> result = new ArrayList<>();
+
+        for (T item : list) {
+            if (keyExtractor.apply(item).equals(keyToMatch)) {
+                result.add(item);
+            }
+        }
+
+        return result;
+    }
+
 
 }
