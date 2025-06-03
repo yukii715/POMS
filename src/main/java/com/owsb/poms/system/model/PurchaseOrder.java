@@ -184,4 +184,16 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
                 list -> this.saveToFile(list)
         );
     }
+    
+    public void approved(){
+        DataHandler.updateFieldAndSave(
+                toList(),
+                po -> po.getPOID().equals(this.getPOID()),              
+                po -> {
+                    po.setStatus(this.getStatus());
+                    po.setApprovedBy(this.getApprovedBy());
+                            },           
+                list -> this.saveToFile(list)
+        );
+    }
 }

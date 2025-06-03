@@ -16,6 +16,24 @@ public class IdGenerator {
         }
         return lines;
     }
+    
+    public static synchronized int getTotalByFolder(String folderPath) {
+        File folder = new File(folderPath);
+        int fileCount = 0;
+
+        if (folder.exists() && folder.isDirectory()) {
+            File[] files = folder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        fileCount++;
+                    }
+                }
+            }
+        }
+
+        return fileCount;
+    }
 
     // Generate ID using prefix
     public static synchronized String generateID(String prefix, int length, int startNum) {
