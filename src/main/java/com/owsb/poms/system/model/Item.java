@@ -2,8 +2,9 @@ package com.owsb.poms.system.model;
 
 import com.owsb.poms.system.functions.*;
 import java.util.List;
+import com.owsb.poms.system.functions.interfaces.*;
 
-public class Item implements CommonModel<Item>{
+public class Item implements hasFile<Item>, hasId, hasStatus{
     
     private String itemID;
     private String itemName;
@@ -158,6 +159,7 @@ public class Item implements CommonModel<Item>{
         this.saveToFile(items);
     }
     
+    @Override
     public void updateStatus(){
         DataHandler.updateFieldAndSave(
                 toList(),

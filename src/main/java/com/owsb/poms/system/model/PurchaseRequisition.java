@@ -3,8 +3,9 @@ package com.owsb.poms.system.model;
 import com.owsb.poms.system.functions.*;
 import java.time.*;
 import java.util.List;
+import com.owsb.poms.system.functions.interfaces.*;
 
-public class PurchaseRequisition implements CommonModel<PurchaseRequisition>{
+public class PurchaseRequisition implements hasFile<PurchaseRequisition>, hasId, hasStatus{
     private String PRID;
     private String SupplierID;
     private LocalDateTime requestDateTime;
@@ -131,6 +132,7 @@ public class PurchaseRequisition implements CommonModel<PurchaseRequisition>{
         this.saveToFile(prs);
     }
     
+    @Override
     public void updateStatus(){
         DataHandler.updateFieldAndSave(
                 toList(),

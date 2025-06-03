@@ -4,8 +4,9 @@ import com.owsb.poms.system.functions.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.owsb.poms.system.functions.interfaces.*;
 
-public class Supplier implements CommonModel<Supplier>{
+public class Supplier implements hasFile<Supplier>, hasId{
     private String supplierID;
     private String supplierName;
     private LocalDateTime addedTime;

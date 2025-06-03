@@ -3,8 +3,9 @@ package com.owsb.poms.system.model;
 import com.owsb.poms.system.functions.*;
 import java.time.*;
 import java.util.List;
+import com.owsb.poms.system.functions.interfaces.*;
 
-public class PurchaseOrder implements CommonModel<PurchaseOrder>{
+public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
     private String POID;
     private String PRID;
     private double totalPrice;
@@ -152,7 +153,7 @@ public class PurchaseOrder implements CommonModel<PurchaseOrder>{
     
     @Override
     public String generateID() {
-        String prefix = "PR";
+        String prefix = "PO";
         int length = 5;
         int startNum = IdGenerator.getTotal(filePath);
         return IdGenerator.generateID(prefix, length, startNum);
@@ -174,6 +175,7 @@ public class PurchaseOrder implements CommonModel<PurchaseOrder>{
         this.saveToFile(pos);
     }
     
+    @Override
     public void updateStatus(){
         DataHandler.updateFieldAndSave(
                 toList(),
