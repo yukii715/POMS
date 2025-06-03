@@ -5,6 +5,7 @@
 package com.owsb.poms.ui.im;
 
 import com.owsb.poms.system.model.*;
+import java.time.LocalDate;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -27,27 +28,27 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
            return false;
        } 
     };
-    private String[] columnPO = {"Purchase Order ID", "Purchase Requisition ID", "Item ID", "Quantity","Supplier ID", "Status"};
+    private String[] columnPO = {"Purchase Order ID", "Purchase Requisition ID", "Item ID", "Quantity","Supplier ID", "Delivery Date"};
     
-    private DefaultTableModel modelStockReport = new DefaultTableModel(){
+    private final DefaultTableModel modelStockReport = new DefaultTableModel(){
         public boolean isCellEditable(int row, int column){
            return false;
        } 
     };
-    private String[] columnStockReport = {"ItemID", "Item Name", "Date", "Stock"};
+    private final String[] columnStockReport = {"ItemID", "Item Name", "Date", "Stock"};
     
-    private String[] cmbSelection = {" ","Sufficient","Shortage"};
-    private DefaultComboBoxModel<String> modelStatus = new DefaultComboBoxModel<>(cmbSelection);
+    private final String[] cmbSelection = {" ","Sufficient","Shortage"};
+    private final DefaultComboBoxModel<String> modelStatus = new DefaultComboBoxModel<>(cmbSelection);
     
     private int selectedRowItem = -1;
     private int selectedRowPO = -1;
     
     private Item selectedItem = new Item();
-    //private PO selectedPO = new PO();
+    private PurchaseOrder selectedPO = new PurchaseOrder();
     
     private List<Item> itemList;
-    // private List<PO> POList;
-    // private List<Supplier> supplierList;
+    private List<Supplier> supplierList;
+    private List<PurchaseOrder> POList;
     
     /**
      * Creates new form InventoryManagerDashboard
@@ -58,7 +59,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         modelPO.setColumnIdentifiers(columnPO);
         modelStockReport.setColumnIdentifiers(columnStockReport);
         ItemTab();
-        //POTab();
+        POTab();
     }
     
 
@@ -94,6 +95,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         checkboxConfirmation = new javax.swing.JCheckBox();
         btnEdit = new javax.swing.JButton();
         btnRefreshItems = new javax.swing.JButton();
+        btnGenerate = new javax.swing.JButton();
         pnlPO = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablePO = new javax.swing.JTable();
@@ -114,10 +116,6 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         checkboxVerify = new javax.swing.JCheckBox();
         btnVerify = new javax.swing.JButton();
         btnRefreshPO = new javax.swing.JButton();
-        pnlReport = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        btnGenerate = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -250,15 +248,31 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
             }
         });
 
+        btnGenerate.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        btnGenerate.setForeground(new java.awt.Color(0, 0, 0));
+        btnGenerate.setText("Generate Report");
+        btnGenerate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerateActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlItemsLayout = new javax.swing.GroupLayout(pnlItems);
         pnlItems.setLayout(pnlItemsLayout);
         pnlItemsLayout.setHorizontalGroup(
             pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlItemsLayout.createSequentialGroup()
+                .addContainerGap(1097, Short.MAX_VALUE)
+                .addComponent(btnRefreshItems)
+                .addGap(20, 20, 20))
             .addGroup(pnlItemsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlItemsLayout.createSequentialGroup()
+                        .addGap(318, 318, 318)
+                        .addComponent(btnGenerate))
+                    .addGroup(pnlItemsLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(pnlItemsLayout.createSequentialGroup()
                                 .addGap(9, 9, 9)
@@ -282,58 +296,48 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
                                     .addComponent(checkboxConfirmation)))
                             .addGroup(pnlItemsLayout.createSequentialGroup()
                                 .addGap(97, 97, 97)
-                                .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(99, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlItemsLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnRefreshItems)
-                        .addGap(20, 20, 20))))
+                                .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlItemsLayout.setVerticalGroup(
             pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlItemsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane2)
                     .addGroup(pnlItemsLayout.createSequentialGroup()
+                        .addComponent(btnRefreshItems)
+                        .addGap(3, 3, 3)
                         .addGroup(pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnlItemsLayout.createSequentialGroup()
-                                .addGap(34, 34, 34)
-                                .addGroup(pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(pnlItemsLayout.createSequentialGroup()
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(60, 60, 60)
-                                        .addComponent(jLabel3)
-                                        .addGap(60, 60, 60)
-                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(60, 60, 60)
-                                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(pnlItemsLayout.createSequentialGroup()
-                                        .addComponent(lblID)
-                                        .addGap(60, 60, 60)
-                                        .addComponent(lblName)
-                                        .addGap(60, 60, 60)
-                                        .addComponent(lblCategory)
-                                        .addGap(60, 60, 60)
-                                        .addComponent(lblType)))
-                                .addGap(60, 60, 60)
-                                .addGroup(pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel6)
-                                    .addComponent(txtStocks, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(btnRefreshItems))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblID, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(60, 60, 60)
                         .addGroup(pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnlItemsLayout.createSequentialGroup()
-                                .addGap(55, 55, 55)
-                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(pnlItemsLayout.createSequentialGroup()
-                                .addGap(60, 60, 60)
-                                .addComponent(cmbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblName, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(60, 60, 60)
+                        .addGroup(pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblCategory, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(60, 60, 60)
+                        .addGroup(pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblType, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(60, 60, 60)
+                        .addGroup(pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtStocks, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(55, 55, 55)
+                        .addGroup(pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cmbStatus, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(31, 31, 31)
                         .addComponent(checkboxConfirmation)
                         .addGap(50, 50, 50)
-                        .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 61, Short.MAX_VALUE))
-                    .addComponent(jScrollPane2))
-                .addContainerGap())
+                        .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnGenerate, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(11, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Items", pnlItems);
@@ -521,41 +525,6 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
 
         tabPanel.addTab("Purchase Order", pnlPO);
 
-        pnlReport.setBackground(new java.awt.Color(255, 204, 255));
-
-        jTable1.setForeground(new java.awt.Color(0, 0, 0));
-        jTable1.setModel(modelStockReport);
-        jScrollPane3.setViewportView(jTable1);
-
-        btnGenerate.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
-        btnGenerate.setForeground(new java.awt.Color(0, 0, 0));
-        btnGenerate.setText("Generate");
-
-        javax.swing.GroupLayout pnlReportLayout = new javax.swing.GroupLayout(pnlReport);
-        pnlReport.setLayout(pnlReportLayout);
-        pnlReportLayout.setHorizontalGroup(
-            pnlReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlReportLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 900, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
-                .addComponent(btnGenerate)
-                .addGap(51, 51, 51))
-        );
-        pnlReportLayout.setVerticalGroup(
-            pnlReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlReportLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(pnlReportLayout.createSequentialGroup()
-                .addGap(322, 322, 322)
-                .addComponent(btnGenerate)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        tabPanel.addTab("Report", pnlReport);
-
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
@@ -633,15 +602,11 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
             return;
         }      
         
-        if(status.equals("Sufficient")){
-            newStatus = Item.Status.SUFFICIENT;
-        }
-        else if(status.equals("Shortage")){
-            newStatus = Item.Status.SHORTAGE;
-        }
-        else{
-            newStatus = selectedItem.getStatus();
-        }
+        newStatus = switch (status) {
+            case "Sufficient" -> Item.Status.SUFFICIENT;
+            case "Shortage" -> Item.Status.SHORTAGE;
+            default -> selectedItem.getStatus();
+        };
         
         selectedItem.setStock(newQuantity);
         selectedItem.updateStock(); 
@@ -662,16 +627,14 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         txtStocks.setText("");
         cmbStatus.setSelectedIndex(-1);
       
-//        tableItems.getColumnModel().getColumn(1).setPreferredWidth(100);
-//        tableItems.getColumnModel().getColumn(2).setPreferredWidth(100);
-//        tableItems.getColumnModel().getColumn(3).setPreferredWidth(150);
-//        tableItems.getColumnModel().getColumn(6).setPreferredWidth(100);
+        tableItems.getColumnModel().getColumn(0).setPreferredWidth(10);
+        tableItems.getColumnModel().getColumn(1).setPreferredWidth(200);
+
        
         itemList = Item.toList();
         
         for (Item eachItem : itemList) {
-            if (eachItem.getStatus() != Item.Status.REMOVED)
-            {
+            if (eachItem.getStatus() != Item.Status.REMOVED){
                 modelItems.addRow(new String[]{
                     eachItem.getItemID(),
                     eachItem.getItemName(),
@@ -695,31 +658,31 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     
     private void tablePOMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablePOMouseReleased
 
+        supplierList = Supplier.toList();
+        
         checkboxVerify.setSelected(false);
         btnVerify.setEnabled(false);
         
         selectedRowPO = tablePO.getSelectedRow();
-//        String itemName = getItemNameByID(selectedPO.getItemID(), itemList);
-//        String supplierName = getSupplierNameByID(selectedItem.getSupplierID(), supplierList)
-//
-//        selectedPO.setPOID(String.valueOf(modelPO.getValueAt(selectedRowItem, 0)));
-//        selectedPO.setPRID(String.valueOf(modelPO.getValueAt(selectedRowItem, 1)));
+
+        selectedPO.setPOID(String.valueOf(modelPO.getValueAt(selectedRowPO, 0)));
+        selectedPO.setPRID(String.valueOf(modelPO.getValueAt(selectedRowPO, 1)));
 //        selectedPO.setItemID(String.valueOf(modelPO.getValueAt(selectedRowItem, 2)));
+//        String itemName = getItemNameByID(selectedPO.getItemID(), itemList);
 //        selectedPO.setItemName(itemName);
 //        selectedPO.setQuantity(Integer.parseInt(String.valueOf(modelPO.getValueAt(selectedRowItem, 3))));
-//        selectedPO.setSupplierID(String.valueOf(modelPO.getValueAt(selectedRowItem, 4)));
-//        selectedPo.setSupplierNmae(supplierName);
-//        selectedPO.setStatus(PO.Status.valueOf(String.valueOf(modelPO.getValueAt(selectedRowItem, 5))));;
+        selectedPO.setSupplierID(String.valueOf(modelPO.getValueAt(selectedRowPO, 4)));
+        String supplierName = getSupplierNameByID(selectedPO.getSupplierID(), supplierList);
+        selectedPO.setDeliveryDate(LocalDate.parse(String.valueOf(modelPO.getValueAt(selectedRowPO, 5))));
 //        
-//        lblPOID.setText(selectedPO.getPOID());
-//        lblPRID.setText(selectedPO.getPRID());
+        lblPOID.setText(selectedPO.getPOID());
+        lblPRID.setText(selectedPO.getPRID());
 //        lblItemID.setText(selectedPO.getItemID());
 //        lblItemName.setText(selectedPO.getItemName());
 //        lblQuantity.setText(String.valueOf(selectedPO.getQuantity()));
-//        lblSupplierID.setText(selectedPO.getSupplierID());
-//        lblSupplierName.setText(selectedPO.getSupplierName());
-//    
-//        
+        lblSupplierID.setText(selectedPO.getSupplierID());
+        lblSupplierName.setText(supplierName);
+            
         checkboxVerify.setEnabled(true);
     }//GEN-LAST:event_tablePOMouseReleased
 
@@ -745,9 +708,9 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRefreshItemsActionPerformed
 
     private void btnRefreshPOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshPOActionPerformed
-        // TODO add your handling code here:
+        POTab();
     }//GEN-LAST:event_btnRefreshPOActionPerformed
-
+    
     private void POTab(){
           
         modelPO.setRowCount(0);
@@ -765,34 +728,58 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
 //        tablePO.getColumnModel().getColumn(3).setPreferredWidth(150);
 //        tablePO.getColumnModel().getColumn(6).setPreferredWidth(100);
        
-//        POList = PO.toList();
-//        Set<Item.Status> includedStatuses = EnumSet.of(
-//            PO.Status.PROCESSING,
-//            PO.Status.EXTEND,
-//            PO.Status.VERIFYING
-//        );
-//        
-//        for (PO eachPO : POList) {
-//            if (includedStatuses.contains(eachPO.Status))
-//            {
-//                modelItems.addRow(new String[]{
-//                    eachPO.getPOID(),
-//                    eachPO.getPRID(),
+        POList = PurchaseOrder.toList();
+        Set<PurchaseOrder.Status> includedStatuses = EnumSet.of(
+            PurchaseOrder.Status.PROCESSING,
+            PurchaseOrder.Status.EXTENDED,
+            PurchaseOrder.Status.ARRIVED
+        );
+        
+        for (PurchaseOrder eachPO : POList) {
+            if (includedStatuses.contains(eachPO.getStatus())){
+                modelItems.addRow(new String[]{
+                    eachPO.getPOID(),
+                    eachPO.getPRID(),
 //                    eachPO.getItemID(),
 //                    String.valueOf(eachPO.getQuantity()),
-//                    eachPO.getSupplierID(),
-//                    eachPO.getStatus().name()
-//                });
-//            }
-//        }
-        
+                    eachPO.getSupplierID(),
+                    eachPO.getDeliveryDate().toString()
+                });
+            }
+        }
+
         btnVerify.setEnabled(false);
         checkboxConfirmation.setSelected(false);
         checkboxVerify.setEnabled(false);
         tablePO.clearSelection();
         selectedRowPO = -1;
     }
+ 
     
+    private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed
+        //generateStocklist();
+        //JOptionPane.showMessageDialog(this,"Stock report saved: " + filePath);
+    }//GEN-LAST:event_btnGenerateActionPerformed
+     
+    public static String getItemNameByID(String itemID, List<Item> itemList) {
+        for (Item item : itemList) {
+            if (item.getItemID().equals(itemID)) {
+                return item.getItemName();
+            }
+        }
+        return "-";
+    }
+    
+    public static String getSupplierNameByID(String supplierID, List<Supplier> supplierList){
+        for(Supplier supplier: supplierList){
+            if(supplier.getSupplierID().equals(supplierID)){
+                return supplier.getSupplierName();
+            }
+        }
+        return "-";
+    }
+    
+      
     /**
      * @param args the command line arguments
      */
@@ -829,25 +816,6 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         
   
     }
-    
-    
-    public static String getItemNameByID(String itemID, List<Item> itemList) {
-        for (Item item : itemList) {
-            if (item.getItemID().equals(itemID)) {
-                return item.getItemName();
-            }
-        }
-        return "-";
-    }
-    
-    public static String getSupplierNameByID(String supplierID, List<Supplier> supplierList){
-        for(Supplier supplier: supplierList){
-            if(supplier.getSupplierID().equals(supplierID)){
-                return supplier.getSupplierName();
-            }
-        }
-        return "-";
-    }
 
     
 
@@ -877,8 +845,6 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblCategory;
     private javax.swing.JLabel lblID;
     private javax.swing.JLabel lblItemID;
@@ -894,7 +860,6 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel pnlHome;
     private javax.swing.JPanel pnlItems;
     private javax.swing.JPanel pnlPO;
-    private javax.swing.JPanel pnlReport;
     private javax.swing.JTabbedPane tabPanel;
     private javax.swing.JTable tableItems;
     private javax.swing.JTable tablePO;
