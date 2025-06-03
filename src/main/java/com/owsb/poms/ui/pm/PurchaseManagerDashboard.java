@@ -1,8 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package com.owsb.poms.ui.pm;
+
+
+import com.owsb.poms.system.model.PurchaseOrder;
+import java.util.*;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -10,11 +12,48 @@ package com.owsb.poms.ui.pm;
  */
 public class PurchaseManagerDashboard extends javax.swing.JFrame {
 
-    /**
-     * Creates new form PurchaseManagerDashboard
-     */
+    private List<PurchaseOrder> purchaseOrderList;
+
+    private DefaultTableModel PurchaseOrderTable = new DefaultTableModel(){
+        public boolean isCellEditable(int row, int column){
+           return false;
+       } 
+    };
+    public void PurchaseOrder(){
+        PurchaseOrderTable.setColumnIdentifiers(columnName);
+        PurchaseOrderTable.setRowCount(0);
+        
+        purchaseOrderList = PurchaseOrder.toList();
+ 
+        poTable.getColumnModel().getColumn(0).setPreferredWidth(125);
+        poTable.getColumnModel().getColumn(1).setPreferredWidth(150);
+        poTable.getColumnModel().getColumn(3).setPreferredWidth(155);
+        poTable.getColumnModel().getColumn(4).setPreferredWidth(50);
+        poTable.getColumnModel().getColumn(8).setPreferredWidth(150);
+
+
+        
+        for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+            PurchaseOrderTable.addRow(new String[]{
+                purchaseOrder.getPoID(),
+                purchaseOrder.getPrID(),
+                purchaseOrder.getItemID(),
+                purchaseOrder.getItemName(),
+                String.valueOf(purchaseOrder.getQuantity()),
+                String.format("%.2f", purchaseOrder.getUnitPrice()),
+                String.format("%.2f", purchaseOrder.getTotalPrice()),
+                purchaseOrder.getSupplierID(),
+                String.valueOf(purchaseOrder.getGeneratedDateTime()),
+                purchaseOrder.getStatus().name(),
+                purchaseOrder.getCreatedBy(),
+                purchaseOrder.getApprovedBy(),
+            });
+        }
+    }
+    private String[] columnName = {"Purchase Order ID","Purchase Requisition ID", "Item ID","Item Name","Quantity","Unit Price","Total Price","Supplier ID", "Date", "stauts", "Purchase Manager", "Finance Manager"};
     public PurchaseManagerDashboard() {
         initComponents();
+        PurchaseOrder();
     }
 
     /**
@@ -33,7 +72,8 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
         poButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        poTable = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -82,16 +122,24 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
             }
         });
 
-        jTable1.setModel(PurchaseOrderTable);
-        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+        poTable.setModel(PurchaseOrderTable);
+        poTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable1MouseClicked(evt);
+                poTableMouseClicked(evt);
             }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
-                jTable1MouseReleased(evt);
+                poTableMouseReleased(evt);
             }
         });
-        jScrollPane5.setViewportView(jTable1);
+        jScrollPane5.setViewportView(poTable);
+
+        jButton1.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jButton1.setText("Refresh");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -100,7 +148,9 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addGap(357, 357, 357)
+                .addGap(172, 172, 172)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(56, 56, 56)
                 .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(25, 25, 25))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -125,7 +175,8 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
                 .addGap(49, 49, 49)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(36, 36, 36)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -164,13 +215,17 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_closeButtonActionPerformed
 
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+    private void poTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_poTableMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTable1MouseClicked
+    }//GEN-LAST:event_poTableMouseClicked
 
-    private void jTable1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseReleased
+    private void poTableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_poTableMouseReleased
 
-    }//GEN-LAST:event_jTable1MouseReleased
+    }//GEN-LAST:event_poTableMouseReleased
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        PurchaseOrder();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -210,10 +265,11 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
     private javax.swing.JButton itemButton;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTable jTable1;
     private javax.swing.JButton poButton;
+    private javax.swing.JTable poTable;
     private javax.swing.JButton prButton;
     private javax.swing.JButton supplierButton;
     // End of variables declaration//GEN-END:variables
