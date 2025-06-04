@@ -88,7 +88,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         });
         
         lblUsername.setText("admin");
-        lblEmail.setText("");
+        lblUserID.setText("AD001");
         
         Orders();
         Inventory();
@@ -301,7 +301,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblProfilePicture = new javax.swing.JLabel();
         lblUserDetails = new javax.swing.JPanel();
         lblUsername = new javax.swing.JLabel();
-        lblEmail = new javax.swing.JLabel();
+        lblUserID = new javax.swing.JLabel();
         lblLogout1 = new javax.swing.JLabel();
         lblProfileDivider = new javax.swing.JPanel();
         pnlContainer = new javax.swing.JPanel();
@@ -870,7 +870,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblUserDetails.setBackground(new java.awt.Color(255, 180, 180));
         lblUserDetails.setLayout(new java.awt.GridLayout(2, 0));
         lblUserDetails.add(lblUsername);
-        lblUserDetails.add(lblEmail);
+        lblUserDetails.add(lblUserID);
 
         pnlProfile.add(lblUserDetails, java.awt.BorderLayout.CENTER);
 
@@ -2018,7 +2018,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnViewAllPOActionPerformed
 
     private void btnViewPRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewPRActionPerformed
-        PRList prl = new PRList(this, true, lblUsername.getText());
+        PRList prl = new PRList(this, true, lblUserID.getText());
         prl.setLocationRelativeTo(this);
         prl.setVisible(true);
     }//GEN-LAST:event_btnViewPRActionPerformed
@@ -2071,7 +2071,6 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel lblDashboardDivider1;
     private javax.swing.JLabel lblDashboardDivider2;
     private javax.swing.JLabel lblDashboardIcon;
-    private javax.swing.JLabel lblEmail;
     private javax.swing.JLabel lblInventory;
     private javax.swing.JLabel lblInventoryDivider1;
     private javax.swing.JLabel lblInventoryDivider2;
@@ -2107,6 +2106,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel lblSuppliersDivider2;
     private javax.swing.JLabel lblSuppliersIcon;
     private javax.swing.JPanel lblUserDetails;
+    private javax.swing.JLabel lblUserID;
     private javax.swing.JLabel lblUsername;
     private javax.swing.JLabel lblUsers;
     private javax.swing.JLabel lblUsersDivider1;

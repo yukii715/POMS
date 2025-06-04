@@ -7,9 +7,9 @@ import java.util.List;
 
 public class StockReport extends Report implements hasId{
     private String itemID;
-    private String itemName;
     private String itemCategory;
     private String itemType;
+    private String itemName;
     private int stock;
     private Item.Status status;
 
@@ -55,9 +55,10 @@ public class StockReport extends Report implements hasId{
         report.setDateTime(LocalDateTime.now());
 
         // Create destination file name with date
-        String fileName = report.getReportID() + report.getDateTime() + ".txt";
+        String fileName = report.getReportID() + report.getDateTime().toString().replace(":", "-").replace(".", "-") + ".txt";
         String filePath = this.filePath + fileName;
 
+        report.add();
         FileHandler.saveToFile(filePath, stockReport, StockReport::toString);
     }
 

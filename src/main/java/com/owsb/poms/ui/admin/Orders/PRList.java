@@ -1,15 +1,19 @@
 package com.owsb.poms.ui.admin.Orders;
 
 import com.owsb.poms.system.model.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.SwingConstants;
 import javax.swing.table.*;
 
 public class PRList extends javax.swing.JDialog {
-    private String username;
-    private int selectedPrRow;
-    private PurchaseRequisition selectedPr = new PurchaseRequisition();
+    private String userID;
     private List<PurchaseRequisition> prList;
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    
     private DefaultTableModel prModel = new DefaultTableModel(){
        public boolean isCellEditable(int row, int column){
            return false;
@@ -21,18 +25,18 @@ public class PRList extends javax.swing.JDialog {
     /**
      * Creates new form PRList
      */
-    public PRList(java.awt.Frame parent, boolean modal, String username) {
+    public PRList(java.awt.Frame parent, boolean modal, String userID) {
         super(parent, modal);
         initComponents();
         
-        this.username = username;
+        this.userID = userID;
         setTitle("Purchase Requisitions");
         
         PR();
     }
     
     private void PR(){
-        selectedPrRow = -1;
+        
         prModel.setRowCount(0);
         
         prModel.setColumnIdentifiers(prColumnName);
@@ -41,7 +45,23 @@ public class PRList extends javax.swing.JDialog {
         
         srlPR.getViewport().setBackground(new java.awt.Color(255, 255, 204));
         
-        tblPR.getColumnModel().getColumn(3).setPreferredWidth(150);
+        tblPR.getColumnModel().getColumn(2).setPreferredWidth(150);
+        
+        prList = PurchaseRequisition.toList();
+        
+        for (PurchaseRequisition pr : prList) {
+            if (pr.getStatus() == PurchaseRequisition.Status.NEW)
+            {
+                prModel.addRow(new String[]{
+                    pr.getPRID(),
+                    pr.getSupplierID(),
+                    pr.getRequestDateTime().format(dateTimeFormatter),
+                    pr.getRequiredDeliveryDate().format(dateFormatter),
+                    pr.getCreateBy(),
+                    pr.getStatus().name()
+                });
+            }
+        }
         
         // Create a single “center” renderer:
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -78,9 +98,6 @@ public class PRList extends javax.swing.JDialog {
         tblPR.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblPRMouseClicked(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                tblPRMouseReleased(evt);
             }
         });
         srlPR.setViewportView(tblPR);
@@ -137,15 +154,25 @@ public class PRList extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tblPRMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPRMouseClicked
-        // TODO add your handling code here:
+        if (evt.getClickCount() == 2 && tblPR.getSelectedRow() != -1) {
+            int row = tblPR.getSelectedRow();
+            
+            PurchaseRequisition pr = new PurchaseRequisition();
+            pr.setPRID(String.valueOf(tblPR.getValueAt(row, 0)));
+            pr.setSupplierID(String.valueOf(tblPR.getValueAt(row, 1)));
+            pr.setRequestDateTime(LocalDateTime.parse(String.valueOf(tblPR.getValueAt(row, 2)), dateTimeFormatter));
+            pr.setRequiredDeliveryDate(LocalDate.parse(String.valueOf(tblPR.getValueAt(row, 3)), dateFormatter));
+            pr.setCreateBy(String.valueOf(tblPR.getValueAt(row, 4)));
+            pr.setStatus(PurchaseRequisition.Status.valueOf(String.valueOf(tblPR.getValueAt(row, 5))));
+            
+            PRDetails prd = new PRDetails(this, true, pr);
+            prd.setLocationRelativeTo(this);
+            prd.setVisible(true);
+        }
     }//GEN-LAST:event_tblPRMouseClicked
 
-    private void tblPRMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPRMouseReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tblPRMouseReleased
-
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
-        NewPR newPR = new NewPR(this, true, username);
+        NewPR newPR = new NewPR(this, true, userID);
         newPR.setLocationRelativeTo(this);
         newPR.setVisible(true);
         PR();

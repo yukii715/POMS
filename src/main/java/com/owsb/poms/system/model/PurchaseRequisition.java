@@ -18,7 +18,8 @@ public class PurchaseRequisition implements hasFile<PurchaseRequisition>, hasId,
     public enum Status{
         NEW,
         APPROVED,
-        RETURNED
+        REJECTED,
+        DELETED
     }
 
     public PurchaseRequisition() {
@@ -27,6 +28,7 @@ public class PurchaseRequisition implements hasFile<PurchaseRequisition>, hasId,
     public PurchaseRequisition(String SupplierID, LocalDate requiredDeliveryDate, String createBy) {
         this.PRID = generateID();
         this.SupplierID = SupplierID;
+        this.requestDateTime = LocalDateTime.now();
         this.requiredDeliveryDate = requiredDeliveryDate;
         this.status = Status.NEW;
         this.createBy = createBy;
@@ -140,5 +142,10 @@ public class PurchaseRequisition implements hasFile<PurchaseRequisition>, hasId,
                 pr -> pr.setStatus(this.getStatus()),           
                 list -> this.saveToFile(list)
         );
+    }
+    
+    public List<PRItem> getItems(){
+        String filePath = String.format("data/PR/%s.txt", getPRID());
+        return PRItem.read(filePath);
     }
 }
