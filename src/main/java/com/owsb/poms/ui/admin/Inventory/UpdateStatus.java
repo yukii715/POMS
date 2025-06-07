@@ -1,4 +1,4 @@
-package com.owsb.poms.ui.admin;
+package com.owsb.poms.ui.admin.Inventory;
 
 import com.owsb.poms.system.model.Item;
 import javax.swing.*;

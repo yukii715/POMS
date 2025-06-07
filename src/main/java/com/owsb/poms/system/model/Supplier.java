@@ -3,8 +3,10 @@ package com.owsb.poms.system.model;
 import com.owsb.poms.system.functions.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import com.owsb.poms.system.functions.interfaces.*;
 
-public class Supplier implements CommonModel<Supplier>{
+public class Supplier implements hasFile<Supplier>, hasId{
     private String supplierID;
     private String supplierName;
     private LocalDateTime addedTime;
@@ -46,7 +48,7 @@ public class Supplier implements CommonModel<Supplier>{
         this.addedTime = addedTime;
     }
 
-    public boolean isIsDeleted() {
+    public boolean isDeleted() {
         return isDeleted;
     }
 
@@ -103,7 +105,7 @@ public class Supplier implements CommonModel<Supplier>{
         DataHandler.updateFieldAndSave(
                 toList(),
                 supplier -> supplier.getSupplierID().equals(this.getSupplierID()),              
-                supplier -> supplier.setIsDeleted(this.isIsDeleted()),           
+                supplier -> supplier.setIsDeleted(true),           
                 list -> this.saveToFile(list)
         );
     }
@@ -115,5 +117,17 @@ public class Supplier implements CommonModel<Supplier>{
                 supplier -> supplier.setSupplierName(this.getSupplierName()),           
                 list -> this.saveToFile(list)
         );
+    }
+    
+    public static List<String> getAllSuppliers(){
+        return toList().stream().map(Supplier::getSupplierName).collect(Collectors.toList());
+    }
+    
+    public static String getIdByName(String name){
+        return DataHandler.getValueByKey(toList(), Supplier::getSupplierName, name, Supplier::getSupplierID);
+    }
+    
+    public static String getNameById(String id){
+        return DataHandler.getValueByKey(toList(), Supplier::getSupplierID, id, Supplier::getSupplierName);
     }
 }
