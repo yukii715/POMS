@@ -6,6 +6,7 @@ package com.owsb.poms.ui.im;
 
 import com.owsb.poms.system.model.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -35,9 +36,9 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
            return false;
        } 
     };
-    private final String[] columnStockReport = {"ItemID", "Item Name", "Date", "Stock"};
+    private final String[] columnStockReport = {"ReportID", "Date", "Time"};
     
-    private final String[] cmbSelection = {" ","Sufficient","Shortage"};
+    private final String[] cmbSelection = {"Current Status","Sufficient","Shortage"};
     private final DefaultComboBoxModel<String> modelStatus = new DefaultComboBoxModel<>(cmbSelection);
     
     private int selectedRowItem = -1;
@@ -49,6 +50,11 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     private List<Item> itemList;
     private List<Supplier> supplierList;
     private List<PurchaseOrder> POList;
+    private List<Report> StockReportList;
+    
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM uuuu");
+    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
     
     /**
      * Creates new form InventoryManagerDashboard
@@ -60,6 +66,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         modelStockReport.setColumnIdentifiers(columnStockReport);
         ItemTab();
         POTab();
+        StockTab();
     }
     
 
@@ -116,6 +123,10 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         checkboxVerify = new javax.swing.JCheckBox();
         btnVerify = new javax.swing.JButton();
         btnRefreshPO = new javax.swing.JButton();
+        pnlStockReport = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tableStockReportList = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -132,7 +143,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 48)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel2.setText("Welcome back, IM.");
+        jLabel2.setText("OWSB Inventory Management");
 
         btnLogout.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         btnLogout.setText("Log Out");
@@ -142,22 +153,22 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         pnlHomeLayout.setHorizontalGroup(
             pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlHomeLayout.createSequentialGroup()
-                .addGap(396, 396, 396)
-                .addComponent(jLabel2)
-                .addContainerGap(402, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlHomeLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(43, 43, 43))
+            .addGroup(pnlHomeLayout.createSequentialGroup()
+                .addGap(271, 271, 271)
+                .addComponent(jLabel2)
+                .addContainerGap(285, Short.MAX_VALUE))
         );
         pnlHomeLayout.setVerticalGroup(
             pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlHomeLayout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(154, 154, 154)
+                .addGap(245, 245, 245)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(469, Short.MAX_VALUE))
+                .addContainerGap(378, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Home", pnlHome);
@@ -229,6 +240,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
             }
         });
 
+        btnEdit.setBackground(new java.awt.Color(255, 102, 102));
         btnEdit.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         btnEdit.setForeground(new java.awt.Color(0, 0, 0));
         btnEdit.setText("Edit");
@@ -239,6 +251,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
             }
         });
 
+        btnRefreshItems.setBackground(new java.awt.Color(255, 102, 102));
         btnRefreshItems.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnRefreshItems.setForeground(new java.awt.Color(0, 0, 0));
         btnRefreshItems.setText("Refresh");
@@ -248,6 +261,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
             }
         });
 
+        btnGenerate.setBackground(new java.awt.Color(255, 102, 102));
         btnGenerate.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         btnGenerate.setForeground(new java.awt.Color(0, 0, 0));
         btnGenerate.setText("Generate Report");
@@ -275,7 +289,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(pnlItemsLayout.createSequentialGroup()
-                                .addGap(9, 9, 9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(pnlItemsLayout.createSequentialGroup()
                                         .addGroup(pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -419,6 +433,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
             }
         });
 
+        btnVerify.setBackground(new java.awt.Color(255, 102, 102));
         btnVerify.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         btnVerify.setForeground(new java.awt.Color(0, 0, 0));
         btnVerify.setText("Verify");
@@ -429,6 +444,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
             }
         });
 
+        btnRefreshPO.setBackground(new java.awt.Color(255, 102, 102));
         btnRefreshPO.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnRefreshPO.setForeground(new java.awt.Color(0, 0, 0));
         btnRefreshPO.setText("Refresh");
@@ -524,6 +540,50 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         );
 
         tabPanel.addTab("Purchase Order", pnlPO);
+
+        pnlStockReport.setBackground(new java.awt.Color(255, 204, 255));
+
+        tableStockReportList.setModel(modelStockReport);
+        tableStockReportList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableStockReportListMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(tableStockReportList);
+
+        jButton1.setBackground(new java.awt.Color(255, 102, 102));
+        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(0, 0, 0));
+        jButton1.setText("Refresh");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlStockReportLayout = new javax.swing.GroupLayout(pnlStockReport);
+        pnlStockReport.setLayout(pnlStockReportLayout);
+        pnlStockReportLayout.setHorizontalGroup(
+            pnlStockReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlStockReportLayout.createSequentialGroup()
+                .addGap(149, 149, 149)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 900, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(149, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlStockReportLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(517, 517, 517))
+        );
+        pnlStockReportLayout.setVerticalGroup(
+            pnlStockReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlStockReportLayout.createSequentialGroup()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 691, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addGap(0, 9, Short.MAX_VALUE))
+        );
+
+        tabPanel.addTab("Stock Reports", pnlStockReport);
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
@@ -761,8 +821,46 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         List<StockReport> reportList = StockReport.generateStockList(itemList);       
         new StockReport().save(reportList);
         JOptionPane.showMessageDialog(this,"Stock report generated" );
+        StockTab();
     }//GEN-LAST:event_btnGenerateActionPerformed
+
+    private void tableStockReportListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStockReportListMouseClicked
+        if (evt.getClickCount() == 2 && tableStockReportList.getSelectedRow() != -1) {
+            int selectedRow = tableStockReportList.getSelectedRow();
+
+            // Extract data from the selected row
+            String id = String.valueOf(tableStockReportList.getValueAt(selectedRow, 0));
+            ViewStockReport stockReport = new ViewStockReport(id);
+            stockReport.setLocationRelativeTo(this);
+            stockReport.setVisible(true);
+
+        }
+    }//GEN-LAST:event_tableStockReportListMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        StockTab();
+    }//GEN-LAST:event_jButton1ActionPerformed
      
+    private void StockTab(){
+        modelStockReport.setRowCount(0);
+        
+        StockReportList = Report.toList();
+        
+        for (Report eachReport : StockReportList) {
+            if (eachReport.getReportID().startsWith("STK")){
+                
+                String date = dateFormatter.format(eachReport.getDateTime());
+                String time = timeFormatter.format(eachReport.getDateTime());
+                
+                modelStockReport.addRow(new String[]{
+                    eachReport.getReportID(),
+                    date,
+                    time
+                });
+            }
+        }
+        
+    }
     public static String getItemNameByID(String itemID, List<Item> itemList) {
         for (Item item : itemList) {
             if (item.getItemID().equals(itemID)) {
@@ -831,6 +929,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JCheckBox checkboxConfirmation;
     private javax.swing.JCheckBox checkboxVerify;
     private javax.swing.JComboBox<String> cmbStatus;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -847,6 +946,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblCategory;
     private javax.swing.JLabel lblID;
     private javax.swing.JLabel lblItemID;
@@ -862,9 +962,11 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel pnlHome;
     private javax.swing.JPanel pnlItems;
     private javax.swing.JPanel pnlPO;
+    private javax.swing.JPanel pnlStockReport;
     private javax.swing.JTabbedPane tabPanel;
     private javax.swing.JTable tableItems;
     private javax.swing.JTable tablePO;
+    private javax.swing.JTable tableStockReportList;
     private java.awt.TextField txtStocks;
     // End of variables declaration//GEN-END:variables
 }
