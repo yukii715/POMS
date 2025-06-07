@@ -19,6 +19,7 @@ public class PurchaseRequisition implements hasFile<PurchaseRequisition>, hasId,
     public enum Status{
         NEW,
         APPROVED,
+        POGENERATED,
         REJECTED,
         DELETED
     }
