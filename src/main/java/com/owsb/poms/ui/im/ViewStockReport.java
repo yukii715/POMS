@@ -5,6 +5,9 @@
 package com.owsb.poms.ui.im;
 
 import com.owsb.poms.system.model.Item;
+import com.owsb.poms.system.model.Report;
+import com.owsb.poms.system.model.StockReport;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
@@ -21,17 +24,49 @@ public class ViewStockReport extends javax.swing.JFrame {
     };
     private String[] columnItems = {"ItemID", "Name", "Category", "Type", "Stock", "Status"};
     
-    private List<Item> ItemList;
+    private Report report;
+    private List<StockReport> stockReport;
+    
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM uuuu");
+    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+    
+    
 
     /**
      * Creates new form ViewStockReport
      */
     public ViewStockReport(){}
     
-    public ViewStockReport(String reportID) {
+    public ViewStockReport(Report report) {
+        this.report = report;
+   
         initComponents();
         modelItems.setColumnIdentifiers(columnItems);
-        
+        showReportDescription();
+        showReport();
+    }
+    
+    private void showReportDescription(){
+        String date = dateFormatter.format(report.getDateTime());
+        String time = timeFormatter.format(report.getDateTime());
+        lblReportID.setText(report.getReportID());
+        lblDate.setText(date);
+        lblTime.setText(time);
+        lblDescription.setText(report.getMessage());
+    }
+    
+    private void showReport(){
+        stockReport = report.getStockReport();
+        for(StockReport eachItem : stockReport){
+            modelItems.addRow(new String[]{
+                eachItem.getItemID(),
+                eachItem.getItemName(),
+                eachItem.getItemCategory(),
+                eachItem.getItemType(),
+                String.valueOf(eachItem.getStock()),
+                eachItem.getStatus().name(),
+            });
+        }
     }
 
     /**
@@ -47,6 +82,14 @@ public class ViewStockReport extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tableStockReport = new javax.swing.JTable();
         btnBack = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        lblReportID = new javax.swing.JLabel();
+        lblDate = new javax.swing.JLabel();
+        lblTime = new javax.swing.JLabel();
+        lblDescription = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -65,25 +108,92 @@ public class ViewStockReport extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel1.setText("Report ID: ");
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel2.setText("Date: ");
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel3.setText("Time: ");
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel4.setText("Description:");
+
+        lblReportID.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblReportID.setForeground(new java.awt.Color(0, 0, 0));
+        lblReportID.setText("-  ");
+
+        lblDate.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblDate.setForeground(new java.awt.Color(0, 0, 0));
+        lblDate.setText("-   ");
+
+        lblTime.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblTime.setForeground(new java.awt.Color(0, 0, 0));
+        lblTime.setText("-    ");
+
+        lblDescription.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        lblDescription.setForeground(new java.awt.Color(0, 0, 0));
+        lblDescription.setText("-   ");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 870, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(351, 351, 351)
+                                .addComponent(btnBack))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(lblReportID)
+                                .addGap(188, 188, 188)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(lblDate)
+                                .addGap(180, 180, 180)
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblTime)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(351, 351, 351)
-                .addComponent(btnBack)
-                .addContainerGap(351, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblDescription)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 543, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel2)
+                    .addComponent(lblReportID)
+                    .addComponent(lblDate)
+                    .addComponent(lblTime))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(lblDescription))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnBack)
-                .addGap(0, 12, Short.MAX_VALUE))
+                .addGap(0, 24, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -133,8 +243,16 @@ public class ViewStockReport extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblDate;
+    private javax.swing.JLabel lblDescription;
+    private javax.swing.JLabel lblReportID;
+    private javax.swing.JLabel lblTime;
     private javax.swing.JTable tableStockReport;
     // End of variables declaration//GEN-END:variables
 }

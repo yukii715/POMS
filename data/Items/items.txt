@@ -4,4 +4,4 @@ ITM00003	SunGro Brown Sugar 1kg	Grocery	Dry Ingredient	SUP001	4.7	0	NEW
 ITM00004	LiteTech Wireless Mouse	Electronics	Peripheral	SUP004	49.9	0	NEW
 ITM00005	Green Basket Green Tea 500ml	Beverage	Tea	SUP002	14.5	0	NEW
 ITM00006	MegaTools Hammer 16oz	Hardware	Hand Tool	SUP005	22.0	0	NEW
-ITM00007	LiteTech USB Keyboard	Electronics	Peripheral	SUP004	59.9	0	NEW
+ITM00007	LiteTech USB Keyboard	Electronics	Peripheral	SUP004	59.9	20	NEW

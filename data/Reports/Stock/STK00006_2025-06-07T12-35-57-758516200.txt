@@ -1,6 +1,0 @@
-ITM00001	GoodHealth Shampoo 200ml	Hygiene	Cleaning Supplies	0	NEW
-ITM00002	SunGro Premium Rice 5kg	Grocery	Staple Food	60	NEW
-ITM00003	SunGro Brown Sugar 1kg	Grocery	Dry Ingredient	0	NEW
-ITM00004	LiteTech Wireless Mouse	Electronics	Peripheral	0	NEW
-ITM00005	Green Basket Green Tea 500ml	Beverage	Tea	50	SUFFICIENT
-ITM00006	MegaTools Hammer 16oz	Hardware	Hand Tool	20	SUFFICIENT

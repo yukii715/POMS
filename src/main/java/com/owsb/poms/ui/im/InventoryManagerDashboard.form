@@ -109,8 +109,8 @@
                           <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                           <Component id="btnLogout" min="-2" pref="63" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="245" max="-2" attributes="0"/>
-                          <Component id="jLabel2" min="-2" pref="55" max="-2" attributes="0"/>
-                          <EmptySpace pref="378" max="32767" attributes="0"/>
+                          <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="369" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -850,7 +850,7 @@
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="32767" attributes="0"/>
-                          <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnRefreshStockReportList" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="517" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -860,7 +860,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jScrollPane3" min="-2" pref="691" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnRefreshStockReportList" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="9" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -886,7 +886,7 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Component class="javax.swing.JButton" name="jButton1">
+                <Component class="javax.swing.JButton" name="btnRefreshStockReportList">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="66" green="66" red="ff" type="rgb"/>
@@ -900,7 +900,7 @@
                     <Property name="text" type="java.lang.String" value="Refresh"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRefreshStockReportListActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>
