@@ -1,13 +1,14 @@
-package com.owsb.poms.ui.admin;
+package com.owsb.poms.ui.admin.Inventory;
 
 import com.owsb.poms.system.model.Item;
-import java.util.List;
+import com.owsb.poms.system.model.Supplier;
 import javax.swing.JOptionPane;
 
 public class NewItem extends javax.swing.JDialog {
     private String category;
     private String type;
     private String name;
+    private String supplierID;
     private double price = 0;
     
     private boolean validCategoryTypeName;
@@ -23,10 +24,19 @@ public class NewItem extends javax.swing.JDialog {
         setTitle("New Item");
         txtCategory.setVisible(false);
         txtType.setVisible(false);
+        lblSupplierIDTitle.setVisible(false);
+        lblSupplierID.setVisible(false);
+        
         var categories = Item.getAllCategories();
         for (String category : categories) {
             cmbCategory.addItem(category);
         }
+        
+        var suppliers = Supplier.getAllSuppliers();
+        for (String supplier : suppliers) {
+            cmbSuppliers.addItem(supplier);
+        }
+        cmbSuppliers.setSelectedIndex(-1);
     }
     
     /**
@@ -51,6 +61,10 @@ public class NewItem extends javax.swing.JDialog {
         txtPrice = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         btnAdd = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        lblSupplierID = new javax.swing.JLabel();
+        lblSupplierIDTitle = new javax.swing.JLabel();
+        cmbSuppliers = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -71,13 +85,13 @@ public class NewItem extends javax.swing.JDialog {
                 cmbCategoryActionPerformed(evt);
             }
         });
-        pnlMain.add(cmbCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(157, 30, 193, -1));
+        pnlMain.add(cmbCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 30, 193, -1));
 
         jLabel3.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel3.setText("Type:");
-        pnlMain.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(49, 89, 57, -1));
+        pnlMain.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, 57, -1));
 
         cmbType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "New" }));
         cmbType.setSelectedItem(null);
@@ -86,37 +100,37 @@ public class NewItem extends javax.swing.JDialog {
                 cmbTypeActionPerformed(evt);
             }
         });
-        pnlMain.add(cmbType, new org.netbeans.lib.awtextra.AbsoluteConstraints(157, 85, 193, -1));
+        pnlMain.add(cmbType, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 90, 193, -1));
 
         txtCategory.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        pnlMain.add(txtCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(157, 60, 193, -1));
+        pnlMain.add(txtCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 60, 193, -1));
 
         txtType.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        pnlMain.add(txtType, new org.netbeans.lib.awtextra.AbsoluteConstraints(157, 115, 193, -1));
+        pnlMain.add(txtType, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 120, 193, -1));
 
         jLabel4.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel4.setText("Name:");
-        pnlMain.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(49, 147, 57, -1));
+        pnlMain.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 150, 57, -1));
 
         txtName.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        pnlMain.add(txtName, new org.netbeans.lib.awtextra.AbsoluteConstraints(157, 146, 193, -1));
+        pnlMain.add(txtName, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 150, 193, -1));
 
         jLabel5.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel5.setText("Price:");
-        pnlMain.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(49, 203, 57, -1));
+        pnlMain.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 270, 57, -1));
 
         txtPrice.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        pnlMain.add(txtPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(194, 202, 156, -1));
+        pnlMain.add(txtPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 270, 156, -1));
 
         jLabel6.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 0, 0));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel6.setText("RM");
-        pnlMain.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(157, 203, 25, -1));
+        pnlMain.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 270, 25, -1));
 
         btnAdd.setBackground(new java.awt.Color(255, 153, 0));
         btnAdd.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
@@ -127,7 +141,35 @@ public class NewItem extends javax.swing.JDialog {
                 btnAddActionPerformed(evt);
             }
         });
-        pnlMain.add(btnAdd, new org.netbeans.lib.awtextra.AbsoluteConstraints(136, 273, 111, 39));
+        pnlMain.add(btnAdd, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 340, 111, 39));
+
+        jLabel7.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel7.setText("Supplier:");
+        pnlMain.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 190, 57, -1));
+
+        lblSupplierID.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblSupplierID.setForeground(new java.awt.Color(0, 0, 0));
+        lblSupplierID.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblSupplierID.setText("[SupplierID]");
+        pnlMain.add(lblSupplierID, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 230, 90, -1));
+
+        lblSupplierIDTitle.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblSupplierIDTitle.setForeground(new java.awt.Color(0, 0, 0));
+        lblSupplierIDTitle.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblSupplierIDTitle.setText("SupplierID:");
+        pnlMain.add(lblSupplierIDTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 230, 90, -1));
+
+        cmbSuppliers.setSelectedItem(null);
+        cmbSuppliers.setMinimumSize(new java.awt.Dimension(49, 24));
+        cmbSuppliers.setPreferredSize(new java.awt.Dimension(49, 24));
+        cmbSuppliers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbSuppliersActionPerformed(evt);
+            }
+        });
+        pnlMain.add(cmbSuppliers, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 190, 190, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -173,6 +215,7 @@ public class NewItem extends javax.swing.JDialog {
         category = cmbCategory.getSelectedIndex() != 0 && cmbCategory.getSelectedItem() != null ? cmbCategory.getSelectedItem().toString() : txtCategory.getText().trim();
         type = cmbType.getSelectedIndex() != 0 && cmbType.getSelectedItem() != null ? cmbType.getSelectedItem().toString() : txtType.getText().trim();
         name = txtName.getText().trim();
+        supplierID = lblSupplierID.getText();
         
         validCategoryTypeName = !(category == null || category.isBlank()|| type == null || type.isBlank() || name == null || name.isBlank());
         try{
@@ -197,25 +240,46 @@ public class NewItem extends javax.swing.JDialog {
             return;
         }
         
+        if (cmbSuppliers.getSelectedIndex() == -1){
+            JOptionPane.showMessageDialog(this, "Please select a supplier", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         int result = JOptionPane.showConfirmDialog(this, "Are you sure to add this new item?", "Add New Item", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (result == JOptionPane.YES_OPTION){
-            Item item = new Item(category, type, name, price);
+            Item item = new Item(category, type, name, supplierID, price);
             item.add();
             JOptionPane.showMessageDialog(this, "Successfully added a new item!");
             this.dispose();
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
+    private void cmbSuppliersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbSuppliersActionPerformed
+        if (cmbSuppliers.getSelectedIndex() >= 0){
+            lblSupplierIDTitle.setVisible(true);
+            lblSupplierID.setVisible(true);
+            lblSupplierID.setText(Supplier.getIdByName(cmbSuppliers.getSelectedItem().toString()));
+        }
+        else{
+            lblSupplierIDTitle.setVisible(false);
+            lblSupplierID.setVisible(false);
+        }
+    }//GEN-LAST:event_cmbSuppliersActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JComboBox<String> cmbCategory;
+    private javax.swing.JComboBox<String> cmbSuppliers;
     private javax.swing.JComboBox<String> cmbType;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel lblSupplierID;
+    private javax.swing.JLabel lblSupplierIDTitle;
     private javax.swing.JPanel pnlMain;
     private javax.swing.JTextField txtCategory;
     private javax.swing.JTextField txtName;

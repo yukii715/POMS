@@ -3,39 +3,83 @@ package com.owsb.poms.ui.pm;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import com.owsb.poms.system.model.*;
+import java.util.*;
 
-/**
- *
- * @author user
- */
-public class PurchaseRequisition extends javax.swing.JFrame {
+public class PurchaseRequisitionPO extends javax.swing.JFrame {
 
+    private List<PRItem> PRItemList;
     private int row = -1;
+    private DefaultTableModel RequisitionTable = new DefaultTableModel(){
+        public boolean isCellEditable(int row, int column){
+           return false;
+       } 
+    };
+    
+    private PRItem po;
+    
     private void PurReq(){
         RequisitionTable.setRowCount(0);
         RequisitionTable.setColumnIdentifiers(columnName);
         
+//        PRItemList = PRItem.toItemList();
+
+        for (PRItem prItem : PRItemList){
+            RequisitionTable.addRow(new String[]{
+                prItem.getPRID(),
+                prItem.getItemID(),
+                String.valueOf(prItem.getQuantity()),
+                prItem.getSupplierID(),
+                String.valueOf(prItem.getRequestDateTime()),
+                String.valueOf(prItem.getRequiredDeliveryDate()),   
+                prItem.getStatus().name(),
+                prItem.getCreateBy()
+                
+            });
+        }
     }
     
-    private void Verified(){
-        if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a row to edit.");
-            return;
-        }
-        try{
-            jTable1.setValueAt("Verified", row, 10);
-            
-        }catch(NullPointerException e){
-            JOptionPane.showMessageDialog(this, "The status of this Purchase Requisition cannot be verified.");
+private void Verified() {
+    int selectedRow = jTable1.getSelectedRow();
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Please select a requisition to verify.", "No Selection", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    String prid = (String) jTable1.getValueAt(selectedRow, 0);
+
+    PRItem pr = null;
+    for (PRItem req : PRItemList) {
+        if (req.getPRID().equals(prid)) {
+            pr = req;
+            break;
         }
     }
-    
-    private DefaultTableModel RequisitionTable = new DefaultTableModel();
-    private String[] columnName = {"Item ID", "Item Name", "Quantity", "Supplier ID", "Date & Time Requested", "status", "Sales Manager"};
-    public PurchaseRequisition() {
+
+    if (pr == null) {
+        JOptionPane.showMessageDialog(this, "Purchase requisition not found.", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    pr.setStatus(PRItem.Status.APPROVED);
+
+    // If updateStatus() persists changes, call it here
+    // Otherwise, you can remove or leave it empty
+    pr.updateStatus();
+
+    JOptionPane.showMessageDialog(this, "Purchase requisition " + prid + " approved.");
+
+    // Refresh table without reloading PRItemList from file
+    PurReq();
+}
+   
+    private String[] columnName = {"Purchase Requisition","Item ID", "Quantity", "Supplier ID", "Date & Time Requested", "Required Delivery Date",  "status", "Created By"};
+    public PurchaseRequisitionPO() {
         initComponents();
+        PRItemList = PRItem.toItemList();  
         PurReq();
     }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -89,36 +133,37 @@ public class PurchaseRequisition extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(418, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(647, 647, 647))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1000, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(84, 84, 84)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-                                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(31, 31, 31))))
+                .addContainerGap(72, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1000, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(31, 31, 31))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(443, 443, 443)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(68, 68, 68)
+                        .addContainerGap(211, Short.MAX_VALUE)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(149, 149, 149)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, Short.MAX_VALUE)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(191, 242, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(42, 42, 42)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17))
         );
@@ -136,7 +181,7 @@ public class PurchaseRequisition extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+        Verified();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
@@ -156,20 +201,20 @@ public class PurchaseRequisition extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PurchaseRequisition.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PurchaseRequisitionPO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PurchaseRequisition.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PurchaseRequisitionPO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PurchaseRequisition.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PurchaseRequisitionPO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PurchaseRequisition.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(PurchaseRequisitionPO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PurchaseRequisition().setVisible(true);
+                new PurchaseRequisitionPO().setVisible(true);
             }
         });
     }

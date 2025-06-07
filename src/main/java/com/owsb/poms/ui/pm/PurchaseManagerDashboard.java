@@ -1,7 +1,7 @@
 
 package com.owsb.poms.ui.pm;
 
-
+import com.owsb.poms.system.model.POItem;
 import com.owsb.poms.system.model.PurchaseOrder;
 import java.util.*;
 import javax.swing.table.DefaultTableModel;
@@ -12,48 +12,40 @@ import javax.swing.table.DefaultTableModel;
  */
 public class PurchaseManagerDashboard extends javax.swing.JFrame {
 
-    private List<PurchaseOrder> purchaseOrderList;
+    private List<POItem> POItemList = new ArrayList<>();;
 
     private DefaultTableModel PurchaseOrderTable = new DefaultTableModel(){
         public boolean isCellEditable(int row, int column){
            return false;
        } 
     };
-    public void PurchaseOrder(){
+    public void loadPurchaseOrder(){
         PurchaseOrderTable.setColumnIdentifiers(columnName);
         PurchaseOrderTable.setRowCount(0);
-        
-        purchaseOrderList = PurchaseOrder.toList();
- 
-        poTable.getColumnModel().getColumn(0).setPreferredWidth(125);
-        poTable.getColumnModel().getColumn(1).setPreferredWidth(150);
-        poTable.getColumnModel().getColumn(3).setPreferredWidth(155);
-        poTable.getColumnModel().getColumn(4).setPreferredWidth(50);
-        poTable.getColumnModel().getColumn(8).setPreferredWidth(150);
 
+    POItemList = POItem.toItemList();
 
-        
-        for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+        for (POItem poItem : POItemList) {
             PurchaseOrderTable.addRow(new String[]{
-                purchaseOrder.getPoID(),
-                purchaseOrder.getPrID(),
-                purchaseOrder.getItemID(),
-                purchaseOrder.getItemName(),
-                String.valueOf(purchaseOrder.getQuantity()),
-                String.format("%.2f", purchaseOrder.getUnitPrice()),
-                String.format("%.2f", purchaseOrder.getTotalPrice()),
-                purchaseOrder.getSupplierID(),
-                String.valueOf(purchaseOrder.getGeneratedDateTime()),
-                purchaseOrder.getStatus().name(),
-                purchaseOrder.getCreatedBy(),
-                purchaseOrder.getApprovedBy(),
+                poItem.getPOID(),
+                poItem.getPRID(),
+                poItem.getItemID(),
+                String.valueOf(poItem.getQuantity()),
+                String.format("%.2f", poItem.getUnitPrice()),
+                String.format("%.2f", poItem.getTotalPrice()),
+                poItem.getSupplierID(),
+                String.valueOf(poItem.getGenerateDateTime()),
+                String.valueOf(poItem.getDeliveryDate()),
+                poItem.getStatus().name(),
+                poItem.getCreateBy(),
+                poItem.getApprovedBy(),
             });
         }
     }
-    private String[] columnName = {"Purchase Order ID","Purchase Requisition ID", "Item ID","Item Name","Quantity","Unit Price","Total Price","Supplier ID", "Date", "stauts", "Purchase Manager", "Finance Manager"};
+    private String[] columnName = {"Purchase Order ID","Purchase Requisition ID","Item ID","Quantity", "Unit Price", "Total Price","Supplier ID", "Date & Time of generated","Delivery Date", "status", "Created By", "Approved By"};
     public PurchaseManagerDashboard() {
         initComponents();
-        PurchaseOrder();
+        loadPurchaseOrder();
     }
 
     /**
@@ -202,7 +194,7 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_supplierButtonActionPerformed
 
     private void prButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prButtonActionPerformed
-        PurchaseRequisition requisition = new PurchaseRequisition();
+        PurchaseRequisitionPO requisition = new PurchaseRequisitionPO();
         requisition.setVisible(true);
     }//GEN-LAST:event_prButtonActionPerformed
 
@@ -224,7 +216,7 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_poTableMouseReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        PurchaseOrder();
+        loadPurchaseOrder();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

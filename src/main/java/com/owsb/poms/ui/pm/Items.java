@@ -34,19 +34,7 @@ public class Items extends javax.swing.JFrame {
             String.format("%.2f", item.getSellPrice()),
             String.valueOf(item.getStock()),
             item.getStatus().name()
-        });
-//            if (item.getStatus() != Item.Status.REMOVED)
-//            {
-//                itemsModel.addRow(new String[]{
-//                    item.getItemID(),
-//                    item.getItemCategory(),
-//                    item.getItemType(),
-//                    item.getItemName(),
-//                    String.format("%.2f", item.getSellPrice()),
-//                    String.valueOf(item.getStock()),
-//                    item.getStatus().name()
-//                });
-//            }
+            });
         }
     }
     private String[] columnName = {"Item ID", "Item Name", "Item Category", "Item Type", "Selling Price", "Stocks", "Status"};
