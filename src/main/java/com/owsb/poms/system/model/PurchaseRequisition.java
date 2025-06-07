@@ -12,6 +12,7 @@ public class PurchaseRequisition implements hasFile<PurchaseRequisition>, hasId,
     private LocalDate requiredDeliveryDate;
     private Status status;
     private String createBy;
+    private String performedBy;
     
     private static final String filePath = "data/PR/purchase_requisition.txt";
     
@@ -32,6 +33,7 @@ public class PurchaseRequisition implements hasFile<PurchaseRequisition>, hasId,
         this.requiredDeliveryDate = requiredDeliveryDate;
         this.status = Status.NEW;
         this.createBy = createBy;
+        this.performedBy = "None";
     }
 
     public String getPRID() {
@@ -82,21 +84,27 @@ public class PurchaseRequisition implements hasFile<PurchaseRequisition>, hasId,
         this.createBy = createBy;
     }
     
+    public String getPerformedBy() {
+        return performedBy;
+    }
+
+    public void setPerformedBy(String performedBy) {
+        this.performedBy = performedBy;
+    }
+    
     @Override
     public String toString() {
         return PRID + "\t"
-             + SupplierID + "\t"
-             + requestDateTime.toString() + "\t"
-             + requiredDeliveryDate.toString() + "\t"
-             + status.name() + "\t"
-             + createBy; 
+                + SupplierID + "\t"
+                + requestDateTime.toString() + "\t"
+                + requiredDeliveryDate.toString() + "\t"
+                + status.name() + "\t"
+                + createBy + "\t"
+                + performedBy; 
     }
 
     public static PurchaseRequisition fromString(String line) {
         String[] parts = line.split("\t");
-        if (parts.length != 6) {
-            throw new IllegalArgumentException("Invalid input line for PurchaseRequisition: " + line);
-        }
 
         PurchaseRequisition pr = new PurchaseRequisition();
         pr.setPRID(parts[0]);
@@ -105,6 +113,7 @@ public class PurchaseRequisition implements hasFile<PurchaseRequisition>, hasId,
         pr.setRequiredDeliveryDate(LocalDate.parse(parts[3]));
         pr.setStatus(Status.valueOf(parts[4]));
         pr.setCreateBy(parts[5]);
+        pr.setPerformedBy(parts[6]);
 
         return pr;
     }
@@ -139,7 +148,10 @@ public class PurchaseRequisition implements hasFile<PurchaseRequisition>, hasId,
         DataHandler.updateFieldAndSave(
                 toList(),
                 pr -> pr.getPRID().equals(this.getPRID()),              
-                pr -> pr.setStatus(this.getStatus()),           
+                pr -> {
+                    pr.setStatus(this.getStatus());
+                    pr.setPerformedBy(this.getPerformedBy());
+                    },
                 list -> this.saveToFile(list)
         );
     }

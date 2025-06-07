@@ -4,6 +4,7 @@ import com.owsb.poms.system.model.*;
 import com.owsb.poms.ui.common.CommonMethod;
 import java.awt.Image;
 import java.time.format.DateTimeFormatter;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -11,6 +12,10 @@ import javax.swing.table.JTableHeader;
 
 public class PRDetails extends javax.swing.JDialog {
     private PurchaseRequisition pr;
+    private String userID;
+    private boolean newPR = false;
+    private boolean approvedPR = false;
+    private boolean rejectedOrDeletedPR = false;
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss");
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
     
@@ -21,11 +26,12 @@ public class PRDetails extends javax.swing.JDialog {
     } ;
     private String[] itemsColumnName = {"ID", "Category", "Type", "Name", "Quantity"};
 
-    public PRDetails(javax.swing.JDialog parent, boolean modal, PurchaseRequisition pr) {
+    public PRDetails(javax.swing.JDialog parent, boolean modal, PurchaseRequisition pr, String userID) {
         super(parent, modal);
         initComponents();
         
         this.pr = pr;
+        this.userID = userID;
         setTitle(pr.getPRID());
         new CommonMethod().setLabelIcon("/icons/edit.png", 20, 20, Image.SCALE_SMOOTH, lblEdit);
         
@@ -35,6 +41,27 @@ public class PRDetails extends javax.swing.JDialog {
         lblRequestDateTime.setText(pr.getRequestDateTime().format(dateTimeFormatter));
         lblCreatedBy.setText(pr.getCreateBy());
         lblStatus.setText(pr.getStatus().name());
+        
+        PurchaseRequisition.Status status = pr.getStatus();
+
+        if (status == PurchaseRequisition.Status.NEW) {
+            newPR = true;
+            btn1.setText("Approve");
+            btn2.setText("Reject");
+            btn3.setText("Delete");
+        } else {
+            btn1.setVisible(false);
+            btn3.setVisible(false);
+            lblEdit.setVisible(false);
+
+            if (status == PurchaseRequisition.Status.APPROVED) {
+                approvedPR = true;
+                btn2.setText("OK");
+            } else {
+                rejectedOrDeletedPR = true;
+                btn2.setText("Set as New");
+            }
+        }
         
         refresh();
     }
@@ -99,11 +126,11 @@ public class PRDetails extends javax.swing.JDialog {
         jLabel14 = new javax.swing.JLabel();
         lblStatus = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
-        btnApprove = new javax.swing.JButton();
-        btnReject = new javax.swing.JButton();
+        btn1 = new javax.swing.JButton();
+        btn2 = new javax.swing.JButton();
         srlItems = new javax.swing.JScrollPane();
         tblItems = new javax.swing.JTable();
-        btnDelete = new javax.swing.JButton();
+        btn3 = new javax.swing.JButton();
         lblEdit = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -188,23 +215,23 @@ public class PRDetails extends javax.swing.JDialog {
         jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel16.setText("Items:");
 
-        btnApprove.setBackground(new java.awt.Color(255, 153, 0));
-        btnApprove.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnApprove.setForeground(new java.awt.Color(252, 251, 249));
-        btnApprove.setText("Approve");
-        btnApprove.addActionListener(new java.awt.event.ActionListener() {
+        btn1.setBackground(new java.awt.Color(255, 153, 0));
+        btn1.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btn1.setForeground(new java.awt.Color(252, 251, 249));
+        btn1.setText("btn1");
+        btn1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnApproveActionPerformed(evt);
+                btn1ActionPerformed(evt);
             }
         });
 
-        btnReject.setBackground(new java.awt.Color(255, 153, 0));
-        btnReject.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnReject.setForeground(new java.awt.Color(252, 251, 249));
-        btnReject.setText("Reject");
-        btnReject.addActionListener(new java.awt.event.ActionListener() {
+        btn2.setBackground(new java.awt.Color(255, 153, 0));
+        btn2.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btn2.setForeground(new java.awt.Color(252, 251, 249));
+        btn2.setText("btn2");
+        btn2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRejectActionPerformed(evt);
+                btn2ActionPerformed(evt);
             }
         });
 
@@ -216,13 +243,13 @@ public class PRDetails extends javax.swing.JDialog {
         tblItems.setShowGrid(true);
         srlItems.setViewportView(tblItems);
 
-        btnDelete.setBackground(new java.awt.Color(255, 153, 0));
-        btnDelete.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnDelete.setForeground(new java.awt.Color(252, 251, 249));
-        btnDelete.setText("Delete");
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+        btn3.setBackground(new java.awt.Color(255, 153, 0));
+        btn3.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btn3.setForeground(new java.awt.Color(252, 251, 249));
+        btn3.setText("btn3");
+        btn3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
+                btn3ActionPerformed(evt);
             }
         });
 
@@ -269,7 +296,7 @@ public class PRDetails extends javax.swing.JDialog {
                                         .addComponent(lblEdit))))
                             .addGroup(pnlMainLayout.createSequentialGroup()
                                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(btnApprove, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jLabel10)
                                         .addComponent(jLabel12)
@@ -283,9 +310,9 @@ public class PRDetails extends javax.swing.JDialog {
                                             .addComponent(lblRequiredDeliveryDate)))
                                     .addGroup(pnlMainLayout.createSequentialGroup()
                                         .addGap(60, 60, 60)
-                                        .addComponent(btnReject, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(60, 60, 60)
-                                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addComponent(btn3, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addGap(70, 70, 70))))
         );
         pnlMainLayout.setVerticalGroup(
@@ -330,9 +357,9 @@ public class PRDetails extends javax.swing.JDialog {
                 .addComponent(srlItems, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnReject, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnApprove, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -350,30 +377,103 @@ public class PRDetails extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnApproveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApproveActionPerformed
-        
-    }//GEN-LAST:event_btnApproveActionPerformed
+    private void btn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn1ActionPerformed
+        if (newPR){
+            int result = JOptionPane.showConfirmDialog(
+                this, 
+                "Are you sure to approve this PR?", 
+                String.format("Approve %s", getTitle()), 
+                JOptionPane.YES_NO_OPTION, 
+                JOptionPane.QUESTION_MESSAGE
+            );
 
-    private void btnRejectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRejectActionPerformed
-        
-    }//GEN-LAST:event_btnRejectActionPerformed
+            if (result == JOptionPane.YES_OPTION){
+                pr.setStatus(PurchaseRequisition.Status.APPROVED);
+                pr.setPerformedBy(userID);
+                pr.updateStatus();
+                JOptionPane.showMessageDialog(this, "This PR has been approved!");
+                dispose();
+            }
+                return;
+        }
+    }//GEN-LAST:event_btn1ActionPerformed
 
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        
-    }//GEN-LAST:event_btnDeleteActionPerformed
+    private void btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn2ActionPerformed
+        if (newPR){
+            int result = JOptionPane.showConfirmDialog(
+                this, 
+                "Are you sure to reject this PR?", 
+                String.format("Reject %s", getTitle()), 
+                JOptionPane.YES_NO_OPTION, 
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (result == JOptionPane.YES_OPTION){
+                pr.setStatus(PurchaseRequisition.Status.REJECTED);
+                pr.setPerformedBy(userID);
+                pr.updateStatus();
+                JOptionPane.showMessageDialog(this, "This PR has been rejected!");
+                dispose();
+            }
+            return;
+        }
+        if (approvedPR){
+            dispose();
+            return;
+        }
+        if (rejectedOrDeletedPR){
+            int result = JOptionPane.showConfirmDialog(
+                this, 
+                "Are you sure to reset this PR as new?", 
+                String.format("Reset PR", getTitle()), 
+                JOptionPane.YES_NO_OPTION, 
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (result == JOptionPane.YES_OPTION){
+                pr.setStatus(PurchaseRequisition.Status.NEW);
+                pr.setPerformedBy(userID);
+                pr.updateStatus();
+                JOptionPane.showMessageDialog(this, "This PR has been resetted as New!");
+                dispose();
+            }
+            return;
+        }
+    }//GEN-LAST:event_btn2ActionPerformed
+
+    private void btn3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn3ActionPerformed
+        if (newPR){
+            int result = JOptionPane.showConfirmDialog(
+                this, 
+                "Are you sure to delete this PR?", 
+                String.format("Reject %s", getTitle()), 
+                JOptionPane.YES_NO_OPTION, 
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (result == JOptionPane.YES_OPTION){
+                pr.setStatus(PurchaseRequisition.Status.DELETED);
+                pr.setPerformedBy(userID);
+                pr.updateStatus();
+                JOptionPane.showMessageDialog(this, "This PR has been deleted!");
+                dispose();
+            }
+            return;
+        }
+    }//GEN-LAST:event_btn3ActionPerformed
 
     private void lblEditMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblEditMouseClicked
-       NewPR newPR = new NewPR(this, true, pr);
-       newPR.setLocationRelativeTo(this);
-       newPR.setVisible(true);
+       PRModifier PR = new PRModifier(this, true, pr);
+       PR.setLocationRelativeTo(this);
+       PR.setVisible(true);
        refresh();
     }//GEN-LAST:event_lblEditMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnApprove;
-    private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnReject;
+    private javax.swing.JButton btn1;
+    private javax.swing.JButton btn2;
+    private javax.swing.JButton btn3;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel14;

@@ -50,8 +50,7 @@ public class PRList extends javax.swing.JDialog {
         prList = PurchaseRequisition.toList();
         
         for (PurchaseRequisition pr : prList) {
-            if (pr.getStatus() == PurchaseRequisition.Status.NEW)
-            {
+            if (cbShowAllPr.isSelected() || pr.getStatus() == PurchaseRequisition.Status.NEW) {
                 prModel.addRow(new String[]{
                     pr.getPRID(),
                     pr.getSupplierID(),
@@ -70,6 +69,8 @@ public class PRList extends javax.swing.JDialog {
         // Apply it as the default for any Object‐typed cell:
         tblPR.setDefaultRenderer(Object.class, centerRenderer);
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -84,6 +85,7 @@ public class PRList extends javax.swing.JDialog {
         srlPR = new javax.swing.JScrollPane();
         tblPR = new javax.swing.JTable();
         btnNew = new javax.swing.JButton();
+        cbShowAllPr = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -112,13 +114,25 @@ public class PRList extends javax.swing.JDialog {
             }
         });
 
+        cbShowAllPr.setBackground(new java.awt.Color(204, 204, 255));
+        cbShowAllPr.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        cbShowAllPr.setForeground(new java.awt.Color(0, 0, 0));
+        cbShowAllPr.setText("Show All PRs");
+        cbShowAllPr.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbShowAllPrActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
         pnlMainLayout.setHorizontalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                 .addContainerGap(856, Short.MAX_VALUE)
-                .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(cbShowAllPr, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
+                    .addComponent(btnNew, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(33, 33, 33))
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlMainLayout.createSequentialGroup()
@@ -131,7 +145,9 @@ public class PRList extends javax.swing.JDialog {
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(653, Short.MAX_VALUE))
+                .addGap(27, 27, 27)
+                .addComponent(cbShowAllPr)
+                .addContainerGap(602, Short.MAX_VALUE))
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlMainLayout.createSequentialGroup()
                     .addContainerGap()
@@ -165,22 +181,33 @@ public class PRList extends javax.swing.JDialog {
             pr.setCreateBy(String.valueOf(tblPR.getValueAt(row, 4)));
             pr.setStatus(PurchaseRequisition.Status.valueOf(String.valueOf(tblPR.getValueAt(row, 5))));
             
-            PRDetails prd = new PRDetails(this, true, pr);
+            PRDetails prd = new PRDetails(this, true, pr, userID);
             prd.setLocationRelativeTo(this);
             prd.setVisible(true);
+            PR();
         }
     }//GEN-LAST:event_tblPRMouseClicked
 
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
-        NewPR newPR = new NewPR(this, true, userID);
+        PRModifier newPR = new PRModifier(this, true, userID);
         newPR.setLocationRelativeTo(this);
         newPR.setVisible(true);
         PR();
     }//GEN-LAST:event_btnNewActionPerformed
 
+    private void cbShowAllPrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbShowAllPrActionPerformed
+        if (cbShowAllPr.isSelected()){
+            PR();
+        }
+        else{
+            PR();
+        }
+    }//GEN-LAST:event_cbShowAllPrActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNew;
+    private javax.swing.JCheckBox cbShowAllPr;
     private javax.swing.JPanel pnlMain;
     private javax.swing.JScrollPane srlPR;
     private javax.swing.JTable tblPR;

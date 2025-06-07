@@ -67,6 +67,9 @@ public class POItem extends PurchaseOrder{
     @Override
     public String toString() {
         return itemID + "\t"
+                + itemCategory + "\t"
+                + itemType + "\t"
+                + itemName + "\t"
                 + quantity + "\t"
                 + unitPrice;
     }
@@ -76,8 +79,11 @@ public class POItem extends PurchaseOrder{
 
         POItem pro = new POItem();
         pro.setItemID(parts[0]);
-        pro.setQuantity(Integer.parseInt(parts[1]));
-        pro.setUnitPrice(Double.parseDouble(parts[2]));
+        pro.setItemCategory(parts[1]);
+        pro.setItemType(parts[2]);
+        pro.setItemName(parts[3]);
+        pro.setQuantity(Integer.parseInt(parts[4]));
+        pro.setUnitPrice(Double.parseDouble(parts[5]));
 
         return pro;
     }

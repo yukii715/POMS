@@ -10,12 +10,14 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.*;
 
-public class NewPR extends javax.swing.JDialog {
+public class PRModifier extends javax.swing.JDialog {
     private String userID;
     private String supplierID;
     private LocalDate requiredDate;
     private List<Item> items;
     private List<PRItem> selectedItems = new ArrayList<>();
+    private List<PRItem> previousItems = new ArrayList<>();
+    private PurchaseRequisition pr;
     private boolean edit = false;
     private boolean isInitializing = false;
     private boolean isFilling = false;
@@ -27,12 +29,13 @@ public class NewPR extends javax.swing.JDialog {
     } ;
     private String[] itemsColumnName = {"ID", "Category", "Type", "Name", "Stock", "Status", "Require", "Quantity"};
 
-    public NewPR(javax.swing.JDialog parent, boolean modal, String userID) {
+    public PRModifier(javax.swing.JDialog parent, boolean modal, String userID) {
         super(parent, modal);
         initComponents();
         
         this.userID = userID;
         setTitle("NewPR");
+        btnPerform.setText("Create");
         
         initialSetting();
         cmbSuppliers.setSelectedIndex(-1);
@@ -44,14 +47,15 @@ public class NewPR extends javax.swing.JDialog {
         
     }
     
-    public NewPR(javax.swing.JDialog parent, boolean modal, PurchaseRequisition pr) {
+    public PRModifier(javax.swing.JDialog parent, boolean modal, PurchaseRequisition pr) {
         super(parent, modal);
         initComponents();
         
         edit = true;
         isInitializing = true;
         setTitle(String.format("%s (Edit)", pr.getPRID()));
-        btnCreatePR.setText("OK");
+        btnPerform.setText("OK");
+        this.pr = pr;
         
         initialSetting();
         cmbSuppliers.setSelectedItem(Supplier.getNameById(pr.getSupplierID()));
@@ -65,6 +69,7 @@ public class NewPR extends javax.swing.JDialog {
         
         refreshItem();
         
+        previousItems = pr.getItems();
         selectedItems = pr.getItems();
         
         for (int i = 0; i < selectedItems.size(); i++){
@@ -145,7 +150,7 @@ public class NewPR extends javax.swing.JDialog {
         srlItems = new javax.swing.JScrollPane();
         tblItems = new javax.swing.JTable();
         lblSupplierID = new javax.swing.JLabel();
-        btnCreatePR = new javax.swing.JButton();
+        btnPerform = new javax.swing.JButton();
         cmbYear = new javax.swing.JComboBox<>();
         cmbMonth = new javax.swing.JComboBox<>();
         cmbDay = new javax.swing.JComboBox<>();
@@ -198,13 +203,13 @@ public class NewPR extends javax.swing.JDialog {
         lblSupplierID.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblSupplierID.setText("[SupplierID]");
 
-        btnCreatePR.setBackground(new java.awt.Color(255, 153, 0));
-        btnCreatePR.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnCreatePR.setForeground(new java.awt.Color(252, 251, 249));
-        btnCreatePR.setText("Create PR");
-        btnCreatePR.addActionListener(new java.awt.event.ActionListener() {
+        btnPerform.setBackground(new java.awt.Color(255, 153, 0));
+        btnPerform.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnPerform.setForeground(new java.awt.Color(252, 251, 249));
+        btnPerform.setText("Create PR");
+        btnPerform.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCreatePRActionPerformed(evt);
+                btnPerformActionPerformed(evt);
             }
         });
 
@@ -269,7 +274,7 @@ public class NewPR extends javax.swing.JDialog {
                             .addComponent(jLabel6)))
                     .addGroup(pnlMainLayout.createSequentialGroup()
                         .addGap(286, 286, 286)
-                        .addComponent(btnCreatePR, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnPerform, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(45, Short.MAX_VALUE))
         );
         pnlMainLayout.setVerticalGroup(
@@ -293,7 +298,7 @@ public class NewPR extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addComponent(srlItems, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
-                .addComponent(btnCreatePR, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnPerform, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -362,7 +367,7 @@ public class NewPR extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_tblItemsMouseReleased
 
-    private void btnCreatePRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreatePRActionPerformed
+    private void btnPerformActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPerformActionPerformed
         supplierID = lblSupplierID.getText();
         
         if (cmbSuppliers.getSelectedIndex() == -1){
@@ -380,32 +385,48 @@ public class NewPR extends javax.swing.JDialog {
             return;
         }
         
-        int result = JOptionPane.showConfirmDialog(
-                this, 
+       String Message = edit ? 
+                String.format(
+                        "Are you sure to edit this PR?%n%s →%n%n%s ", 
+                        previousItems.stream()
+                        .map(item -> String.format("%s (Qty: %d)", item.getItemName(), item.getQuantity()))
+                        .collect(Collectors.joining("\n")),
+                        selectedItems.stream()
+                        .map(item -> String.format("%s (Qty: %d)", item.getItemName(), item.getQuantity()))
+                        .collect(Collectors.joining("\n"))
+                ):
                 String.format(
                         "Are you sure to create a new PR?%nSupplier: %s%n%s", 
                         cmbSuppliers.getSelectedItem().toString(),
                         selectedItems.stream()
                         .map(item -> String.format("%s (Qty: %d)", item.getItemName(), item.getQuantity()))
                         .collect(Collectors.joining("\n"))
-                ), 
-                "New PR", 
+                );
+       
+       String successfulMessage = edit ? "Successfully make change to the PR!" : "Successfully create a new PR!";
+        
+        int result = JOptionPane.showConfirmDialog(
+                this, 
+                Message, 
+                this.getTitle(), 
                 JOptionPane.YES_NO_OPTION, 
                 JOptionPane.QUESTION_MESSAGE
         );
         
         if (result == JOptionPane.YES_OPTION){
-            PurchaseRequisition pr = new PurchaseRequisition(supplierID, requiredDate, userID);
-            pr.add();
+            if (!edit){
+                pr = new PurchaseRequisition(supplierID, requiredDate, userID);
+                pr.add();
+            }
             
             PRItem pri = new PRItem();
             pri.setPRID(pr.getPRID());
             pri.save(selectedItems);
-            JOptionPane.showMessageDialog(this, "Successfully create a new PR!");
+            JOptionPane.showMessageDialog(this, successfulMessage);
             this.dispose();
         }
         
-    }//GEN-LAST:event_btnCreatePRActionPerformed
+    }//GEN-LAST:event_btnPerformActionPerformed
 
     private void cmbYearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbYearActionPerformed
         if (isInitializing || isFilling) return;
@@ -452,7 +473,7 @@ public class NewPR extends javax.swing.JDialog {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCreatePR;
+    private javax.swing.JButton btnPerform;
     private javax.swing.JComboBox<String> cmbDay;
     private javax.swing.JComboBox<String> cmbMonth;
     private javax.swing.JComboBox<String> cmbSuppliers;

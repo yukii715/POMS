@@ -81,7 +81,7 @@
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="1" attributes="0">
-                                      <Component id="btnApprove" min="-2" pref="111" max="-2" attributes="0"/>
+                                      <Component id="btn1" min="-2" pref="111" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="jLabel10" alignment="0" min="-2" max="-2" attributes="0"/>
                                           <Component id="jLabel12" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -99,9 +99,9 @@
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
-                                          <Component id="btnReject" min="-2" pref="111" max="-2" attributes="0"/>
+                                          <Component id="btn2" min="-2" pref="111" max="-2" attributes="0"/>
                                           <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
-                                          <Component id="btnDelete" min="-2" pref="111" max="-2" attributes="0"/>
+                                          <Component id="btn3" min="-2" pref="111" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -164,9 +164,9 @@
                   <Component id="srlItems" min="-2" pref="271" max="-2" attributes="0"/>
                   <EmptySpace pref="19" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="btnReject" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
-                      <Component id="btnApprove" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
-                      <Component id="btnDelete" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
+                      <Component id="btn2" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
+                      <Component id="btn1" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
+                      <Component id="btn3" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -357,7 +357,7 @@
             <Property name="text" type="java.lang.String" value="Items:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="btnApprove">
+        <Component class="javax.swing.JButton" name="btn1">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="99" red="ff" type="rgb"/>
@@ -368,13 +368,13 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="f9" green="fb" red="fc" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Approve"/>
+            <Property name="text" type="java.lang.String" value="btn1"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnApproveActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn1ActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="btnReject">
+        <Component class="javax.swing.JButton" name="btn2">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="99" red="ff" type="rgb"/>
@@ -385,10 +385,10 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="f9" green="fb" red="fc" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Reject"/>
+            <Property name="text" type="java.lang.String" value="btn2"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRejectActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn2ActionPerformed"/>
           </Events>
         </Component>
         <Container class="javax.swing.JScrollPane" name="srlItems">
@@ -421,7 +421,7 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="btnDelete">
+        <Component class="javax.swing.JButton" name="btn3">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="99" red="ff" type="rgb"/>
@@ -432,10 +432,10 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="f9" green="fb" red="fc" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Delete"/>
+            <Property name="text" type="java.lang.String" value="btn3"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDeleteActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn3ActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="lblEdit">
