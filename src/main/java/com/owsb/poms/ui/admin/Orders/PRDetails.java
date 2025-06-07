@@ -432,7 +432,7 @@ public class PRDetails extends javax.swing.JDialog {
 
             if (result == JOptionPane.YES_OPTION){
                 pr.setStatus(PurchaseRequisition.Status.NEW);
-                pr.setPerformedBy(userID);
+                pr.setPerformedBy("None");
                 pr.updateStatus();
                 JOptionPane.showMessageDialog(this, "This PR has been resetted as New!");
                 dispose();

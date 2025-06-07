@@ -1,45 +1,41 @@
 package com.owsb.poms.ui.admin.Orders;
 
 import com.owsb.poms.system.model.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.SwingConstants;
-import javax.swing.table.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
-public class PRList extends javax.swing.JDialog {
+public class POList extends javax.swing.JDialog {
     private String userID;
-    private List<PurchaseRequisition> prList;
+    private List<PurchaseOrder> poList;
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     
-    private DefaultTableModel prModel = new DefaultTableModel(){
+    private DefaultTableModel poModel = new DefaultTableModel(){
        public boolean isCellEditable(int row, int column){
            return false;
        } 
     } ;
-    private String[] prColumnName = {"ID", "Supplier", "Date Time", "Required Delivery On", "Created By", "Status"};
-   
+    private String[] poColumnName = {"ID", "From", "Supplier", "Total Price", "Delivery Date", "Created By", "Status"};
 
-    /**
-     * Creates new form PRList
-     */
-    public PRList(java.awt.Frame parent, boolean modal, String userID) {
+    public POList(java.awt.Frame parent, boolean modal, String userID) {
         super(parent, modal);
         initComponents();
         
         this.userID = userID;
-        setTitle("Purchase Requisitions");
+        setTitle("Purchase Orders");
         
-        PR();
+        PO();
     }
-    
-    private void PR(){
+
+    private void PO(){
         
-        prModel.setRowCount(0);
+        poModel.setRowCount(0);
         
-        prModel.setColumnIdentifiers(prColumnName);
+        poModel.setColumnIdentifiers(poColumnName);
         JTableHeader header = tblPR.getTableHeader();
         header.setBackground(new java.awt.Color(255, 255, 204));
         
@@ -47,19 +43,18 @@ public class PRList extends javax.swing.JDialog {
         
         tblPR.getColumnModel().getColumn(2).setPreferredWidth(150);
         
-        prList = PurchaseRequisition.toList();
+        poList = PurchaseOrder.toList();
         
-        for (PurchaseRequisition pr : prList) {
-            if (cbShowAllPr.isSelected() || pr.getStatus() == PurchaseRequisition.Status.NEW) {
-                prModel.addRow(new String[]{
-                    pr.getPRID(),
-                    pr.getSupplierID(),
-                    pr.getRequestDateTime().format(dateTimeFormatter),
-                    pr.getRequiredDeliveryDate().format(dateFormatter),
-                    pr.getCreateBy(),
-                    pr.getStatus().name()
-                });
-            }
+        for (PurchaseOrder po : poList) {
+            poModel.addRow(new String[]{
+                po.getPRID(),
+                po.getPRID(),
+                po.getSupplierID(),
+                String.format("%2f", po.getTotalPrice()),
+                po.getDeliveryDate().format(dateFormatter),
+                po.getCreateBy(),
+                po.getStatus().name()
+            });
         }
         
         // Create a single “center” renderer:
@@ -91,7 +86,7 @@ public class PRList extends javax.swing.JDialog {
 
         tblPR.setBackground(new java.awt.Color(255, 255, 204));
         tblPR.setForeground(new java.awt.Color(0, 0, 0));
-        tblPR.setModel(prModel);
+        tblPR.setModel(poModel);
         tblPR.setGridColor(java.awt.Color.gray);
         tblPR.setSelectionBackground(new java.awt.Color(255, 153, 153));
         tblPR.setShowGrid(true);
@@ -136,7 +131,7 @@ public class PRList extends javax.swing.JDialog {
                 .addGroup(pnlMainLayout.createSequentialGroup()
                     .addContainerGap()
                     .addComponent(srlPR, javax.swing.GroupLayout.PREFERRED_SIZE, 813, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(175, Short.MAX_VALUE)))
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,37 +164,19 @@ public class PRList extends javax.swing.JDialog {
 
     private void tblPRMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPRMouseClicked
         if (evt.getClickCount() == 2 && tblPR.getSelectedRow() != -1) {
-            int row = tblPR.getSelectedRow();
             
-            PurchaseRequisition pr = new PurchaseRequisition();
-            pr.setPRID(String.valueOf(tblPR.getValueAt(row, 0)));
-            pr.setSupplierID(String.valueOf(tblPR.getValueAt(row, 1)));
-            pr.setRequestDateTime(LocalDateTime.parse(String.valueOf(tblPR.getValueAt(row, 2)), dateTimeFormatter));
-            pr.setRequiredDeliveryDate(LocalDate.parse(String.valueOf(tblPR.getValueAt(row, 3)), dateFormatter));
-            pr.setCreateBy(String.valueOf(tblPR.getValueAt(row, 4)));
-            pr.setStatus(PurchaseRequisition.Status.valueOf(String.valueOf(tblPR.getValueAt(row, 5))));
-            
-            PRDetails prd = new PRDetails(this, true, pr, userID);
-            prd.setLocationRelativeTo(this);
-            prd.setVisible(true);
-            PR();
         }
     }//GEN-LAST:event_tblPRMouseClicked
 
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
-        PRModifier newPR = new PRModifier(this, true, userID);
-        newPR.setLocationRelativeTo(this);
-        newPR.setVisible(true);
-        PR();
+        POModifier newPO = new POModifier(this, true, userID);
+        newPO.setLocationRelativeTo(this);
+        newPO.setVisible(true);
+        PO();
     }//GEN-LAST:event_btnNewActionPerformed
 
     private void cbShowAllPrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbShowAllPrActionPerformed
-        if (cbShowAllPr.isSelected()){
-            PR();
-        }
-        else{
-            PR();
-        }
+        
     }//GEN-LAST:event_cbShowAllPrActionPerformed
 
 

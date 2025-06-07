@@ -37,4 +37,12 @@ public class FileHandler {
         }
         return list;
     }
+    
+    public static File findFileByPrefix(String directoryPath, String prefix) {
+        File dir = new File(directoryPath);
+        if (!dir.exists() || !dir.isDirectory()) return null;
+
+        File[] matchingFiles = dir.listFiles(file -> file.getName().startsWith(prefix));
+        return (matchingFiles != null && matchingFiles.length > 0) ? matchingFiles[0] : null;
+    }
 }

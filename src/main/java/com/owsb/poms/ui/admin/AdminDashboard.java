@@ -2014,7 +2014,9 @@ public class AdminDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_tblOrderMouseReleased
 
     private void btnViewAllPOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewAllPOActionPerformed
-        // TODO add your handling code here:
+        POList pol = new POList(this, true, lblUserID.getText());
+        pol.setLocationRelativeTo(this);
+        pol.setVisible(true);
     }//GEN-LAST:event_btnViewAllPOActionPerformed
 
     private void btnViewPRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewPRActionPerformed

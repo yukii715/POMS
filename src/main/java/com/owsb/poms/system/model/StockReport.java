@@ -111,13 +111,15 @@ public class StockReport extends Report implements hasId{
         return sr;
     }
 
-    public void save(List<StockReport> stockReport) {
+    public void save(List<StockReport> stockReport, String mesage) {
         Report report = new Report();
         report.setReportID(generateID());
         report.setDateTime(LocalDateTime.now());
+        report.setReportType(type.StockReport);
+        report.setMessage(mesage);
 
         // Create destination file name with date
-        String fileName = report.getReportID() + report.getDateTime().toString().replace(":", "-").replace(".", "-") + ".txt";
+        String fileName = report.getReportID() + "_" + report.getDateTime().toString().replace(":", "-").replace(".", "-") + ".txt";
         String filePath = this.filePath + fileName;
 
         report.add();

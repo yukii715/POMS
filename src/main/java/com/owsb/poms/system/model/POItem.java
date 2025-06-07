@@ -11,9 +11,16 @@ public class POItem extends PurchaseOrder{
     private int quantity;
     private double unitPrice;
     
-    private static final String filePath = "data/PO/items.txt";
+    private static final String filePath = "data/PO/";
 
     public POItem() {
+    }
+
+    public POItem(String itemID, String itemCategory, String itemType, String itemName) {
+        this.itemID = itemID;
+        this.itemCategory = itemCategory;
+        this.itemType = itemType;
+        this.itemName = itemName;
     }
 
     public String getItemID() {
@@ -89,17 +96,13 @@ public class POItem extends PurchaseOrder{
     }
     
     public void save(List<POItem> list) {
+        String fileName = this.getPOID() + ".txt";
+        String filePath = this.filePath + fileName;
+        
         FileHandler.saveToFile(filePath, list, POItem::toString);
     }
     
     public static List<POItem> read(){
         return FileHandler.readFromFile(filePath, POItem::fromString);
-    }
-    
-    @Override
-    public void add() {
-        var pro = read();
-        pro.add(this);
-        this.save(pro);
     }
 }

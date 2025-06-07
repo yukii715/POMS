@@ -33,7 +33,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
     public PurchaseOrder(){
     }
 
-    public PurchaseOrder(String PRID, double totalPrice, String supplierID, LocalDate deliveryDate, String createBy, String approvedBy) {
+    public PurchaseOrder(String PRID, double totalPrice, String supplierID, LocalDate deliveryDate, String createBy) {
         this.POID = generateID();
         this.PRID = PRID;
         this.totalPrice = totalPrice;
@@ -42,7 +42,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         this.deliveryDate = deliveryDate;
         this.status = status.NEW;
         this.createBy = createBy;
-        this.performedBy = approvedBy;
+        this.performedBy = "None";
     }
 
     public String getPOID() {
