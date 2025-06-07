@@ -1,22 +1,18 @@
 
 package com.owsb.poms.ui.fm;
 
-import com.owsb.poms.system.model.Item;
+import com.owsb.poms.system.model.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 public class FinanceManagerDashboard extends javax.swing.JFrame {
+    private List<PurchaseOrder> orders;
     public FinanceManagerDashboard() {
         initComponents();
         for (int i = 0; i < FrameTab.getTabCount(); i++) {
@@ -29,29 +25,32 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         initRequisitionView();
         initSupplierView();
         initGenerateReportFunctionality();
-        
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
+        jFrame1 = new javax.swing.JFrame();
+        poDetailsPanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         FrameTab = new javax.swing.JTabbedPane();
         DashboardPanel = new javax.swing.JPanel();
-        dashBoardButton1 = new javax.swing.JButton();
         dashBoardLabel1 = new javax.swing.JLabel();
-        dashBoardLabel2 = new javax.swing.JLabel();
-        dashBoardLabel3 = new javax.swing.JLabel();
-        dashBoardLabel4 = new javax.swing.JLabel();
-        dashBoardLabel5 = new javax.swing.JLabel();
         logOutButton = new javax.swing.JButton();
         approvePOPanel = new javax.swing.JPanel();
         approvePOScrollpane = new javax.swing.JScrollPane();
         approvePOTable = new javax.swing.JTable();
         approvePOButton = new javax.swing.JButton();
         approvePORejectButton = new javax.swing.JButton();
-        approvePOEditButton = new javax.swing.JButton();
         approvePORefreshButton = new javax.swing.JButton();
         approvePOStatusLabel = new javax.swing.JLabel();
         PurchaseOrder = new javax.swing.JPanel();
@@ -82,7 +81,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         SupplierEntryPanel = new javax.swing.JPanel();
         supplierEntryButton = new javax.swing.JButton();
         supplierEntryScrollPanel = new javax.swing.JScrollPane();
-        supplierEntryRefreshButton = new javax.swing.JTable();
+        supplierEntryTable = new javax.swing.JTable();
         generateReportPanel = new javax.swing.JPanel();
         generatePRSlabel = new javax.swing.JLabel();
         generatePRlabel2 = new javax.swing.JLabel();
@@ -92,6 +91,74 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         generatePRexportButton = new javax.swing.JButton();
         generatePRStartDateComboBox = new javax.swing.JComboBox<>();
         generatePREndDateComboBox = new javax.swing.JComboBox<>();
+
+        jFrame1.setPreferredSize(new java.awt.Dimension(1000, 600));
+
+        poDetailsPanel.setBackground(new java.awt.Color(255, 245, 247));
+        poDetailsPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        poDetailsPanel.setPreferredSize(new java.awt.Dimension(1000, 600));
+
+        jLabel1.setText("jLabel1");
+
+        jLabel2.setText("jLabel2");
+
+        jLabel3.setText("jLabel3");
+
+        jLabel4.setText("jLabel4");
+
+        jLabel5.setText("jLabel5");
+
+        jLabel6.setText("jLabel6");
+
+        jLabel7.setText("jLabel7");
+
+        jLabel8.setText("jLabel8");
+
+        jLabel9.setText("jLabel9");
+
+        javax.swing.GroupLayout poDetailsPanelLayout = new javax.swing.GroupLayout(poDetailsPanel);
+        poDetailsPanel.setLayout(poDetailsPanelLayout);
+        poDetailsPanelLayout.setHorizontalGroup(
+            poDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(poDetailsPanelLayout.createSequentialGroup()
+                .addGap(195, 195, 195)
+                .addGroup(poDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1))
+                .addContainerGap(768, Short.MAX_VALUE))
+        );
+        poDetailsPanelLayout.setVerticalGroup(
+            poDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(poDetailsPanelLayout.createSequentialGroup()
+                .addGap(49, 49, 49)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel3)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel4)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel5)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel6)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel7)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel8)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel9)
+                .addContainerGap(263, Short.MAX_VALUE))
+        );
+
+        jFrame1.getContentPane().add(poDetailsPanel, java.awt.BorderLayout.CENTER);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -108,28 +175,8 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
 
         DashboardPanel.setBackground(new java.awt.Color(255, 245, 247));
 
-        dashBoardButton1.setFont(new java.awt.Font("Comic Sans MS", 0, 40)); // NOI18N
-        dashBoardButton1.setText("Refresh Dashboard");
-        dashBoardButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dashBoardButton1ActionPerformed(evt);
-            }
-        });
-
-        dashBoardLabel1.setFont(new java.awt.Font("Comic Sans MS", 0, 50)); // NOI18N
-        dashBoardLabel1.setText("Welcome, Finance Manager!");
-
-        dashBoardLabel2.setFont(new java.awt.Font("Comic Sans MS", 0, 35)); // NOI18N
-        dashBoardLabel2.setText("Total Approved Purchase Orders: ");
-
-        dashBoardLabel3.setFont(new java.awt.Font("Comic Sans MS", 0, 35)); // NOI18N
-        dashBoardLabel3.setText("Total Amount Spent:  ");
-
-        dashBoardLabel4.setFont(new java.awt.Font("Comic Sans MS", 0, 35)); // NOI18N
-        dashBoardLabel4.setText("123");
-
-        dashBoardLabel5.setFont(new java.awt.Font("Comic Sans MS", 0, 35)); // NOI18N
-        dashBoardLabel5.setText("RM123");
+        dashBoardLabel1.setFont(new java.awt.Font("Comic Sans MS", 0, 65)); // NOI18N
+        dashBoardLabel1.setText("Welcome Back, Finance Manager!");
 
         logOutButton.setFont(new java.awt.Font("Comic Sans MS", 0, 25)); // NOI18N
         logOutButton.setText("Log Out");
@@ -146,51 +193,21 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             .addGroup(DashboardPanelLayout.createSequentialGroup()
                 .addGroup(DashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(DashboardPanelLayout.createSequentialGroup()
-                        .addGap(192, 934, Short.MAX_VALUE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(logOutButton))
                     .addGroup(DashboardPanelLayout.createSequentialGroup()
-                        .addGap(182, 182, 182)
-                        .addComponent(dashBoardLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(16, 16, 16)
+                        .addComponent(dashBoardLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1039, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(DashboardPanelLayout.createSequentialGroup()
-                .addGroup(DashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(DashboardPanelLayout.createSequentialGroup()
-                        .addGroup(DashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(DashboardPanelLayout.createSequentialGroup()
-                                .addGap(42, 42, 42)
-                                .addComponent(dashBoardLabel2)
-                                .addGap(51, 51, 51))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DashboardPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(dashBoardLabel3)
-                                .addGap(43, 43, 43)))
-                        .addGroup(DashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(dashBoardLabel5)
-                            .addComponent(dashBoardLabel4)))
-                    .addGroup(DashboardPanelLayout.createSequentialGroup()
-                        .addGap(298, 298, 298)
-                        .addComponent(dashBoardButton1)))
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         DashboardPanelLayout.setVerticalGroup(
             DashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(DashboardPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(logOutButton)
-                .addGap(30, 30, 30)
-                .addComponent(dashBoardLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(127, 127, 127)
-                .addGroup(DashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(dashBoardLabel4)
-                    .addComponent(dashBoardLabel2))
-                .addGap(34, 34, 34)
-                .addGroup(DashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(dashBoardLabel3)
-                    .addComponent(dashBoardLabel5))
-                .addGap(142, 142, 142)
-                .addComponent(dashBoardButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(198, Short.MAX_VALUE))
+                .addGap(134, 134, 134)
+                .addComponent(dashBoardLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(243, Short.MAX_VALUE))
         );
 
         FrameTab.addTab("Dashboard", DashboardPanel);
@@ -228,14 +245,6 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             }
         });
 
-        approvePOEditButton.setFont(new java.awt.Font("Comic Sans MS", 0, 20)); // NOI18N
-        approvePOEditButton.setText("Edit Quantity");
-        approvePOEditButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                approvePOEditButtonActionPerformed(evt);
-            }
-        });
-
         approvePORefreshButton.setFont(new java.awt.Font("Comic Sans MS", 0, 20)); // NOI18N
         approvePORefreshButton.setText("Refresh List");
         approvePORefreshButton.addActionListener(new java.awt.event.ActionListener() {
@@ -260,9 +269,8 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 .addGroup(approvePOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(approvePORefreshButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(approvePORejectButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(approvePOButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(approvePOEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(124, Short.MAX_VALUE))
+                    .addComponent(approvePOButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(125, Short.MAX_VALUE))
         );
         approvePOPanelLayout.setVerticalGroup(
             approvePOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -275,12 +283,10 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(approvePORejectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(approvePOEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
                         .addComponent(approvePORefreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(approvePOStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 7, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         FrameTab.addTab("Approve Purchase Order", approvePOPanel);
@@ -328,7 +334,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                         .addComponent(viewPOComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(42, 42, 42)
                         .addComponent(viewPurchaseOrderRefreshButton)))
-                .addContainerGap(75, Short.MAX_VALUE))
+                .addContainerGap(74, Short.MAX_VALUE))
         );
         PurchaseOrderLayout.setVerticalGroup(
             PurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -342,7 +348,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                         .addComponent(viewPurchaseOrderRefreshButton)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(viewPOScroolPane, javax.swing.GroupLayout.PREFERRED_SIZE, 675, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         FrameTab.addTab(" Purchase Order", PurchaseOrder);
@@ -427,7 +433,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                                 .addComponent(ProcessPaymentButton)
                                 .addGap(161, 161, 161)
                                 .addComponent(ClearFormButton, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(136, Short.MAX_VALUE))
+                .addContainerGap(126, Short.MAX_VALUE))
         );
         processPaymentPanelLayout.setVerticalGroup(
             processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -492,7 +498,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 .addGroup(TransactionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(viewTransactionsRefreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(viewTransactionsScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 963, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(49, Short.MAX_VALUE))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
         TransactionsPanelLayout.setVerticalGroup(
             TransactionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -501,7 +507,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 .addComponent(viewTransactionsRefreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(viewTransactionsScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 675, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         FrameTab.addTab("Transactions ", TransactionsPanel);
@@ -538,7 +544,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 .addGroup(PurchaseRequisitionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ViewPRRefreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 945, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(72, Short.MAX_VALUE))
+                .addContainerGap(71, Short.MAX_VALUE))
         );
         PurchaseRequisitionPanelLayout.setVerticalGroup(
             PurchaseRequisitionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -547,7 +553,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 .addComponent(ViewPRRefreshButton)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 675, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         FrameTab.addTab("Purchase Requisition", PurchaseRequisitionPanel);
@@ -562,7 +568,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             }
         });
 
-        supplierEntryRefreshButton.setModel(new javax.swing.table.DefaultTableModel(
+        supplierEntryTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -573,7 +579,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        supplierEntryScrollPanel.setViewportView(supplierEntryRefreshButton);
+        supplierEntryScrollPanel.setViewportView(supplierEntryTable);
 
         javax.swing.GroupLayout SupplierEntryPanelLayout = new javax.swing.GroupLayout(SupplierEntryPanel);
         SupplierEntryPanel.setLayout(SupplierEntryPanelLayout);
@@ -584,7 +590,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 .addGroup(SupplierEntryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(supplierEntryButton)
                     .addComponent(supplierEntryScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 945, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(73, Short.MAX_VALUE))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
         SupplierEntryPanelLayout.setVerticalGroup(
             SupplierEntryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -593,7 +599,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 .addComponent(supplierEntryButton)
                 .addGap(18, 18, 18)
                 .addComponent(supplierEntryScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 675, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         FrameTab.addTab("Supplier Entry", SupplierEntryPanel);
@@ -661,7 +667,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                             .addComponent(generatePRButton)
                             .addComponent(generatePRexportButton)))
                     .addComponent(generatePRScrollpane, javax.swing.GroupLayout.PREFERRED_SIZE, 986, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
         generateReportPanelLayout.setVerticalGroup(
             generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -678,7 +684,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                     .addComponent(generatePRStartDateComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(generatePRScrollpane, javax.swing.GroupLayout.PREFERRED_SIZE, 608, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         FrameTab.addTab("Purchase Report ", generateReportPanel);
@@ -691,10 +697,6 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void dashBoardButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashBoardButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_dashBoardButton1ActionPerformed
 
     private void ClearFormButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearFormButtonActionPerformed
         clearProcessingPaymentForm();
@@ -748,10 +750,6 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             refreshApprovePOList();
     }//GEN-LAST:event_approvePORefreshButtonActionPerformed
 
-    private void approvePOEditButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_approvePOEditButtonActionPerformed
-        editPOQuantity();
-    }//GEN-LAST:event_approvePOEditButtonActionPerformed
-
     private void viewPurchaseOrderRefreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewPurchaseOrderRefreshButtonActionPerformed
         String selectedType = viewPOComboBox.getSelectedItem().toString();
         refreshPurchaseOrderTable(selectedType);    
@@ -765,11 +763,11 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_viewPOComboBoxActionPerformed
 
     private void ViewPRRefreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewPRRefreshButtonActionPerformed
-        refreshRequisitionTable();
+        loadRequisitionData();
     }//GEN-LAST:event_ViewPRRefreshButtonActionPerformed
 
     private void supplierEntryButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierEntryButtonActionPerformed
-         refreshSupplierTable();
+         loadActiveSuppliers();
     }//GEN-LAST:event_supplierEntryButtonActionPerformed
 
     private void generatePRexportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generatePRexportButtonActionPerformed
@@ -786,7 +784,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     
     DefaultTableModel approvePOTableModel;
     private void initApprovePOFunctionality(){
-        String[] columns = {"PO ID","Item","Quantity","Supplier","Unit Price","Status"};
+        String[] columns = {"PO ID","PR ITEM","Total Price","Supplier ID","Generated Date", "Delivery Date", "Status", "Created By", "Approved By"};
         approvePOTableModel = new DefaultTableModel(columns,0){
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -796,18 +794,21 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         loadApprovePODataFromMainList();
     }
     
-    private void loadApprovePODataFromMainList() {
+        private void loadApprovePODataFromMainList() {
         approvePOTableModel.setRowCount(0);
-        List<Item> items = Item.toList();
-        for (Item item : items) {
-            if (item.getStatus() == Item.Status.NEW) {
+        orders = com.owsb.poms.system.model.PurchaseOrder.toList();
+        for (PurchaseOrder po : orders) {
+            if (po.getStatus() == com.owsb.poms.system.model.PurchaseOrder.Status.NEW) {
                 approvePOTableModel.addRow(new Object[]{
-                    item.getItemID(),
-                    item.getItemName(),
-                    item.getStock(),
-                    "-",
-                    item.getSellPrice(),
-                    item.getStatus().toString()
+                    po.getPOID(),
+                    po.getPRID(),
+                    po.getTotalPrice(),
+                    po.getSupplierID(),
+                    po.getGenerateDateTime().toString(),
+                    po.getDeliveryDate().toString(),
+                    po.getStatus().name(),
+                    po.getCreateBy(),
+                    po.getApprovedBy()
                 });
             }
         }
@@ -821,57 +822,28 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         }
         
         String poID = approvePOTableModel.getValueAt(selectedRow, 0).toString();
-        String currentStatus = approvePOTableModel.getValueAt(selectedRow, 5).toString();
+        String currentStatus = approvePOTableModel.getValueAt(selectedRow, 6).toString();
 
-        if (!currentStatus.equalsIgnoreCase(Item.Status.NEW.name())) {
+        if (!currentStatus.equalsIgnoreCase(com.owsb.poms.system.model.PurchaseOrder.Status.NEW.name())) {
             approvePOStatusLabel.setText("Status: Cannot update. Already " + currentStatus + ".");
             return;
         }
-        Item updatedItem = new Item();
-        updatedItem.setItemID(poID);
-        updatedItem.setStatus(Item.Status.valueOf(status.toUpperCase()));
-        updatedItem.updateStatus();
+        orders = com.owsb.poms.system.model.PurchaseOrder.toList();
+        for (PurchaseOrder po : orders) {
+            if (po.getPOID().equals(poID)) {
+                po.setStatus(com.owsb.poms.system.model.PurchaseOrder.Status.valueOf(status.toUpperCase()));
+                po.setApprovedBy("FM001");
+                po.updateStatus(); 
+                approvePOStatusLabel.setText("Status: Order " + status.toLowerCase() + " successfully.");
+                break;
+            }
+        }
         
-        approvePOStatusLabel.setText("Status: Order " + status.toLowerCase() + " successfully.");
         refreshApprovePOList();
         refreshPurchaseOrderTable(viewPOComboBox.getSelectedItem().toString());
         
     }
     
-    private void editPOQuantity() {
-        int selectedRow = approvePOTable.getSelectedRow();
-    if (selectedRow == -1) {
-        approvePOStatusLabel.setText("Status: Please select a row.");
-        return;
-    }
-    
-    String status = approvePOTableModel.getValueAt(selectedRow, 5).toString();
-    if (!status.equals("NEW")) {
-        approvePOStatusLabel.setText("Status: Cannot edit. Order is already " + status + ".");
-        return;
-    }
-    String input = JOptionPane.showInputDialog(this, "Enter new quantity:");
-    try {
-        int quantity = Integer.parseInt(input);
-        if (quantity <= 0) {
-            approvePOStatusLabel.setText("Status: Quantity must be greater than 0.");
-            return;
-        }   
-        String itemID = approvePOTableModel.getValueAt(selectedRow, 0).toString();
-        List<Item> items = Item.toList();
-        for (Item item : items) {
-            if (item.getItemID().equals(itemID)) {
-                item.setStock(quantity);
-                item.updateStock(); 
-                break;
-            }
-        }
-        refreshApprovePOList();
-        approvePOStatusLabel.setText("Status: Quantity updated.");
-    }catch (NumberFormatException e) {
-            approvePOStatusLabel.setText("Status: Invalid input. Please enter a number.");
-        }
-    }
     private void refreshApprovePOList(){
         loadApprovePODataFromMainList();
         approvePOStatusLabel.setText("Status: List refreshed. Only NEW orders shown.");
@@ -1020,47 +992,59 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     
     
     
-    private void refreshPurchaseOrderTable(String categoryFilter) {
-        List<Item> items = Item.toList();
+    private void refreshPurchaseOrderTable(String filterStatus) {
+        List<PurchaseOrder> allPOs = com.owsb.poms.system.model.PurchaseOrder.toList();
         purchaseOrderTableModel.setRowCount(0);
-        for (Item item : items) {
-            if (categoryFilter.equals("All") || item.getItemCategory().equalsIgnoreCase(categoryFilter)) {
+        for (PurchaseOrder po : allPOs) {
+            if (filterStatus.equals("All") || po.getStatus().name().equalsIgnoreCase(filterStatus)) {
                 purchaseOrderTableModel.addRow(new Object[]{
-                    item.getItemID(),
-                    item.getItemCategory(),
-                    item.getItemName(),
-                    item.getStock(),
-                    "-",
-                    item.getStatus().toString()
+                    po.getPOID(),
+                    po.getPRID(),
+                    po.getTotalPrice(),
+                    po.getSupplierID(),
+                    po.getGenerateDateTime().toString(),
+                    po.getDeliveryDate().toString(),
+                    po.getStatus().name(),
+                    po.getCreateBy(),
+                    po.getApprovedBy()
                 });
             }
         }
     }
     
+    private void loadAllPurchaseOrders() {
+        purchaseOrderTableModel.setRowCount(0);
+        List<PurchaseOrder> allPOs = com.owsb.poms.system.model.PurchaseOrder.toList();
+        for (PurchaseOrder po : allPOs) {
+            purchaseOrderTableModel.addRow(new Object[]{
+                po.getPOID(),
+                po.getPRID(),
+                "-",  
+                po.getSupplierID(),
+                po.getTotalPrice(),
+                po.getStatus().name()
+            });
+        }
+    }
+    
     private void initPurchaseOrderView() {
-        String[] columns = {"PO ID", "Item Type", "Item", "Qty", "Supplier", "Status"};
+        String[] columns = {"PO ID","PR ITEM","Total Price","Supplier ID","Generated Date", "Delivery Date", "Status", "Created By", "Approved By"};
         purchaseOrderTableModel = new DefaultTableModel(columns, 0){
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
         viewPOTable.setModel(purchaseOrderTableModel);
+        loadAllPurchaseOrders();
         viewPOComboBox.removeAllItems();
         viewPOComboBox.addItem("All");
-        List<String> allCategories = Item.getAllCategories();
-        for (String category : allCategories) {
-            viewPOComboBox.addItem(category);
+        for (PurchaseOrder.Status s : com.owsb.poms.system.model.PurchaseOrder.Status.values()) {
+        viewPOComboBox.addItem(s.name());
         }
         refreshPurchaseOrderTable("All");
         initProcessPaymentFunctionality();
     }
     
-    private void loadDummyRequisitions() {
-        requisitionList.clear();
-        requisitionList.add(new Object[]{"PR001", "Item001", 100, "SupplierA", "2025-05-28", "Pending"});
-        requisitionList.add(new Object[]{"PR002", "Item002", 50, "SupplierB", "2025-05-29", "Verified"});
-        requisitionList.add(new Object[]{"PR003", "Item003", 80, "SupplierC", "2025-05-30", "Pending"});
-    }   
     
     private void refreshRequisitionTable() {
         requisitionTableModel.setRowCount(0);
@@ -1070,31 +1054,31 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     }
     
     private void initRequisitionView() {
-        String[] cols = {"PR ID", "Item ID", "Qty", "Supplier", "Date", "Status"};
+        String[] cols = {"PR ID", "Supplier ID", "Request Time", "Delivery Date", "Status", "Created By"};
         requisitionTableModel = new DefaultTableModel(cols, 0){
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
         viewPRTable.setModel(requisitionTableModel);
-        loadDummyRequisitions();
-        refreshRequisitionTable();
+        loadRequisitionData();
     }
     
-    private void loadDummySuppliers() {
-        supplierList.clear();
-        supplierList.add(new Object[]{"SUP001", "SupplierA", "2024-06-01", "Active"});
-        supplierList.add(new Object[]{"SUP002", "SupplierB", "2024-05-15", "Deleted"});
-        supplierList.add(new Object[]{"SUP003", "SupplierC", "2024-03-22", "Active"});
-    }
-    
-    private void refreshSupplierTable() {
-        supplierTableModel.setRowCount(0);
-        for (Object[] row : supplierList) {
-            supplierTableModel.addRow(row);
+    private void loadRequisitionData() {
+        requisitionTableModel.setRowCount(0);
+        List<PurchaseRequisition> prList = PurchaseRequisition.toList();
+        
+        for (PurchaseRequisition pr : prList) {
+            requisitionTableModel.addRow(new Object[]{
+                pr.getPRID(),
+                pr.getSupplierID(),
+                pr.getRequestDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                pr.getRequiredDeliveryDate().toString(),
+                pr.getStatus().name(),
+                pr.getCreateBy()
+            });
         }
     }
-    
     private void initSupplierView() {
         String[] cols = {"Supplier ID", "Name", "Date Added", "Status"};
         supplierTableModel = new DefaultTableModel(cols, 0){
@@ -1102,10 +1086,24 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 return false;
             }
         };
-        supplierEntryRefreshButton.setModel(supplierTableModel);
-
-        loadDummySuppliers();
-        refreshSupplierTable();
+        supplierEntryTable.setModel(supplierTableModel);
+        loadActiveSuppliers();
+    }
+    
+    private void loadActiveSuppliers() {
+        supplierTableModel.setRowCount(0);
+        List<Supplier> suppliers = Supplier.toList();
+        
+        for (Supplier s : suppliers) {
+            if (!s.isDeleted()) {  
+            supplierTableModel.addRow(new Object[]{
+                s.getSupplierID(),
+                s.getSupplierName(),
+                s.getAddedTime().toLocalDate().toString(),
+                "Active"
+            });
+            }
+        };
     }
     
     DefaultTableModel reportTableModel;
@@ -1250,7 +1248,6 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel TransactionsPanel;
     private javax.swing.JButton ViewPRRefreshButton;
     private javax.swing.JButton approvePOButton;
-    private javax.swing.JButton approvePOEditButton;
     private javax.swing.JPanel approvePOPanel;
     private javax.swing.JButton approvePORefreshButton;
     private javax.swing.JButton approvePORejectButton;
@@ -1260,12 +1257,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel bankAccNumberLabel;
     private javax.swing.JTextField bankNameTextfield;
     private javax.swing.JLabel bankNamelabel;
-    private javax.swing.JButton dashBoardButton1;
     private javax.swing.JLabel dashBoardLabel1;
-    private javax.swing.JLabel dashBoardLabel2;
-    private javax.swing.JLabel dashBoardLabel3;
-    private javax.swing.JLabel dashBoardLabel4;
-    private javax.swing.JLabel dashBoardLabel5;
     private javax.swing.JButton generatePRButton;
     private javax.swing.JComboBox<String> generatePREndDateComboBox;
     private javax.swing.JScrollPane generatePRScrollpane;
@@ -1275,16 +1267,26 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel generatePRlabel2;
     private javax.swing.JTable generatePRtable;
     private javax.swing.JPanel generateReportPanel;
+    private javax.swing.JFrame jFrame1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JButton logOutButton;
+    private javax.swing.JPanel poDetailsPanel;
     private javax.swing.JPanel processPaymentPanel;
     private javax.swing.JComboBox<String> selectPOComboBox;
     private javax.swing.JLabel selectPOOrderLabel;
     private javax.swing.JButton supplierEntryButton;
-    private javax.swing.JTable supplierEntryRefreshButton;
     private javax.swing.JScrollPane supplierEntryScrollPanel;
+    private javax.swing.JTable supplierEntryTable;
     private javax.swing.JComboBox<String> viewPOComboBox;
     private javax.swing.JScrollPane viewPOScroolPane;
     private javax.swing.JTable viewPOTable;

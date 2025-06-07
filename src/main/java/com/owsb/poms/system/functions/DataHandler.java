@@ -45,4 +45,17 @@ public class DataHandler {
             }
         }
     }
+    
+    public static <T, K, V> V getValueByKey(List<T> list,
+                                        Function<T, K> keyExtractor,
+                                        K keyToMatch,
+                                        Function<T, V> valueExtractor) {
+    for (T item : list) {
+        if (keyExtractor.apply(item).equals(keyToMatch)) {
+            return valueExtractor.apply(item);
+        }
+    }
+    return null;
+}
+
 }

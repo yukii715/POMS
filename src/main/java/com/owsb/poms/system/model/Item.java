@@ -9,6 +9,7 @@ public class Item implements CommonModel<Item>{
     private String itemName;
     private String itemCategory;
     private String itemType;
+    private String supplierID;
     private double sellPrice;
     private int stock;
     private Status status;
@@ -23,11 +24,12 @@ public class Item implements CommonModel<Item>{
     }
 
     // Constructor
-    public Item(String itemCategory, String itemType, String itemName, double sellPrice) {
+    public Item(String itemCategory, String itemType, String itemName, String supplierID, double sellPrice) {
         this.itemID = generateID();
         this.itemName = itemName;
         this.itemCategory = itemCategory;
         this.itemType = itemType;
+        this.supplierID = supplierID;
         this.sellPrice = sellPrice;
         this.stock = 0;
         this.status = Status.NEW;
@@ -73,6 +75,14 @@ public class Item implements CommonModel<Item>{
     public double getSellPrice() {
         return sellPrice;
     }
+    
+    public String getSupplierID() {
+        return supplierID;
+    }
+
+    public void setSupplierID(String supplierID) {
+        this.supplierID = supplierID;
+    }
 
     public void setSellPrice(double sellPrice) {
         this.sellPrice = sellPrice;
@@ -97,11 +107,11 @@ public class Item implements CommonModel<Item>{
     @Override
     public String toString() {
         return itemID + "\t" + itemName + "\t" + itemCategory + "\t" + itemType + "\t" +
-                sellPrice + "\t" + stock + "\t" + status;
+                supplierID + "\t" + sellPrice + "\t" + stock + "\t" + status;
     }
     
     public static Item fromString(String line) {String[] parts = line.split("\t");
-        if (parts.length != 7) {
+        if (parts.length != 8) {
             throw new IllegalArgumentException("Invalid input line for Item: " + line);
         }
         Item item = new Item();
@@ -109,9 +119,10 @@ public class Item implements CommonModel<Item>{
         item.setItemName(parts[1]);
         item.setItemCategory(parts[2]);
         item.setItemType(parts[3]);
-        item.setSellPrice(Double.parseDouble(parts[4]));
-        item.setStock(Integer.parseInt(parts[5]));
-        item.setStatus(Status.valueOf(parts[6]));
+        item.setSupplierID(parts[4]);
+        item.setSellPrice(Double.parseDouble(parts[5]));
+        item.setStock(Integer.parseInt(parts[6]));
+        item.setStatus(Status.valueOf(parts[7]));
         return item;
     }
     
