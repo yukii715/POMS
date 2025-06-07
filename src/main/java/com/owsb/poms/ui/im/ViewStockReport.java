@@ -4,6 +4,8 @@
  */
 package com.owsb.poms.ui.im;
 
+import com.owsb.poms.system.model.Item;
+import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -11,23 +13,25 @@ import javax.swing.table.DefaultTableModel;
  * @author Vincent
  */
 public class ViewStockReport extends javax.swing.JFrame {
+    
     private  DefaultTableModel modelItems = new DefaultTableModel(){
         public boolean isCellEditable(int row, int column){
            return false;
         }
     };
     private String[] columnItems = {"ItemID", "Name", "Category", "Type", "Stock", "Status"};
+    
+    private List<Item> ItemList;
 
     /**
      * Creates new form ViewStockReport
      */
-    public ViewStockReport(){
-        
-    }
+    public ViewStockReport(){}
     
     public ViewStockReport(String reportID) {
-        modelItems.setColumnIdentifiers(columnItems);
         initComponents();
+        modelItems.setColumnIdentifiers(columnItems);
+        
     }
 
     /**

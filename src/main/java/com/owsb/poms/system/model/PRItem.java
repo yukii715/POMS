@@ -5,16 +5,45 @@ import java.util.List;
 
 public class PRItem extends PurchaseRequisition {
     private String itemID;
+    private String itemCategory;
+    private String itemType;
+    private String itemName;
     private int quantity;
     
-    private static final String filePath = "data/PR/items.txt";
+    private static final String filePath = "data/PR/";
 
     public PRItem(){
     }
-    
-    public PRItem(String itemID, int quantity) {
+
+    public PRItem(String itemID, String itemCategory, String itemType, String itemName) {
         this.itemID = itemID;
-        this.quantity = quantity;
+        this.itemCategory = itemCategory;
+        this.itemType = itemType;
+        this.itemName = itemName;
+    }
+
+    public String getItemCategory() {
+        return itemCategory;
+    }
+
+    public void setItemCategory(String itemCategory) {
+        this.itemCategory = itemCategory;
+    }
+
+    public String getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
     }
 
     public String getItemID() {
@@ -36,34 +65,33 @@ public class PRItem extends PurchaseRequisition {
     @Override
     public String toString() {
         return itemID + "\t"
-             + quantity;
+                + itemCategory + "\t"
+                + itemType + "\t"
+                + itemName + "\t"
+                + quantity;
     }
 
     public static PRItem fromString(String line) {
         String[] parts = line.split("\t");
-        if (parts.length != 2) {
-            throw new IllegalArgumentException("Invalid input line for PurchaseRequisition: " + line);
-        }
 
         PRItem pri = new PRItem();
         pri.setItemID(parts[0]);
-        pri.setQuantity(Integer.parseInt(parts[1]));
+        pri.setItemCategory(parts[1]);
+        pri.setItemType(parts[2]);
+        pri.setItemName(parts[3]);
+        pri.setQuantity(Integer.parseInt(parts[4]));
 
         return pri;
     }
     
     public void save(List<PRItem> list) {
+        String fileName = this.getPRID() + ".txt";
+        String filePath = this.filePath + fileName;
+        
         FileHandler.saveToFile(filePath, list, PRItem::toString);
     }
     
-    public static List<PRItem> read(){
+    public static List<PRItem> read(String filePath){
         return FileHandler.readFromFile(filePath, PRItem::fromString);
-    }
-    
-    @Override
-    public void add() {
-        var pri = read();
-        pri.add(this);
-        this.save(pri);
     }
 }

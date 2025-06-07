@@ -1,15 +1,19 @@
 package com.owsb.poms.ui.admin.Orders;
 
 import com.owsb.poms.system.model.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.SwingConstants;
 import javax.swing.table.*;
 
 public class PRList extends javax.swing.JDialog {
-    private String username;
-    private int selectedPrRow;
-    private PurchaseRequisition selectedPr = new PurchaseRequisition();
+    private String userID;
     private List<PurchaseRequisition> prList;
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    
     private DefaultTableModel prModel = new DefaultTableModel(){
        public boolean isCellEditable(int row, int column){
            return false;
@@ -21,18 +25,18 @@ public class PRList extends javax.swing.JDialog {
     /**
      * Creates new form PRList
      */
-    public PRList(java.awt.Frame parent, boolean modal, String username) {
+    public PRList(java.awt.Frame parent, boolean modal, String userID) {
         super(parent, modal);
         initComponents();
         
-        this.username = username;
+        this.userID = userID;
         setTitle("Purchase Requisitions");
         
         PR();
     }
     
     private void PR(){
-        selectedPrRow = -1;
+        
         prModel.setRowCount(0);
         
         prModel.setColumnIdentifiers(prColumnName);
@@ -41,7 +45,22 @@ public class PRList extends javax.swing.JDialog {
         
         srlPR.getViewport().setBackground(new java.awt.Color(255, 255, 204));
         
-        tblPR.getColumnModel().getColumn(3).setPreferredWidth(150);
+        tblPR.getColumnModel().getColumn(2).setPreferredWidth(150);
+        
+        prList = PurchaseRequisition.toList();
+        
+        for (PurchaseRequisition pr : prList) {
+            if (cbShowAllPr.isSelected() || pr.getStatus() == PurchaseRequisition.Status.NEW) {
+                prModel.addRow(new String[]{
+                    pr.getPRID(),
+                    pr.getSupplierID(),
+                    pr.getRequestDateTime().format(dateTimeFormatter),
+                    pr.getRequiredDeliveryDate().format(dateFormatter),
+                    pr.getCreateBy(),
+                    pr.getStatus().name()
+                });
+            }
+        }
         
         // Create a single “center” renderer:
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -50,6 +69,8 @@ public class PRList extends javax.swing.JDialog {
         // Apply it as the default for any Object‐typed cell:
         tblPR.setDefaultRenderer(Object.class, centerRenderer);
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -64,6 +85,7 @@ public class PRList extends javax.swing.JDialog {
         srlPR = new javax.swing.JScrollPane();
         tblPR = new javax.swing.JTable();
         btnNew = new javax.swing.JButton();
+        cbShowAllPr = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -79,9 +101,6 @@ public class PRList extends javax.swing.JDialog {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblPRMouseClicked(evt);
             }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                tblPRMouseReleased(evt);
-            }
         });
         srlPR.setViewportView(tblPR);
 
@@ -95,13 +114,25 @@ public class PRList extends javax.swing.JDialog {
             }
         });
 
+        cbShowAllPr.setBackground(new java.awt.Color(204, 204, 255));
+        cbShowAllPr.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        cbShowAllPr.setForeground(new java.awt.Color(0, 0, 0));
+        cbShowAllPr.setText("Show All PRs");
+        cbShowAllPr.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbShowAllPrActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
         pnlMainLayout.setHorizontalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                 .addContainerGap(856, Short.MAX_VALUE)
-                .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(cbShowAllPr, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
+                    .addComponent(btnNew, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(33, 33, 33))
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlMainLayout.createSequentialGroup()
@@ -114,7 +145,9 @@ public class PRList extends javax.swing.JDialog {
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(653, Short.MAX_VALUE))
+                .addGap(27, 27, 27)
+                .addComponent(cbShowAllPr)
+                .addContainerGap(602, Short.MAX_VALUE))
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlMainLayout.createSequentialGroup()
                     .addContainerGap()
@@ -137,23 +170,44 @@ public class PRList extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tblPRMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPRMouseClicked
-        // TODO add your handling code here:
+        if (evt.getClickCount() == 2 && tblPR.getSelectedRow() != -1) {
+            int row = tblPR.getSelectedRow();
+            
+            PurchaseRequisition pr = new PurchaseRequisition();
+            pr.setPRID(String.valueOf(tblPR.getValueAt(row, 0)));
+            pr.setSupplierID(String.valueOf(tblPR.getValueAt(row, 1)));
+            pr.setRequestDateTime(LocalDateTime.parse(String.valueOf(tblPR.getValueAt(row, 2)), dateTimeFormatter));
+            pr.setRequiredDeliveryDate(LocalDate.parse(String.valueOf(tblPR.getValueAt(row, 3)), dateFormatter));
+            pr.setCreateBy(String.valueOf(tblPR.getValueAt(row, 4)));
+            pr.setStatus(PurchaseRequisition.Status.valueOf(String.valueOf(tblPR.getValueAt(row, 5))));
+            
+            PRDetails prd = new PRDetails(this, true, pr, userID);
+            prd.setLocationRelativeTo(this);
+            prd.setVisible(true);
+            PR();
+        }
     }//GEN-LAST:event_tblPRMouseClicked
 
-    private void tblPRMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPRMouseReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tblPRMouseReleased
-
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
-        NewPR newPR = new NewPR(this, true, username);
+        PRModifier newPR = new PRModifier(this, true, userID);
         newPR.setLocationRelativeTo(this);
         newPR.setVisible(true);
         PR();
     }//GEN-LAST:event_btnNewActionPerformed
 
+    private void cbShowAllPrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbShowAllPrActionPerformed
+        if (cbShowAllPr.isSelected()){
+            PR();
+        }
+        else{
+            PR();
+        }
+    }//GEN-LAST:event_cbShowAllPrActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNew;
+    private javax.swing.JCheckBox cbShowAllPr;
     private javax.swing.JPanel pnlMain;
     private javax.swing.JScrollPane srlPR;
     private javax.swing.JTable tblPR;

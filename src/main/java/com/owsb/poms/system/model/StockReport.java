@@ -8,9 +8,9 @@ import java.util.List;
 
 public class StockReport extends Report implements hasId{
     private String itemID;
-    private String itemName;
     private String itemCategory;
     private String itemType;
+    private String itemName;
     private int stock;
     private Item.Status status;
 

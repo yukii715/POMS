@@ -1,11 +1,13 @@
 package com.owsb.poms.system.model;
 
 import com.owsb.poms.system.functions.FileHandler;
-import java.time.LocalDate;
 import java.util.List;
 
 public class POItem extends PurchaseOrder{
     private String itemID;
+    private String itemCategory;
+    private String itemType;
+    private String itemName;
     private int quantity;
     private double unitPrice;
     
@@ -14,16 +16,36 @@ public class POItem extends PurchaseOrder{
     public POItem() {
     }
 
-    public POItem(String PRID, double totalPrice, String supplierID, LocalDate deliveryDate, String createBy, String approvedBy) {
-        super(PRID, totalPrice, supplierID, deliveryDate, createBy, approvedBy);
-    }
-
     public String getItemID() {
         return itemID;
     }
 
     public void setItemID(String ItemID) {
         this.itemID = ItemID;
+    }
+
+    public String getItemCategory() {
+        return itemCategory;
+    }
+
+    public void setItemCategory(String itemCategory) {
+        this.itemCategory = itemCategory;
+    }
+
+    public String getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
     }
 
     public int getQuantity() {
@@ -45,20 +67,23 @@ public class POItem extends PurchaseOrder{
     @Override
     public String toString() {
         return itemID + "\t"
+                + itemCategory + "\t"
+                + itemType + "\t"
+                + itemName + "\t"
                 + quantity + "\t"
                 + unitPrice;
     }
 
     public static POItem fromString(String line) {
         String[] parts = line.split("\t");
-        if (parts.length != 3) {
-            throw new IllegalArgumentException("Invalid input line for PurchaseRequisition: " + line);
-        }
 
         POItem pro = new POItem();
         pro.setItemID(parts[0]);
-        pro.setQuantity(Integer.parseInt(parts[1]));
-        pro.setUnitPrice(Double.parseDouble(parts[2]));
+        pro.setItemCategory(parts[1]);
+        pro.setItemType(parts[2]);
+        pro.setItemName(parts[3]);
+        pro.setQuantity(Integer.parseInt(parts[4]));
+        pro.setUnitPrice(Double.parseDouble(parts[5]));
 
         return pro;
     }
