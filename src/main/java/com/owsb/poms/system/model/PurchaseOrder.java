@@ -10,7 +10,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
     private String PRID;
     private double totalPrice;
     private String supplierID;
-    private LocalDateTime generateDateTime;
+    private LocalDateTime generatedDateTime;
     private LocalDate deliveryDate;
     private Status status;
     private String createBy;
@@ -22,6 +22,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         NEW,
         APPROVED,
         REJECTED,
+        DELETED,
         PROCESSING,
         EXTENDED,
         ARRIVED,
@@ -33,12 +34,12 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
     public PurchaseOrder(){
     }
 
-    public PurchaseOrder(String PRID, double totalPrice, String supplierID, LocalDate deliveryDate, String createBy, String approvedBy) {
+    public PurchaseOrder(String PRID, double totalPrice, String supplierID, LocalDate deliveryDate, String createBy) {
         this.POID = generateID();
         this.PRID = PRID;
         this.totalPrice = totalPrice;
         this.supplierID = supplierID;
-        this.generateDateTime = LocalDateTime.now();
+        this.generatedDateTime = LocalDateTime.now();
         this.deliveryDate = deliveryDate;
         this.status = status.NEW;
         this.createBy = createBy;
@@ -77,12 +78,12 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         this.supplierID = supplierID;
     }
 
-    public LocalDateTime getGenerateDateTime() {
-        return generateDateTime;
+    public LocalDateTime getGeneratedDateTime() {
+        return generatedDateTime;
     }
 
-    public void setGenerateDateTime(LocalDateTime generateDateTime) {
-        this.generateDateTime = generateDateTime;
+    public void setGeneratedDateTime(LocalDateTime generatedDateTime) {
+        this.generatedDateTime = generatedDateTime;
     }
 
     public LocalDate getDeliveryDate() {
@@ -123,7 +124,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
              + PRID + "\t"
              + totalPrice + "\t"
              + supplierID + "\t"
-             + generateDateTime.toString() + "\t"
+             + generatedDateTime.toString() + "\t"
              + deliveryDate.toString() + "\t"
              + status.name() + "\t"
              + createBy + "\t"
@@ -141,7 +142,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         po.setPRID(parts[1]);
         po.setTotalPrice(Double.parseDouble(parts[2]));
         po.setSupplierID(parts[3]);
-        po.setGenerateDateTime(LocalDateTime.parse(parts[4]));
+        po.setGeneratedDateTime(LocalDateTime.parse(parts[4]));
         po.setDeliveryDate(LocalDate.parse(parts[5]));
         po.setStatus(Status.valueOf(parts[6]));
         po.setCreateBy(parts[7]);
@@ -197,5 +198,10 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
                             },           
                 list -> this.saveToFile(list)
         );
+    }
+    
+    public List<POItem> getItems(){
+        String filePath = String.format("data/PO/%s.txt", getPOID());
+        return POItem.read(filePath);
     }
 }

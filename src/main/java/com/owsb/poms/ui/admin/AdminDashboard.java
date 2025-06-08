@@ -16,6 +16,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private Point initialClick;
     private boolean maximise = false;
     private boolean summary = false;  
+    private Admin admin;
     private String currentTab = "Dashboard";
     
     // Users
@@ -87,8 +88,11 @@ public class AdminDashboard extends javax.swing.JFrame {
             divider.repaint();
         });
         
-        lblUsername.setText("admin");
-        lblUserID.setText("AD001");
+        admin = new Admin();
+        admin.setUID("AD001");
+        admin.setUsername("admin");
+        lblUsername.setText(admin.getUsername());
+        lblUserID.setText(admin.getUID());
         
         Orders();
         Inventory();
@@ -2014,11 +2018,13 @@ public class AdminDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_tblOrderMouseReleased
 
     private void btnViewAllPOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewAllPOActionPerformed
-        // TODO add your handling code here:
+        POList pol = new POList(this, true, lblUserID.getText());
+        pol.setLocationRelativeTo(this);
+        pol.setVisible(true);
     }//GEN-LAST:event_btnViewAllPOActionPerformed
 
     private void btnViewPRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewPRActionPerformed
-        PRList prl = new PRList(this, true, lblUserID.getText());
+        PRList prl = new PRList(this, true, admin);
         prl.setLocationRelativeTo(this);
         prl.setVisible(true);
     }//GEN-LAST:event_btnViewPRActionPerformed
