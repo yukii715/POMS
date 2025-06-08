@@ -179,7 +179,7 @@ public class PRList extends javax.swing.JDialog {
             pr.setCreateBy(String.valueOf(tblPR.getValueAt(row, 4)));
             pr.setStatus(PurchaseRequisition.Status.valueOf(String.valueOf(tblPR.getValueAt(row, 5))));
             
-            PRDetails prd = new PRDetails(this, true, pr, admin.getUID());
+            PRDetails prd = new PRDetails(this, true, pr, admin);
             prd.setLocationRelativeTo(this);
             prd.setVisible(true);
             PR();
