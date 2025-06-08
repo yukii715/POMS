@@ -1,65 +1,61 @@
 package com.owsb.poms.ui.admin.Orders;
 
 import com.owsb.poms.system.model.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.SwingConstants;
 import javax.swing.table.*;
 
-public class PRList extends javax.swing.JDialog {
+public class POList extends javax.swing.JDialog {
     private Admin admin;
-    private List<PurchaseRequisition> prList;
+    private List<PurchaseOrder> poList;
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     
-    private DefaultTableModel prModel = new DefaultTableModel(){
+    private DefaultTableModel poModel = new DefaultTableModel(){
        public boolean isCellEditable(int row, int column){
            return false;
        } 
     } ;
-    private String[] prColumnName = {"ID", "Supplier", "Date Time", "Required Delivery On", "Created By", "Status"};
-   
+    private String[] poColumnName = {"ID", "From", "Supplier", "Total Price", "Delivery Date", "Created By", "Status"};
 
-    /**
-     * Creates new form PRList
-     */
-    public PRList(java.awt.Frame parent, boolean modal, Admin admin) {
+    public POList(java.awt.Frame parent, boolean modal, Admin admin) {
         super(parent, modal);
         initComponents();
         
         this.admin = admin;
-        setTitle("Purchase Requisitions");
+        setTitle("Purchase Orders");
         
-        PR();
+        cbAllPOs.setSelected(true);
+        
+        PO();
     }
-    
-    private void PR(){
+
+    private void PO(){
         
-        prModel.setRowCount(0);
+        poModel.setRowCount(0);
         
-        prModel.setColumnIdentifiers(prColumnName);
-        JTableHeader header = tblPR.getTableHeader();
+        poModel.setColumnIdentifiers(poColumnName);
+        JTableHeader header = tblPO.getTableHeader();
         header.setBackground(new java.awt.Color(255, 255, 204));
         
-        srlPR.getViewport().setBackground(new java.awt.Color(255, 255, 204));
+        srlPO.getViewport().setBackground(new java.awt.Color(255, 255, 204));
         
-        tblPR.getColumnModel().getColumn(2).setPreferredWidth(150);
+        tblPO.getColumnModel().getColumn(4).setPreferredWidth(150);
         
-        prList = PurchaseRequisition.toList();
+        poList = PurchaseOrder.toList();
         
-        for (PurchaseRequisition pr : prList) {
-            if (cbShowAllPr.isSelected() || pr.getStatus() == PurchaseRequisition.Status.NEW) {
-                prModel.addRow(new String[]{
-                    pr.getPRID(),
-                    pr.getSupplierID(),
-                    pr.getRequestDateTime().format(dateTimeFormatter),
-                    pr.getRequiredDeliveryDate().format(dateFormatter),
-                    pr.getCreateBy(),
-                    pr.getStatus().name()
-                });
-            }
+        for (PurchaseOrder po : poList) {
+            poModel.addRow(new String[]{
+                po.getPOID(),
+                po.getPRID(),
+                po.getSupplierID(),
+                String.format("RM %.2f", po.getTotalPrice()),
+                po.getDeliveryDate().format(dateFormatter),
+                po.getCreateBy(),
+                po.getStatus().name()
+            });
         }
         
         // Create a single “center” renderer:
@@ -67,7 +63,7 @@ public class PRList extends javax.swing.JDialog {
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
         // Apply it as the default for any Object‐typed cell:
-        tblPR.setDefaultRenderer(Object.class, centerRenderer);
+        tblPO.setDefaultRenderer(Object.class, centerRenderer);
     }
     
     /**
@@ -80,27 +76,27 @@ public class PRList extends javax.swing.JDialog {
     private void initComponents() {
 
         pnlMain = new javax.swing.JPanel();
-        srlPR = new javax.swing.JScrollPane();
-        tblPR = new javax.swing.JTable();
+        srlPO = new javax.swing.JScrollPane();
+        tblPO = new javax.swing.JTable();
         btnNew = new javax.swing.JButton();
-        cbShowAllPr = new javax.swing.JCheckBox();
+        cbAllPOs = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         pnlMain.setBackground(new java.awt.Color(255, 204, 204));
 
-        tblPR.setBackground(new java.awt.Color(255, 255, 204));
-        tblPR.setForeground(new java.awt.Color(0, 0, 0));
-        tblPR.setModel(prModel);
-        tblPR.setGridColor(java.awt.Color.gray);
-        tblPR.setSelectionBackground(new java.awt.Color(255, 153, 153));
-        tblPR.setShowGrid(true);
-        tblPR.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblPO.setBackground(new java.awt.Color(255, 255, 204));
+        tblPO.setForeground(new java.awt.Color(0, 0, 0));
+        tblPO.setModel(poModel);
+        tblPO.setGridColor(java.awt.Color.gray);
+        tblPO.setSelectionBackground(new java.awt.Color(255, 153, 153));
+        tblPO.setShowGrid(true);
+        tblPO.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblPRMouseClicked(evt);
+                tblPOMouseClicked(evt);
             }
         });
-        srlPR.setViewportView(tblPR);
+        srlPO.setViewportView(tblPO);
 
         btnNew.setBackground(new java.awt.Color(204, 204, 255));
         btnNew.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
@@ -112,13 +108,13 @@ public class PRList extends javax.swing.JDialog {
             }
         });
 
-        cbShowAllPr.setBackground(new java.awt.Color(204, 204, 255));
-        cbShowAllPr.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        cbShowAllPr.setForeground(new java.awt.Color(0, 0, 0));
-        cbShowAllPr.setText("Show All PRs");
-        cbShowAllPr.addActionListener(new java.awt.event.ActionListener() {
+        cbAllPOs.setBackground(new java.awt.Color(204, 204, 255));
+        cbAllPOs.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        cbAllPOs.setForeground(new java.awt.Color(0, 0, 0));
+        cbAllPOs.setLabel("All POs");
+        cbAllPOs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbShowAllPrActionPerformed(evt);
+                cbAllPOsActionPerformed(evt);
             }
         });
 
@@ -129,14 +125,14 @@ public class PRList extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                 .addContainerGap(856, Short.MAX_VALUE)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(cbShowAllPr, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
+                    .addComponent(cbAllPOs, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
                     .addComponent(btnNew, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(33, 33, 33))
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlMainLayout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(srlPR, javax.swing.GroupLayout.PREFERRED_SIZE, 813, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(175, Short.MAX_VALUE)))
+                    .addComponent(srlPO, javax.swing.GroupLayout.PREFERRED_SIZE, 813, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -144,12 +140,12 @@ public class PRList extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
-                .addComponent(cbShowAllPr)
+                .addComponent(cbAllPOs)
                 .addContainerGap(602, Short.MAX_VALUE))
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlMainLayout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(srlPR, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
+                    .addComponent(srlPO, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
                     .addContainerGap()))
         );
 
@@ -167,41 +163,37 @@ public class PRList extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tblPRMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPRMouseClicked
-        if (evt.getClickCount() == 2 && tblPR.getSelectedRow() != -1) {
-            int row = tblPR.getSelectedRow();
+    private void tblPOMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPOMouseClicked
+        if (evt.getClickCount() == 2 && tblPO.getSelectedRow() != -1) {
+            int row = tblPO.getSelectedRow();
             
-            PurchaseRequisition pr = PurchaseRequisition.getPrById(String.valueOf(tblPR.getValueAt(row, 0)));
+            PurchaseOrder po = PurchaseOrder.getPoById(String.valueOf(tblPO.getValueAt(row, 0)));
+            PurchaseRequisition pr = PurchaseRequisition.getPrById(po.getPRID());
             
-            PRDetails prd = new PRDetails(this, true, pr, admin);
-            prd.setLocationRelativeTo(this);
-            prd.setVisible(true);
-            PR();
+            PODetails pod = new PODetails(this, true, po, pr, admin);
+            pod.setLocationRelativeTo(this);
+            pod.setVisible(true);
+            PO();
         }
-    }//GEN-LAST:event_tblPRMouseClicked
+    }//GEN-LAST:event_tblPOMouseClicked
 
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
-        PRModifier newPR = new PRModifier(this, true, admin);
-        newPR.setLocationRelativeTo(this);
-        newPR.setVisible(true);
-        PR();
+        POModifier newPO = new POModifier(this, true, admin);
+        newPO.setLocationRelativeTo(this);
+        newPO.setVisible(true);
+        PO();
     }//GEN-LAST:event_btnNewActionPerformed
 
-    private void cbShowAllPrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbShowAllPrActionPerformed
-        if (cbShowAllPr.isSelected()){
-            PR();
-        }
-        else{
-            PR();
-        }
-    }//GEN-LAST:event_cbShowAllPrActionPerformed
+    private void cbAllPOsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbAllPOsActionPerformed
+        
+    }//GEN-LAST:event_cbAllPOsActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNew;
-    private javax.swing.JCheckBox cbShowAllPr;
+    private javax.swing.JCheckBox cbAllPOs;
     private javax.swing.JPanel pnlMain;
-    private javax.swing.JScrollPane srlPR;
-    private javax.swing.JTable tblPR;
+    private javax.swing.JScrollPane srlPO;
+    private javax.swing.JTable tblPO;
     // End of variables declaration//GEN-END:variables
 }

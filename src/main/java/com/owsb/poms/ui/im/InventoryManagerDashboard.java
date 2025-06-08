@@ -31,7 +31,14 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
            return false;
        } 
     };
-    private String[] columnPO = {"Purchase Order ID", "Purchase Requisition ID", "Item ID", "Quantity","Supplier ID", "Delivery Date"};
+    private String[] columnPO = {"Purchase Order ID","Supplier ID","Supplier Name", "Delivery Date"};
+    
+    private DefaultTableModel modelPOItems = new DefaultTableModel(){
+        public boolean isCellEditable(int row, int column){
+           return false;
+       } 
+    };
+    private String[] columnPOItems = {"Item ID","Name","Category", "Type", "Quantity"};
     
     private final DefaultTableModel modelStockReport = new DefaultTableModel(){
         public boolean isCellEditable(int row, int column){
@@ -45,10 +52,12 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     
     private int selectedRowItem = -1;
     private int selectedRowPO = -1;
+    private int selectedRowPOItem = -1;
     
     private Item selectedItem = new Item();
     private PurchaseOrder selectedPO = new PurchaseOrder();
     private Report selectedReport = new Report();
+    private POItem selectedPOItem = new POItem();
     
     private List<Item> itemList;
     private List<Supplier> supplierList;
@@ -66,6 +75,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         initComponents();
         modelItems.setColumnIdentifiers(columnItems);  
         modelPO.setColumnIdentifiers(columnPO);
+        modelPOItems.setColumnIdentifiers(columnPOItems);
         modelStockReport.setColumnIdentifiers(columnStockReport);
         ItemTab();
         POTab();
@@ -110,22 +120,31 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablePO = new javax.swing.JTable();
         jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         lblPOID = new javax.swing.JLabel();
-        lblPRID = new javax.swing.JLabel();
         lblItemID = new javax.swing.JLabel();
         lblItemName = new javax.swing.JLabel();
-        lblQuantity = new javax.swing.JLabel();
+        lblItemCategory = new javax.swing.JLabel();
         lblSupplierID = new javax.swing.JLabel();
         lblSupplierName = new javax.swing.JLabel();
         checkboxVerify = new javax.swing.JCheckBox();
-        btnVerify = new javax.swing.JButton();
+        btnInvalid = new javax.swing.JButton();
         btnRefreshPO = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tablePOItem = new javax.swing.JTable();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        checkboxVerifyItem = new javax.swing.JCheckBox();
+        btnVerifyItem = new javax.swing.JButton();
+        lblItemType = new javax.swing.JLabel();
+        lblItemQuantity = new javax.swing.JLabel();
+        btnVerify = new javax.swing.JButton();
+        jLabel17 = new javax.swing.JLabel();
+        lblDeliveryDate = new javax.swing.JLabel();
         pnlStockReport = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tableStockReportList = new javax.swing.JTable();
@@ -150,6 +169,11 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
 
         btnLogout.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         btnLogout.setText("Log Out");
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlHomeLayout = new javax.swing.GroupLayout(pnlHome);
         pnlHome.setLayout(pnlHomeLayout);
@@ -162,7 +186,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
             .addGroup(pnlHomeLayout.createSequentialGroup()
                 .addGap(271, 271, 271)
                 .addComponent(jLabel2)
-                .addContainerGap(285, Short.MAX_VALUE))
+                .addContainerGap(291, Short.MAX_VALUE))
         );
         pnlHomeLayout.setVerticalGroup(
             pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -171,7 +195,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
                 .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(245, 245, 245)
                 .addComponent(jLabel2)
-                .addContainerGap(369, Short.MAX_VALUE))
+                .addContainerGap(398, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Home", pnlHome);
@@ -279,7 +303,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         pnlItemsLayout.setHorizontalGroup(
             pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlItemsLayout.createSequentialGroup()
-                .addContainerGap(1097, Short.MAX_VALUE)
+                .addContainerGap(1103, Short.MAX_VALUE)
                 .addComponent(btnRefreshItems)
                 .addGap(20, 20, 20))
             .addGroup(pnlItemsLayout.createSequentialGroup()
@@ -354,7 +378,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
                         .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnGenerate, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(11, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Items", pnlItems);
@@ -374,17 +398,13 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         jLabel8.setForeground(new java.awt.Color(0, 0, 0));
         jLabel8.setText("Purchase Order ID:");
 
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel9.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel9.setText("Purchase Requisition ID: ");
-
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(0, 0, 0));
         jLabel10.setText("Item ID: ");
 
         jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel11.setText("Item Name: ");
+        jLabel11.setText("Item Category: ");
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(0, 0, 0));
@@ -396,15 +416,11 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
 
         jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel14.setText("Supplier Name: ");
+        jLabel14.setText("Delivery Date:");
 
         lblPOID.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lblPOID.setForeground(new java.awt.Color(0, 0, 0));
         lblPOID.setText("-");
-
-        lblPRID.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        lblPRID.setForeground(new java.awt.Color(0, 0, 0));
-        lblPRID.setText("-");
 
         lblItemID.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lblItemID.setForeground(new java.awt.Color(0, 0, 0));
@@ -414,9 +430,9 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         lblItemName.setForeground(new java.awt.Color(0, 0, 0));
         lblItemName.setText("-");
 
-        lblQuantity.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        lblQuantity.setForeground(new java.awt.Color(0, 0, 0));
-        lblQuantity.setText("-");
+        lblItemCategory.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblItemCategory.setForeground(new java.awt.Color(0, 0, 0));
+        lblItemCategory.setText("-");
 
         lblSupplierID.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lblSupplierID.setForeground(new java.awt.Color(0, 0, 0));
@@ -436,14 +452,13 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
             }
         });
 
-        btnVerify.setBackground(new java.awt.Color(255, 102, 102));
-        btnVerify.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        btnVerify.setForeground(new java.awt.Color(0, 0, 0));
-        btnVerify.setText("Verify");
-        btnVerify.setEnabled(false);
-        btnVerify.addActionListener(new java.awt.event.ActionListener() {
+        btnInvalid.setBackground(new java.awt.Color(255, 102, 102));
+        btnInvalid.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        btnInvalid.setForeground(new java.awt.Color(0, 0, 0));
+        btnInvalid.setText("Invalid");
+        btnInvalid.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnVerifyActionPerformed(evt);
+                btnInvalidActionPerformed(evt);
             }
         });
 
@@ -457,89 +472,193 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
             }
         });
 
+        tablePOItem.setModel(modelPOItems);
+        jScrollPane4.setViewportView(tablePOItem);
+
+        jLabel15.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel15.setText("Item Name: ");
+
+        jLabel16.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel16.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel16.setText("Item Type: ");
+
+        checkboxVerifyItem.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        checkboxVerifyItem.setForeground(new java.awt.Color(0, 0, 0));
+        checkboxVerifyItem.setText("Tick to Confirm");
+        checkboxVerifyItem.setEnabled(false);
+        checkboxVerifyItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkboxVerifyItemActionPerformed(evt);
+            }
+        });
+
+        btnVerifyItem.setBackground(new java.awt.Color(255, 102, 102));
+        btnVerifyItem.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        btnVerifyItem.setForeground(new java.awt.Color(0, 0, 0));
+        btnVerifyItem.setText("Verify");
+        btnVerifyItem.setEnabled(false);
+        btnVerifyItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerifyItemActionPerformed(evt);
+            }
+        });
+
+        lblItemType.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblItemType.setForeground(new java.awt.Color(0, 0, 0));
+        lblItemType.setText("-");
+
+        lblItemQuantity.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblItemQuantity.setForeground(new java.awt.Color(0, 0, 0));
+        lblItemQuantity.setText("-");
+
+        btnVerify.setBackground(new java.awt.Color(153, 255, 153));
+        btnVerify.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        btnVerify.setForeground(new java.awt.Color(0, 0, 0));
+        btnVerify.setText("Verify");
+        btnVerify.setEnabled(false);
+        btnVerify.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerifyActionPerformed(evt);
+            }
+        });
+
+        jLabel17.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel17.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel17.setText("Supplier Name: ");
+
+        lblDeliveryDate.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblDeliveryDate.setForeground(new java.awt.Color(0, 0, 0));
+        lblDeliveryDate.setText("-");
+
         javax.swing.GroupLayout pnlPOLayout = new javax.swing.GroupLayout(pnlPO);
         pnlPO.setLayout(pnlPOLayout);
         pnlPOLayout.setHorizontalGroup(
             pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlPOLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPOLayout.createSequentialGroup()
+                .addGap(769, 769, 769)
+                .addComponent(jLabel13)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlPOLayout.createSequentialGroup()
                         .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnlPOLayout.createSequentialGroup()
-                                .addGap(79, 79, 79)
-                                .addComponent(btnVerify, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(pnlPOLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(checkboxVerify))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblPOID)
-                                    .addComponent(lblPRID)
-                                    .addComponent(lblItemID)
-                                    .addComponent(lblItemName)
-                                    .addComponent(lblQuantity)
-                                    .addComponent(lblSupplierID)
-                                    .addComponent(lblSupplierName))))
-                        .addContainerGap(118, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPOLayout.createSequentialGroup()
+                            .addComponent(lblSupplierID)
+                            .addComponent(lblSupplierName))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(pnlPOLayout.createSequentialGroup()
+                        .addComponent(lblPOID)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnRefreshPO)
-                        .addGap(32, 32, 32))))
+                        .addGap(31, 31, 31))))
+            .addGroup(pnlPOLayout.createSequentialGroup()
+                .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlPOLayout.createSequentialGroup()
+                        .addGap(867, 867, 867)
+                        .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblItemID)
+                            .addComponent(lblItemName)
+                            .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(lblItemType, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblItemCategory, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblItemQuantity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addGroup(pnlPOLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 700, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 700, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlPOLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(checkboxVerifyItem)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(btnVerify, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel15)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnInvalid, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(pnlPOLayout.createSequentialGroup()
+                                .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(pnlPOLayout.createSequentialGroup()
+                                        .addGap(161, 161, 161)
+                                        .addComponent(btnVerifyItem, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(pnlPOLayout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(checkboxVerify)))
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPOLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel14, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblDeliveryDate)
+                                .addGap(272, 272, 272)))))
+                .addGap(58, 58, 58))
         );
         pnlPOLayout.setVerticalGroup(
             pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlPOLayout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPOID)
+                    .addComponent(btnRefreshPO)
+                    .addComponent(jLabel8))
+                .addGap(20, 20, 20)
+                .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(lblSupplierID))
+                .addGap(20, 20, 20)
+                .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblSupplierName)
+                    .addComponent(jLabel17))
+                .addGap(18, 18, 18)
+                .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14)
+                    .addComponent(lblDeliveryDate))
+                .addGap(49, 49, 49)
+                .addComponent(checkboxVerify)
+                .addGap(42, 42, 42)
+                .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnVerify, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnInvalid, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(43, 43, 43)
+                .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(lblItemID)
+                    .addComponent(jLabel10))
+                .addGap(30, 30, 30)
+                .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel15)
+                    .addComponent(lblItemName))
+                .addGap(30, 30, 30)
+                .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblItemCategory, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(30, 30, 30)
+                .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblItemType, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGap(30, 30, 30)
+                .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblItemQuantity, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlPOLayout.createSequentialGroup()
-                        .addGap(0, 13, Short.MAX_VALUE)
-                        .addComponent(btnRefreshPO)
-                        .addGap(17, 17, 17)
-                        .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel8)
-                            .addComponent(lblPOID))
-                        .addGap(40, 40, 40)
-                        .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel9)
-                            .addComponent(lblPRID))
-                        .addGap(40, 40, 40)
-                        .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel10)
-                            .addComponent(lblItemID))
-                        .addGap(40, 40, 40)
-                        .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel11)
-                            .addComponent(lblItemName))
-                        .addGap(40, 40, 40)
-                        .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel12)
-                            .addComponent(lblQuantity))
-                        .addGap(40, 40, 40)
-                        .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel13)
-                            .addComponent(lblSupplierID))
-                        .addGap(40, 40, 40)
-                        .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel14)
-                            .addComponent(lblSupplierName))
-                        .addGap(45, 45, 45)
-                        .addComponent(checkboxVerify)
-                        .addGap(97, 97, 97)
-                        .addComponent(btnVerify, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(46, 46, 46))
+                        .addGap(30, 30, 30)
+                        .addComponent(checkboxVerifyItem))
                     .addGroup(pnlPOLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addContainerGap())))
+                        .addGap(72, 72, 72)
+                        .addComponent(btnVerifyItem, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(26, 26, 26))
+            .addGroup(pnlPOLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Purchase Order", pnlPO);
@@ -571,7 +690,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
             .addGroup(pnlStockReportLayout.createSequentialGroup()
                 .addGap(149, 149, 149)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 900, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(149, Short.MAX_VALUE))
+                .addContainerGap(155, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlStockReportLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnRefreshStockReportList)
@@ -583,7 +702,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 691, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnRefreshStockReportList)
-                .addGap(0, 9, Short.MAX_VALUE))
+                .addGap(0, 38, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Stock Reports", pnlStockReport);
@@ -719,70 +838,16 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     }
     
     
-    private void tablePOMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablePOMouseReleased
-
-        supplierList = Supplier.toList();
-        
-        checkboxVerify.setSelected(false);
-        btnVerify.setEnabled(false);
-        
-        selectedRowPO = tablePO.getSelectedRow();
-
-        selectedPO.setPOID(String.valueOf(modelPO.getValueAt(selectedRowPO, 0)));
-        selectedPO.setPRID(String.valueOf(modelPO.getValueAt(selectedRowPO, 1)));
-//        selectedPO.setItemID(String.valueOf(modelPO.getValueAt(selectedRowItem, 2)));
-//        String itemName = getItemNameByID(selectedPO.getItemID(), itemList);
-//        selectedPO.setItemName(itemName);
-//        selectedPO.setQuantity(Integer.parseInt(String.valueOf(modelPO.getValueAt(selectedRowItem, 3))));
-        selectedPO.setSupplierID(String.valueOf(modelPO.getValueAt(selectedRowPO, 4)));
-        String supplierName = getSupplierNameByID(selectedPO.getSupplierID(), supplierList);
-        selectedPO.setDeliveryDate(LocalDate.parse(String.valueOf(modelPO.getValueAt(selectedRowPO, 5))));
-//        
-        lblPOID.setText(selectedPO.getPOID());
-        lblPRID.setText(selectedPO.getPRID());
-//        lblItemID.setText(selectedPO.getItemID());
-//        lblItemName.setText(selectedPO.getItemName());
-//        lblQuantity.setText(String.valueOf(selectedPO.getQuantity()));
-        lblSupplierID.setText(selectedPO.getSupplierID());
-        lblSupplierName.setText(supplierName);
-            
-        checkboxVerify.setEnabled(true);
-    }//GEN-LAST:event_tablePOMouseReleased
-
-    private void checkboxVerifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkboxVerifyActionPerformed
-        if(checkboxVerify.isSelected()){
-            btnVerify.setEnabled(true);
-        }
-        else{
-            btnVerify.setEnabled(false);
-        }
-    }//GEN-LAST:event_checkboxVerifyActionPerformed
-
-    private void btnVerifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerifyActionPerformed
-    
-//        selectedPO.setStatus(newStatus);
-//        selectedPO.updateStatus();
-//
-//        POTab();
-    }//GEN-LAST:event_btnVerifyActionPerformed
-
     private void btnRefreshItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshItemsActionPerformed
         ItemTab();
     }//GEN-LAST:event_btnRefreshItemsActionPerformed
-
-    private void btnRefreshPOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshPOActionPerformed
-        POTab();
-    }//GEN-LAST:event_btnRefreshPOActionPerformed
     
     private void POTab(){
-          
+         
+        POItem();
         modelPO.setRowCount(0);
         
         lblPOID.setText("-");
-        lblPRID.setText("-");
-        lblItemID.setText("-");
-        lblItemName.setText("-");
-        lblQuantity.setText("-");
         lblSupplierID.setText("-");
         lblSupplierName.setText("-");
       
@@ -795,27 +860,47 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         Set<PurchaseOrder.Status> includedStatuses = EnumSet.of(
             PurchaseOrder.Status.PROCESSING,
             PurchaseOrder.Status.EXTENDED,
-            PurchaseOrder.Status.ARRIVED
+            PurchaseOrder.Status.ARRIVED,
+            PurchaseOrder.Status.INVALID
         );
         
         for (PurchaseOrder eachPO : POList) {
             if (includedStatuses.contains(eachPO.getStatus())){
                 modelItems.addRow(new String[]{
                     eachPO.getPOID(),
-                    eachPO.getPRID(),
-//                    eachPO.getItemID(),
-//                    String.valueOf(eachPO.getQuantity()),
                     eachPO.getSupplierID(),
+                    Supplier.getNameById(eachPO.getSupplierID()),
                     eachPO.getDeliveryDate().toString()
                 });
             }
         }
-
         btnVerify.setEnabled(false);
+        btnInvalid.setEnabled(false);
         checkboxConfirmation.setSelected(false);
         checkboxVerify.setEnabled(false);
         tablePO.clearSelection();
         selectedRowPO = -1;
+    }
+    
+    private void POItem(){
+        modelPOItems.setRowCount(0);
+        
+        lblItemID.setText("-");
+        lblItemName.setText("-");
+        lblItemCategory.setText("-");
+        lblItemType.setText("-");
+        lblItemQuantity.setText("-");
+        
+        //tablePOItem.getColumnModel().getColumn(1).setPreferredWidth(100);
+        //tablePOItem.getColumnModel().getColumn(2).setPreferredWidth(100);
+        //tablePOItem.getColumnModel().getColumn(3).setPreferredWidth(150);
+        //tablePOItem.getColumnModel().getColumn(6).setPreferredWidth(100);
+        
+        btnVerifyItem.setEnabled(false);
+        checkboxVerifyItem.setSelected(false);
+        checkboxVerifyItem.setEnabled(false);
+        tablePOItem.clearSelection();
+        selectedRowPOItem = -1;
     }
  
     
@@ -880,6 +965,67 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     private void btnRefreshStockReportListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshStockReportListActionPerformed
         StockTab();
     }//GEN-LAST:event_btnRefreshStockReportListActionPerformed
+
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnLogoutActionPerformed
+
+    private void btnRefreshPOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshPOActionPerformed
+        POTab();
+    }//GEN-LAST:event_btnRefreshPOActionPerformed
+
+    private void btnInvalidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInvalidActionPerformed
+
+        //        selectedPO.setStatus(newStatus);
+        //        selectedPO.updateStatus();
+        //
+        //        POTab();
+    }//GEN-LAST:event_btnInvalidActionPerformed
+
+    private void checkboxVerifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkboxVerifyActionPerformed
+        if(checkboxVerify.isSelected()){
+            btnVerify.setEnabled(true);
+        }
+        else{
+            btnVerify.setEnabled(false);
+        }
+    }//GEN-LAST:event_checkboxVerifyActionPerformed
+
+    private void tablePOMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablePOMouseReleased
+
+        supplierList = Supplier.toList();
+
+        checkboxVerify.setSelected(false);
+        btnVerify.setEnabled(false);
+
+        selectedRowPO = tablePO.getSelectedRow();
+
+        selectedPO.setPOID(String.valueOf(modelPO.getValueAt(selectedRowPO, 0)));
+        selectedPO.setSupplierID(String.valueOf(modelPO.getValueAt(selectedRowPO, 1)));
+        String supplierName = getSupplierNameByID(selectedPO.getSupplierID(), supplierList);
+        selectedPO.setDeliveryDate(LocalDate.parse(String.valueOf(modelPO.getValueAt(selectedRowPO, 5))));
+        
+        String date = dateFormatter.format(selectedPO.getDeliveryDate());
+        
+        lblPOID.setText(selectedPO.getPOID());
+        lblSupplierID.setText(selectedPO.getSupplierID());
+        lblSupplierName.setText(supplierName);
+        lblDeliveryDate.setText(date);
+
+        checkboxVerify.setEnabled(true);
+    }//GEN-LAST:event_tablePOMouseReleased
+
+    private void checkboxVerifyItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkboxVerifyItemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_checkboxVerifyItemActionPerformed
+
+    private void btnVerifyItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerifyItemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnVerifyItemActionPerformed
+
+    private void btnVerifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerifyActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnVerifyActionPerformed
      
     private void StockTab(){
         modelStockReport.setRowCount(0);
@@ -970,13 +1116,16 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnGenerate;
+    private javax.swing.JButton btnInvalid;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnRefreshItems;
     private javax.swing.JButton btnRefreshPO;
     private javax.swing.JButton btnRefreshStockReportList;
     private javax.swing.JButton btnVerify;
+    private javax.swing.JButton btnVerifyItem;
     private javax.swing.JCheckBox checkboxConfirmation;
     private javax.swing.JCheckBox checkboxVerify;
+    private javax.swing.JCheckBox checkboxVerifyItem;
     private javax.swing.JComboBox<String> cmbStatus;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -984,6 +1133,9 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -991,18 +1143,20 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JLabel lblCategory;
+    private javax.swing.JLabel lblDeliveryDate;
     private javax.swing.JLabel lblID;
+    private javax.swing.JLabel lblItemCategory;
     private javax.swing.JLabel lblItemID;
     private javax.swing.JLabel lblItemName;
+    private javax.swing.JLabel lblItemQuantity;
+    private javax.swing.JLabel lblItemType;
     private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblPOID;
-    private javax.swing.JLabel lblPRID;
-    private javax.swing.JLabel lblQuantity;
     private javax.swing.JLabel lblSupplierID;
     private javax.swing.JLabel lblSupplierName;
     private javax.swing.JLabel lblType;
@@ -1014,6 +1168,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JTabbedPane tabPanel;
     private javax.swing.JTable tableItems;
     private javax.swing.JTable tablePO;
+    private javax.swing.JTable tablePOItem;
     private javax.swing.JTable tableStockReportList;
     private java.awt.TextField txtStocks;
     // End of variables declaration//GEN-END:variables

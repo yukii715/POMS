@@ -12,7 +12,7 @@ import javax.swing.table.JTableHeader;
 
 public class PRDetails extends javax.swing.JDialog {
     private PurchaseRequisition pr;
-    private String userID;
+    private Admin admin;
     private boolean newPR = false;
     private boolean approvedPR = false;
     private boolean rejectedOrDeletedPR = false;
@@ -26,12 +26,12 @@ public class PRDetails extends javax.swing.JDialog {
     } ;
     private String[] itemsColumnName = {"ID", "Category", "Type", "Name", "Quantity"};
 
-    public PRDetails(javax.swing.JDialog parent, boolean modal, PurchaseRequisition pr, String userID) {
+    public PRDetails(javax.swing.JDialog parent, boolean modal, PurchaseRequisition pr, Admin admin) {
         super(parent, modal);
         initComponents();
         
         this.pr = pr;
-        this.userID = userID;
+        this.admin = admin;
         setTitle(pr.getPRID());
         new CommonMethod().setLabelIcon("/icons/edit.png", 20, 20, Image.SCALE_SMOOTH, lblEdit);
         
@@ -389,7 +389,7 @@ public class PRDetails extends javax.swing.JDialog {
 
             if (result == JOptionPane.YES_OPTION){
                 pr.setStatus(PurchaseRequisition.Status.APPROVED);
-                pr.setPerformedBy(userID);
+                pr.setPerformedBy(admin.getUID());
                 pr.updateStatus();
                 JOptionPane.showMessageDialog(this, "This PR has been approved!");
                 dispose();
@@ -410,7 +410,7 @@ public class PRDetails extends javax.swing.JDialog {
 
             if (result == JOptionPane.YES_OPTION){
                 pr.setStatus(PurchaseRequisition.Status.REJECTED);
-                pr.setPerformedBy(userID);
+                pr.setPerformedBy(admin.getUID());
                 pr.updateStatus();
                 JOptionPane.showMessageDialog(this, "This PR has been rejected!");
                 dispose();
@@ -425,14 +425,14 @@ public class PRDetails extends javax.swing.JDialog {
             int result = JOptionPane.showConfirmDialog(
                 this, 
                 "Are you sure to reset this PR as new?", 
-                String.format("Reset PR", getTitle()), 
+                "Reset PR", 
                 JOptionPane.YES_NO_OPTION, 
                 JOptionPane.QUESTION_MESSAGE
             );
 
             if (result == JOptionPane.YES_OPTION){
                 pr.setStatus(PurchaseRequisition.Status.NEW);
-                pr.setPerformedBy(userID);
+                pr.setPerformedBy("None");
                 pr.updateStatus();
                 JOptionPane.showMessageDialog(this, "This PR has been resetted as New!");
                 dispose();
@@ -446,14 +446,14 @@ public class PRDetails extends javax.swing.JDialog {
             int result = JOptionPane.showConfirmDialog(
                 this, 
                 "Are you sure to delete this PR?", 
-                String.format("Reject %s", getTitle()), 
+                String.format("Delete %s", getTitle()), 
                 JOptionPane.YES_NO_OPTION, 
                 JOptionPane.QUESTION_MESSAGE
             );
 
             if (result == JOptionPane.YES_OPTION){
                 pr.setStatus(PurchaseRequisition.Status.DELETED);
-                pr.setPerformedBy(userID);
+                pr.setPerformedBy(admin.getUID());
                 pr.updateStatus();
                 JOptionPane.showMessageDialog(this, "This PR has been deleted!");
                 dispose();

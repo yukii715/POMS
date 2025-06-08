@@ -4,6 +4,7 @@ import com.owsb.poms.system.functions.*;
 import java.time.*;
 import java.util.List;
 import com.owsb.poms.system.functions.interfaces.*;
+import java.util.stream.Collectors;
 
 public class PurchaseRequisition implements hasFile<PurchaseRequisition>, hasId, hasStatus{
     private String PRID;
@@ -157,8 +158,25 @@ public class PurchaseRequisition implements hasFile<PurchaseRequisition>, hasId,
         );
     }
     
+    public void updateRequiredDate(){
+        DataHandler.updateFieldAndSave(
+                toList(),
+                pr -> pr.getPRID().equals(this.getPRID()),              
+                pr -> pr.setRequiredDeliveryDate(this.getRequiredDeliveryDate()),
+                list -> this.saveToFile(list)
+        );
+    }
+    
     public List<PRItem> getItems(){
         String filePath = String.format("data/PR/%s.txt", getPRID());
         return PRItem.read(filePath);
+    }
+    
+    public static List<String> getAllPRs(){
+        return toList().stream().map(PurchaseRequisition::getPRID).collect(Collectors.toList());
+    }
+    
+    public static PurchaseRequisition getPrById(String id){
+        return DataHandler.getByKey(toList(), id, PurchaseRequisition::getPRID);
     }
 }

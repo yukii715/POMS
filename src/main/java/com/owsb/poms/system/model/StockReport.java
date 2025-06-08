@@ -120,7 +120,7 @@ public class StockReport extends Report implements hasId{
         report.setMessage(mesage);
 
         // Create destination file name with date
-        String fileName = report.getReportID() +"_"+ report.getDateTime().toString().replace(":", "-").replace(".", "-") + ".txt";
+        String fileName = report.getReportID() + "_" + report.getDateTime().toString().replace(":", "-").replace(".", "-") + ".txt";
         String filePath = this.filePath + fileName;
 
         report.add();

@@ -92,6 +92,7 @@ public class ViewStockReport extends javax.swing.JFrame {
         lblDescription = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(255, 204, 255));
 

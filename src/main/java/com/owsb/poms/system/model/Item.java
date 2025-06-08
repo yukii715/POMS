@@ -190,4 +190,8 @@ public class Item implements hasFile<Item>, hasId, hasStatus{
     public static List<Item> getItemsFromSupplier(String supplierID){
         return DataHandler.getValuesByKey(toList(), Item::getSupplierID, supplierID);
     }
+    
+    public static List<Item> getItemsFromPR(List<PRItem> pRItems){
+        return DataHandler.findMatchingByKey(toList(), pRItems, Item::getItemID, PRItem::getItemID);
+    }
 }

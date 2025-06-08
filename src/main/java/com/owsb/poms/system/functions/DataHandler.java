@@ -2,6 +2,7 @@ package com.owsb.poms.system.functions;
 
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.Collectors;
 
 public class DataHandler {
     // A Set automatically rejects duplicates
@@ -72,5 +73,31 @@ public class DataHandler {
         return result;
     }
 
+    public static <K, S, T> List<S> findMatchingByKey(
+            List<S> sourceList,                      // the list with full objects (e.g., Item)
+            List<T> keyList,                         // the list with references (e.g., PRItem)
+            Function<S, K> sourceKeyExtractor,       // how to get the key from S (e.g., Item::getItemID)
+            Function<T, K> keyExtractor              // how to get the key from T (e.g., PRItem::getItemID)
+    ) {
+        // Build map for fast lookup
+        Map<K, S> sourceMap = sourceList.stream()
+            .collect(Collectors.toMap(sourceKeyExtractor, Function.identity()));
+
+        // Match objects based on keys
+        return keyList.stream()
+            .map(keyExtractor)
+            .map(sourceMap::get)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+    }
+    
+    public static <K, V> V getByKey(List<V> list, K key, Function<V, K> keyExtractor) {
+        for (V obj : list) {
+            if (keyExtractor.apply(obj).equals(key)) {
+                return obj;
+            }
+        }
+        return null; 
+    }
 
 }
