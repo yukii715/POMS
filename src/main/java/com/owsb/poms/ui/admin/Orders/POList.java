@@ -1,12 +1,11 @@
 package com.owsb.poms.ui.admin.Orders;
 
 import com.owsb.poms.system.model.*;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
+import javax.swing.table.*;
 
 public class POList extends javax.swing.JDialog {
     private Admin admin;
@@ -38,21 +37,21 @@ public class POList extends javax.swing.JDialog {
         poModel.setRowCount(0);
         
         poModel.setColumnIdentifiers(poColumnName);
-        JTableHeader header = tblPR.getTableHeader();
+        JTableHeader header = tblPO.getTableHeader();
         header.setBackground(new java.awt.Color(255, 255, 204));
         
-        srlPR.getViewport().setBackground(new java.awt.Color(255, 255, 204));
+        srlPO.getViewport().setBackground(new java.awt.Color(255, 255, 204));
         
-        tblPR.getColumnModel().getColumn(2).setPreferredWidth(150);
+        tblPO.getColumnModel().getColumn(4).setPreferredWidth(150);
         
         poList = PurchaseOrder.toList();
         
         for (PurchaseOrder po : poList) {
             poModel.addRow(new String[]{
-                po.getPRID(),
+                po.getPOID(),
                 po.getPRID(),
                 po.getSupplierID(),
-                String.format("%2f", po.getTotalPrice()),
+                String.format("RM %.2f", po.getTotalPrice()),
                 po.getDeliveryDate().format(dateFormatter),
                 po.getCreateBy(),
                 po.getStatus().name()
@@ -64,7 +63,7 @@ public class POList extends javax.swing.JDialog {
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
         // Apply it as the default for any Object‐typed cell:
-        tblPR.setDefaultRenderer(Object.class, centerRenderer);
+        tblPO.setDefaultRenderer(Object.class, centerRenderer);
     }
     
     /**
@@ -77,8 +76,8 @@ public class POList extends javax.swing.JDialog {
     private void initComponents() {
 
         pnlMain = new javax.swing.JPanel();
-        srlPR = new javax.swing.JScrollPane();
-        tblPR = new javax.swing.JTable();
+        srlPO = new javax.swing.JScrollPane();
+        tblPO = new javax.swing.JTable();
         btnNew = new javax.swing.JButton();
         cbAllPOs = new javax.swing.JCheckBox();
 
@@ -86,18 +85,18 @@ public class POList extends javax.swing.JDialog {
 
         pnlMain.setBackground(new java.awt.Color(255, 204, 204));
 
-        tblPR.setBackground(new java.awt.Color(255, 255, 204));
-        tblPR.setForeground(new java.awt.Color(0, 0, 0));
-        tblPR.setModel(poModel);
-        tblPR.setGridColor(java.awt.Color.gray);
-        tblPR.setSelectionBackground(new java.awt.Color(255, 153, 153));
-        tblPR.setShowGrid(true);
-        tblPR.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblPO.setBackground(new java.awt.Color(255, 255, 204));
+        tblPO.setForeground(new java.awt.Color(0, 0, 0));
+        tblPO.setModel(poModel);
+        tblPO.setGridColor(java.awt.Color.gray);
+        tblPO.setSelectionBackground(new java.awt.Color(255, 153, 153));
+        tblPO.setShowGrid(true);
+        tblPO.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblPRMouseClicked(evt);
+                tblPOMouseClicked(evt);
             }
         });
-        srlPR.setViewportView(tblPR);
+        srlPO.setViewportView(tblPO);
 
         btnNew.setBackground(new java.awt.Color(204, 204, 255));
         btnNew.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
@@ -132,7 +131,7 @@ public class POList extends javax.swing.JDialog {
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlMainLayout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(srlPR, javax.swing.GroupLayout.PREFERRED_SIZE, 813, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(srlPO, javax.swing.GroupLayout.PREFERRED_SIZE, 813, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         pnlMainLayout.setVerticalGroup(
@@ -146,7 +145,7 @@ public class POList extends javax.swing.JDialog {
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlMainLayout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(srlPR, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
+                    .addComponent(srlPO, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
                     .addContainerGap()))
         );
 
@@ -164,11 +163,19 @@ public class POList extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tblPRMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPRMouseClicked
-        if (evt.getClickCount() == 2 && tblPR.getSelectedRow() != -1) {
+    private void tblPOMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPOMouseClicked
+        if (evt.getClickCount() == 2 && tblPO.getSelectedRow() != -1) {
+            int row = tblPO.getSelectedRow();
             
+            PurchaseOrder po = PurchaseOrder.getPoById(String.valueOf(tblPO.getValueAt(row, 0)));
+            PurchaseRequisition pr = PurchaseRequisition.getPrById(po.getPRID());
+            
+            PODetails pod = new PODetails(this, true, po, pr, admin);
+            pod.setLocationRelativeTo(this);
+            pod.setVisible(true);
+            PO();
         }
-    }//GEN-LAST:event_tblPRMouseClicked
+    }//GEN-LAST:event_tblPOMouseClicked
 
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
         POModifier newPO = new POModifier(this, true, admin);
@@ -186,7 +193,7 @@ public class POList extends javax.swing.JDialog {
     private javax.swing.JButton btnNew;
     private javax.swing.JCheckBox cbAllPOs;
     private javax.swing.JPanel pnlMain;
-    private javax.swing.JScrollPane srlPR;
-    private javax.swing.JTable tblPR;
+    private javax.swing.JScrollPane srlPO;
+    private javax.swing.JTable tblPO;
     // End of variables declaration//GEN-END:variables
 }

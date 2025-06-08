@@ -171,13 +171,7 @@ public class PRList extends javax.swing.JDialog {
         if (evt.getClickCount() == 2 && tblPR.getSelectedRow() != -1) {
             int row = tblPR.getSelectedRow();
             
-            PurchaseRequisition pr = new PurchaseRequisition();
-            pr.setPRID(String.valueOf(tblPR.getValueAt(row, 0)));
-            pr.setSupplierID(String.valueOf(tblPR.getValueAt(row, 1)));
-            pr.setRequestDateTime(LocalDateTime.parse(String.valueOf(tblPR.getValueAt(row, 2)), dateTimeFormatter));
-            pr.setRequiredDeliveryDate(LocalDate.parse(String.valueOf(tblPR.getValueAt(row, 3)), dateFormatter));
-            pr.setCreateBy(String.valueOf(tblPR.getValueAt(row, 4)));
-            pr.setStatus(PurchaseRequisition.Status.valueOf(String.valueOf(tblPR.getValueAt(row, 5))));
+            PurchaseRequisition pr = PurchaseRequisition.getPrById(String.valueOf(tblPR.getValueAt(row, 0)));
             
             PRDetails prd = new PRDetails(this, true, pr, admin);
             prd.setLocationRelativeTo(this);
