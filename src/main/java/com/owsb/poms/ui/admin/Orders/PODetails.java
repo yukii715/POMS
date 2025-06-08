@@ -17,14 +17,14 @@ public class PODetails extends javax.swing.JDialog {
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
     private boolean newPO = false;
     private boolean approvedPO = false;
-    private boolean rejectedOrDeletedPO = false;
+    private boolean rejectedPO = false;
     private boolean processingPO = false;
     private boolean extendedPO = false;
     private boolean arrivedPO = false;
     private boolean verifiedPO = false;
     private boolean invalidPO = false;
     private boolean confirmedPO = false;
-    private boolean completedOrCancelledPO = false;
+    private boolean completedOrCancelledOrDeletedPO = false;
     
     private DefaultTableModel itemsModel = new DefaultTableModel(){
         public boolean isCellEditable(int row, int column){
@@ -48,7 +48,6 @@ public class PODetails extends javax.swing.JDialog {
         lblSupplierID.setText(po.getSupplierID());
         lblSupplierName.setText(Supplier.getNameById(po.getSupplierID()));
         lblGeneratedDateTime.setText(po.getGeneratedDateTime().format(dateTimeFormatter));
-        lblDeliveryDate.setText(po.getDeliveryDate().format(dateFormatter));
         lblCreatedBy.setText(po.getCreateBy());
         lblStatus.setText(po.getStatus().name());
         lblEdit.setVisible(false);
@@ -74,8 +73,8 @@ public class PODetails extends javax.swing.JDialog {
                 btn1.setText("Processing");
                 btn3.setText("Cancel");
                 break;
-            case REJECTED, DELETED:   // set as new
-                rejectedOrDeletedPO = true;
+            case REJECTED:   // set as new
+                rejectedPO = true;
                 String perform = status == PurchaseOrder.Status.REJECTED ? "Rejected By" : "Deleted By";
                 lblPerform.setText(perform);
                 lblPerformdBy.setText(po.getPerformedBy());
@@ -119,8 +118,8 @@ public class PODetails extends javax.swing.JDialog {
                 btn3.setVisible(false);
                 btn2.setText("Completed");
                 break;
-            case COMPLETED,CANCELLED: //ok
-                completedOrCancelledPO = true;
+            case COMPLETED,CANCELLED,DELETED: //ok
+                completedOrCancelledOrDeletedPO = true;
                 btn1.setVisible(false);
                 btn3.setVisible(false);
                 txtRemark.setEnabled(false);
@@ -134,6 +133,7 @@ public class PODetails extends javax.swing.JDialog {
     
     private void refresh(){
         lblTotalPrice.setText(String.format("RM %.2f", po.getTotalPrice()));
+        lblDeliveryDate.setText(po.getDeliveryDate().format(dateFormatter));
         txtRemark.setText(po.getRemark());
         
         itemsModel.setRowCount(0);
@@ -392,8 +392,6 @@ public class PODetails extends javax.swing.JDialog {
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addGap(62, 62, 62)
                 .addComponent(jLabel2)
-                .addGap(194, 194, 194)
-                .addComponent(lblPOID)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblEdit)
                 .addGap(70, 70, 70))
@@ -401,10 +399,6 @@ public class PODetails extends javax.swing.JDialog {
                 .addContainerGap(62, Short.MAX_VALUE)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlMainLayout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(154, 154, 154)
-                        .addComponent(lblPRID))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlMainLayout.createSequentialGroup()
                         .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
@@ -438,22 +432,24 @@ public class PODetails extends javax.swing.JDialog {
                         .addComponent(btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(92, 92, 92)
-                        .addComponent(btn3, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(90, 90, 90)
+                        .addComponent(btn3, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlMainLayout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(154, 154, 154)
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblPOID)
+                            .addComponent(lblPRID))))
                 .addGap(0, 71, Short.MAX_VALUE))
         );
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addComponent(jLabel2))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblPOID)
-                            .addComponent(lblEdit))))
+                .addGap(31, 31, 31)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPOID)
+                    .addComponent(lblEdit)
+                    .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -521,11 +517,12 @@ public class PODetails extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn1ActionPerformed
+        String remark = txtRemark.getText().isBlank() ? "None" : txtRemark.getText().trim();
         // Approve
         if (newPO){ 
             int result = JOptionPane.showConfirmDialog(
                 this,
-                "Are you sure to approve this PR?",
+                "Are you sure to approve this PO?",
                 String.format("Approve %s", getTitle()),
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE
@@ -534,9 +531,29 @@ public class PODetails extends javax.swing.JDialog {
             if (result == JOptionPane.YES_OPTION){
                 po.setStatus(PurchaseOrder.Status.APPROVED);
                 po.setPerformedBy(admin.getUID());
-                po.setRemark(txtRemark.getText().trim());
+                po.setRemark(remark);
                 po.updateStatus();
-                JOptionPane.showMessageDialog(this, "This PR has been approved!");
+                JOptionPane.showMessageDialog(this, "This PO has been approved!");
+                dispose();
+            }
+            return;
+        }
+        
+        // Processing
+        if (approvedPO){
+            int result = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure to change this PO to Processing?",
+                String.format("Change %s status to Processing", getTitle()),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (result == JOptionPane.YES_OPTION){
+                po.setStatus(PurchaseOrder.Status.PROCESSING);
+                po.setRemark(remark);
+                po.updateStatus();
+                JOptionPane.showMessageDialog(this, String.format("Order %s has been set as Processing", getTitle()));
                 dispose();
             }
             return;
@@ -544,6 +561,7 @@ public class PODetails extends javax.swing.JDialog {
     }//GEN-LAST:event_btn1ActionPerformed
 
     private void btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn2ActionPerformed
+        String remark = txtRemark.getText().isBlank() ? "None" : txtRemark.getText().trim();
         // Reject
         if (newPO){
             int result = JOptionPane.showConfirmDialog(
@@ -557,15 +575,15 @@ public class PODetails extends javax.swing.JDialog {
             if (result == JOptionPane.YES_OPTION){
                 po.setStatus(PurchaseOrder.Status.REJECTED);
                 po.setPerformedBy(admin.getUID());
-                po.setRemark(txtRemark.getText().trim());
+                po.setRemark(remark);
                 po.updateStatus();
-                JOptionPane.showMessageDialog(this, "This PO has been rejected!");
+                JOptionPane.showMessageDialog(this, "This PO has been Rejected!");
                 dispose();
             }
             return;
         }
         // Set as New
-        if (rejectedOrDeletedPO){
+        if (rejectedPO){
             int result = JOptionPane.showConfirmDialog(
                 this,
                 "Are you sure to reset this PO as new?",
@@ -577,9 +595,9 @@ public class PODetails extends javax.swing.JDialog {
             if (result == JOptionPane.YES_OPTION){
                 po.setStatus(PurchaseOrder.Status.NEW);
                 po.setPerformedBy("None");
-                po.setRemark(txtRemark.getText().trim());
+                po.setRemark(remark);
                 po.updateStatus();
-                JOptionPane.showMessageDialog(this, "This PO has been resetted as New!");
+                JOptionPane.showMessageDialog(this, "This PO has been reset to New!");
                 dispose();
             }
             return;
@@ -589,6 +607,7 @@ public class PODetails extends javax.swing.JDialog {
     }//GEN-LAST:event_btn2ActionPerformed
 
     private void btn3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn3ActionPerformed
+        String remark = txtRemark.getText().isBlank() ? "None" : txtRemark.getText().trim();
         // Delete
         if (newPO){
             int result = JOptionPane.showConfirmDialog(
@@ -604,8 +623,29 @@ public class PODetails extends javax.swing.JDialog {
                 pr.updateStatus();
                 po.setStatus(PurchaseOrder.Status.DELETED);
                 po.setPerformedBy(admin.getUID());
+                po.setRemark(remark);
                 po.updateStatus();
-                JOptionPane.showMessageDialog(this, "This PO has been deleted!");
+                JOptionPane.showMessageDialog(this, "This PO has been Deleted!");
+                dispose();
+            }
+            return;
+        }
+        if (approvedPO){
+            int result = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure to cancel this PO?\nWarning: This action cannot be reverted!",
+                String.format("Cancel %s", getTitle()),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+
+            if (result == JOptionPane.YES_OPTION){
+                pr.setStatus(PurchaseRequisition.Status.DELETED);
+                pr.updateStatus();
+                po.setStatus(PurchaseOrder.Status.CANCELLED);
+                po.setRemark(remark);
+                po.updateStatus();
+                JOptionPane.showMessageDialog(this, "This PO has been Cancelled!");
                 dispose();
             }
             return;
@@ -613,7 +653,7 @@ public class PODetails extends javax.swing.JDialog {
     }//GEN-LAST:event_btn3ActionPerformed
 
     private void lblEditMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblEditMouseClicked
-        POModifier PO = new POModifier(this, true, admin);
+        POModifier PO = new POModifier(this, true, po);
         PO.setLocationRelativeTo(this);
         PO.setVisible(true);
         refresh();
