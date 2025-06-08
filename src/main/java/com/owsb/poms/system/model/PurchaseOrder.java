@@ -3,8 +3,9 @@ package com.owsb.poms.system.model;
 import com.owsb.poms.system.functions.*;
 import java.time.*;
 import java.util.List;
+import com.owsb.poms.system.functions.interfaces.*;
 
-public class PurchaseOrder implements CommonModel<PurchaseOrder>{
+public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
     private String POID;
     private String PRID;
     private double totalPrice;
@@ -13,7 +14,7 @@ public class PurchaseOrder implements CommonModel<PurchaseOrder>{
     private LocalDate deliveryDate;
     private Status status;
     private String createBy;
-    private String approvedBy;
+    private String performedBy;
     
     private static final String filePath = "data/PO/purchase_order.txt";
     
@@ -41,7 +42,7 @@ public class PurchaseOrder implements CommonModel<PurchaseOrder>{
         this.deliveryDate = deliveryDate;
         this.status = status.NEW;
         this.createBy = createBy;
-        this.approvedBy = approvedBy;
+        this.performedBy = "None";
     }
 
     public String getPOID() {
@@ -108,12 +109,12 @@ public class PurchaseOrder implements CommonModel<PurchaseOrder>{
         this.createBy = createBy;
     }
 
-    public String getApprovedBy() {
-        return approvedBy;
+    public String getPerformedBy() {
+        return performedBy;
     }
 
-    public void setApprovedBy(String approvedBy) {
-        this.approvedBy = approvedBy;
+    public void setPerformedBy(String performedBy) {
+        this.performedBy = performedBy;
     }
     
     @Override
@@ -126,7 +127,7 @@ public class PurchaseOrder implements CommonModel<PurchaseOrder>{
              + deliveryDate.toString() + "\t"
              + status.name() + "\t"
              + createBy + "\t"
-             + approvedBy;
+             + performedBy;
     }
     
     public static PurchaseOrder fromString(String line) {
@@ -144,7 +145,7 @@ public class PurchaseOrder implements CommonModel<PurchaseOrder>{
         po.setDeliveryDate(LocalDate.parse(parts[5]));
         po.setStatus(Status.valueOf(parts[6]));
         po.setCreateBy(parts[7]);
-        po.setApprovedBy(parts[8]);
+        po.setPerformedBy(parts[8]);
 
         return po;
     }
@@ -152,7 +153,7 @@ public class PurchaseOrder implements CommonModel<PurchaseOrder>{
     
     @Override
     public String generateID() {
-        String prefix = "PR";
+        String prefix = "PO";
         int length = 5;
         int startNum = IdGenerator.getTotal(filePath);
         return IdGenerator.generateID(prefix, length, startNum);
@@ -174,14 +175,26 @@ public class PurchaseOrder implements CommonModel<PurchaseOrder>{
         this.saveToFile(pos);
     }
     
+    @Override
     public void updateStatus(){
         DataHandler.updateFieldAndSave(
                 toList(),
                 po -> po.getPOID().equals(this.getPOID()),              
                 po -> {
                     po.setStatus(this.getStatus());
-                    po.setApprovedBy(this.getApprovedBy());
+                    po.setPerformedBy(this.getPerformedBy());
                 },           
+                list -> this.saveToFile(list)
+        );
+    }
+    
+    public void approved(){
+        DataHandler.updateFieldAndSave(toList(),
+                po -> po.getPOID().equals(this.getPOID()),              
+                po -> {
+                    po.setStatus(this.getStatus());
+                    po.setPerformedBy(this.getPerformedBy());
+                            },           
                 list -> this.saveToFile(list)
         );
     }

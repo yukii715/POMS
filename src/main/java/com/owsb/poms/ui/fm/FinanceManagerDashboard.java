@@ -30,17 +30,6 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jFrame1 = new javax.swing.JFrame();
-        poDetailsPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         FrameTab = new javax.swing.JTabbedPane();
         DashboardPanel = new javax.swing.JPanel();
@@ -53,6 +42,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         approvePORejectButton = new javax.swing.JButton();
         approvePORefreshButton = new javax.swing.JButton();
         approvePOStatusLabel = new javax.swing.JLabel();
+        approvePOEditButton = new javax.swing.JButton();
         PurchaseOrder = new javax.swing.JPanel();
         viewPOScroolPane = new javax.swing.JScrollPane();
         viewPOTable = new javax.swing.JTable();
@@ -91,74 +81,6 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         generatePRexportButton = new javax.swing.JButton();
         generatePRStartDateComboBox = new javax.swing.JComboBox<>();
         generatePREndDateComboBox = new javax.swing.JComboBox<>();
-
-        jFrame1.setPreferredSize(new java.awt.Dimension(1000, 600));
-
-        poDetailsPanel.setBackground(new java.awt.Color(255, 245, 247));
-        poDetailsPanel.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        poDetailsPanel.setPreferredSize(new java.awt.Dimension(1000, 600));
-
-        jLabel1.setText("jLabel1");
-
-        jLabel2.setText("jLabel2");
-
-        jLabel3.setText("jLabel3");
-
-        jLabel4.setText("jLabel4");
-
-        jLabel5.setText("jLabel5");
-
-        jLabel6.setText("jLabel6");
-
-        jLabel7.setText("jLabel7");
-
-        jLabel8.setText("jLabel8");
-
-        jLabel9.setText("jLabel9");
-
-        javax.swing.GroupLayout poDetailsPanelLayout = new javax.swing.GroupLayout(poDetailsPanel);
-        poDetailsPanel.setLayout(poDetailsPanelLayout);
-        poDetailsPanelLayout.setHorizontalGroup(
-            poDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(poDetailsPanelLayout.createSequentialGroup()
-                .addGap(195, 195, 195)
-                .addGroup(poDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel9)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1))
-                .addContainerGap(768, Short.MAX_VALUE))
-        );
-        poDetailsPanelLayout.setVerticalGroup(
-            poDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(poDetailsPanelLayout.createSequentialGroup()
-                .addGap(49, 49, 49)
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel2)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel3)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel4)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel5)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel6)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel7)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel8)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel9)
-                .addContainerGap(263, Short.MAX_VALUE))
-        );
-
-        jFrame1.getContentPane().add(poDetailsPanel, java.awt.BorderLayout.CENTER);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -238,7 +160,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         });
 
         approvePORejectButton.setFont(new java.awt.Font("Comic Sans MS", 0, 20)); // NOI18N
-        approvePORejectButton.setText("Reject");
+        approvePORejectButton.setText("Edit");
         approvePORejectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 approvePORejectButtonActionPerformed(evt);
@@ -256,6 +178,14 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         approvePOStatusLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 20)); // NOI18N
         approvePOStatusLabel.setText("Status");
 
+        approvePOEditButton.setFont(new java.awt.Font("Comic Sans MS", 0, 20)); // NOI18N
+        approvePOEditButton.setText("Reject");
+        approvePOEditButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                approvePOEditButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout approvePOPanelLayout = new javax.swing.GroupLayout(approvePOPanel);
         approvePOPanel.setLayout(approvePOPanelLayout);
         approvePOPanelLayout.setHorizontalGroup(
@@ -269,7 +199,8 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 .addGroup(approvePOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(approvePORefreshButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(approvePORejectButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(approvePOButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(approvePOButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(approvePOEditButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(125, Short.MAX_VALUE))
         );
         approvePOPanelLayout.setVerticalGroup(
@@ -281,12 +212,14 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                     .addGroup(approvePOPanelLayout.createSequentialGroup()
                         .addComponent(approvePOButton, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
+                        .addComponent(approvePOEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(approvePORejectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(approvePORefreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(approvePOStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 7, Short.MAX_VALUE))
         );
 
         FrameTab.addTab("Approve Purchase Order", approvePOPanel);
@@ -774,6 +707,10 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         exportReportToFile();
     }//GEN-LAST:event_generatePRexportButtonActionPerformed
 
+    private void approvePOEditButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_approvePOEditButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_approvePOEditButtonActionPerformed
+
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -790,6 +727,16 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 return false;
             }
         };
+        
+        approvePOTable.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2 && approvePOTable.getSelectedRow() != -1) {
+                    int selectedRow = approvePOTable.getSelectedRow();
+                    String selectedPOID  = approvePOTable.getValueAt(selectedRow, 0).toString();
+                    new PODetailFrame(selectedPOID).setVisible(true);
+                }
+            }
+        });
         approvePOTable.setModel(approvePOTableModel);
         loadApprovePODataFromMainList();
     }
@@ -808,7 +755,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                     po.getDeliveryDate().toString(),
                     po.getStatus().name(),
                     po.getCreateBy(),
-                    po.getApprovedBy()
+                    po.getPerformedBy()
                 });
             }
         }
@@ -832,7 +779,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         for (PurchaseOrder po : orders) {
             if (po.getPOID().equals(poID)) {
                 po.setStatus(com.owsb.poms.system.model.PurchaseOrder.Status.valueOf(status.toUpperCase()));
-                po.setApprovedBy("FM001");
+                po.setPerformedBy("FM001");
                 po.updateStatus(); 
                 approvePOStatusLabel.setText("Status: Order " + status.toLowerCase() + " successfully.");
                 break;
@@ -848,6 +795,8 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         loadApprovePODataFromMainList();
         approvePOStatusLabel.setText("Status: List refreshed. Only NEW orders shown.");
     }
+    
+    
     
     private Object[] getRowData(DefaultTableModel model, int rowIndex) {
         Object[] row = new Object[model.getColumnCount()];
@@ -1006,7 +955,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                     po.getDeliveryDate().toString(),
                     po.getStatus().name(),
                     po.getCreateBy(),
-                    po.getApprovedBy()
+                    po.getPerformedBy()
                 });
             }
         }
@@ -1043,6 +992,23 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         }
         refreshPurchaseOrderTable("All");
         initProcessPaymentFunctionality();
+        
+        viewPOTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2 && viewPOTable.getSelectedRow() != -1) {
+                    String poid = viewPOTable.getValueAt(viewPOTable.getSelectedRow(), 0).toString();
+                    openPurchaseOrderDetailsFrame(poid);
+                }
+            }
+        });
+    }
+    
+    private void openPurchaseOrderDetailsFrame(String poid) {
+        VPODetailFrame poDetailFrame = new VPODetailFrame();
+        poDetailFrame.setVisible(true);
+        poDetailFrame.initPODetailTable();
+        poDetailFrame.loadPODetailData(poid);
     }
     
     
@@ -1054,7 +1020,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     }
     
     private void initRequisitionView() {
-        String[] cols = {"PR ID", "Supplier ID", "Request Time", "Delivery Date", "Status", "Created By"};
+        String[] cols = {"PR ID", "Supplier ID", "Request Date", "Delivery Date", "Status","Created By", "Performed By"};
         requisitionTableModel = new DefaultTableModel(cols, 0){
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -1062,9 +1028,18 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         };
         viewPRTable.setModel(requisitionTableModel);
         loadRequisitionData();
+        
+        viewPRTable.addMouseListener(new MouseAdapter() {
+        public void mouseClicked(MouseEvent e) {
+            if (e.getClickCount() == 2 && viewPRTable.getSelectedRow() != -1) {
+                String prid = viewPRTable.getValueAt(viewPRTable.getSelectedRow(), 0).toString();
+                openRequisitionDetailsFrame(prid);
+            }
+        }
+        });
     }
     
-    private void loadRequisitionData() {
+    public void loadRequisitionData() {
         requisitionTableModel.setRowCount(0);
         List<PurchaseRequisition> prList = PurchaseRequisition.toList();
         
@@ -1075,12 +1050,21 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 pr.getRequestDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                 pr.getRequiredDeliveryDate().toString(),
                 pr.getStatus().name(),
-                pr.getCreateBy()
+                pr.getCreateBy(),
+                pr.getPerformedBy()
             });
         }
     }
+
+    
+    private void openRequisitionDetailsFrame(String prid) {
+        PRDetailsFrame detailFrame = new PRDetailsFrame();
+        detailFrame.setVisible(true);
+        detailFrame.loadPRDetails(prid);
+    }
+    
     private void initSupplierView() {
-        String[] cols = {"Supplier ID", "Name", "Date Added", "Status"};
+        String[] cols = {"Supplier ID", "Name", "Date Added"};
         supplierTableModel = new DefaultTableModel(cols, 0){
         public boolean isCellEditable(int row,int colum){
                 return false;
@@ -1100,7 +1084,6 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 s.getSupplierID(),
                 s.getSupplierName(),
                 s.getAddedTime().toLocalDate().toString(),
-                "Active"
             });
             }
         };
@@ -1248,6 +1231,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel TransactionsPanel;
     private javax.swing.JButton ViewPRRefreshButton;
     private javax.swing.JButton approvePOButton;
+    private javax.swing.JButton approvePOEditButton;
     private javax.swing.JPanel approvePOPanel;
     private javax.swing.JButton approvePORefreshButton;
     private javax.swing.JButton approvePORejectButton;
@@ -1267,20 +1251,9 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel generatePRlabel2;
     private javax.swing.JTable generatePRtable;
     private javax.swing.JPanel generateReportPanel;
-    private javax.swing.JFrame jFrame1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JButton logOutButton;
-    private javax.swing.JPanel poDetailsPanel;
     private javax.swing.JPanel processPaymentPanel;
     private javax.swing.JComboBox<String> selectPOComboBox;
     private javax.swing.JLabel selectPOOrderLabel;

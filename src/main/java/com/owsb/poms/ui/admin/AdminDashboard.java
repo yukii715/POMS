@@ -2,6 +2,7 @@ package com.owsb.poms.ui.admin;
 
 import com.owsb.poms.ui.admin.Inventory.*;
 import com.owsb.poms.system.model.*;
+import com.owsb.poms.ui.admin.Orders.*;
 import com.owsb.poms.ui.common.*;
 import java.awt.*;
 import java.time.LocalDateTime;
@@ -17,7 +18,22 @@ public class AdminDashboard extends javax.swing.JFrame {
     private boolean summary = false;  
     private String currentTab = "Dashboard";
     
-    //Inventory
+    // Users
+    
+    // Sales
+    
+    // Orders
+    private int selectedOrderRow;
+    private PurchaseOrder selectedOrder = new PurchaseOrder();
+    private List<PurchaseOrder> orderList;
+    private DefaultTableModel ordersModel = new DefaultTableModel(){
+       public boolean isCellEditable(int row, int column){
+           return false;
+       } 
+    } ;
+    private String[] ordersColumnName = {"ID", "Supplier", "Date Time", "Delivery On", "Created By", "Approved By", "Status"};
+    
+    // Inventory
     private int selectedItemRow;
     private Item selectedItem = new Item();
     private List<Item> itemList;
@@ -28,7 +44,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     } ;
     private String[] itemsColumnName = {"ID", "Category", "Type", "Name", "Supplier", "Price", "Stock", "Status"};
     
-    //Suppliers
+    // Suppliers
     private int selectedSupplierRow;
     private Supplier selectedSupplier = new Supplier();
     private List<Supplier> suppliersList;
@@ -71,6 +87,10 @@ public class AdminDashboard extends javax.swing.JFrame {
             divider.repaint();
         });
         
+        lblUsername.setText("admin");
+        lblUserID.setText("AD001");
+        
+        Orders();
         Inventory();
         Suppliers();
     }
@@ -107,7 +127,26 @@ public class AdminDashboard extends javax.swing.JFrame {
         }
     }
     
-    //Inventory tab
+    // Orders Tab
+    private void Orders(){
+        selectedOrderRow = -1;
+        ordersModel.setRowCount(0);
+        
+        ordersModel.setColumnIdentifiers(ordersColumnName);
+        JTableHeader header = tblOrder.getTableHeader();
+        header.setBackground(new java.awt.Color(255, 255, 204));
+        
+        srlOrder.getViewport().setBackground(new java.awt.Color(255, 255, 204));
+        
+        // Create a single “center” renderer:
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Apply it as the default for any Object‐typed cell:
+        tblOrder.setDefaultRenderer(Object.class, centerRenderer);
+    }
+    
+    // Inventory Tab
     private void Inventory(){
         selectedItemRow = -1;
         itemsModel.setRowCount(0);
@@ -160,6 +199,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         tblItems.setDefaultRenderer(Object.class, centerRenderer);
     }
     
+    // Suppliers Tab
     private void Suppliers(){
         selectedSupplierRow = -1;
         suppliersModel.setRowCount(0);
@@ -261,7 +301,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblProfilePicture = new javax.swing.JLabel();
         lblUserDetails = new javax.swing.JPanel();
         lblUsername = new javax.swing.JLabel();
-        lblEmail = new javax.swing.JLabel();
+        lblUserID = new javax.swing.JLabel();
         lblLogout1 = new javax.swing.JLabel();
         lblProfileDivider = new javax.swing.JPanel();
         pnlContainer = new javax.swing.JPanel();
@@ -280,6 +320,9 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlOrders = new javax.swing.JPanel();
         srlOrder = new javax.swing.JScrollPane();
         tblOrder = new javax.swing.JTable();
+        btnViewAllPO = new javax.swing.JButton();
+        btnViewPR = new javax.swing.JButton();
+        btnProcessPayment = new javax.swing.JButton();
         pnlInventory = new javax.swing.JPanel();
         srlItems = new javax.swing.JScrollPane();
         tblItems = new javax.swing.JTable();
@@ -827,7 +870,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblUserDetails.setBackground(new java.awt.Color(255, 180, 180));
         lblUserDetails.setLayout(new java.awt.GridLayout(2, 0));
         lblUserDetails.add(lblUsername);
-        lblUserDetails.add(lblEmail);
+        lblUserDetails.add(lblUserID);
 
         pnlProfile.add(lblUserDetails, java.awt.BorderLayout.CENTER);
 
@@ -1051,16 +1094,49 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         tblOrder.setBackground(new java.awt.Color(255, 255, 204));
         tblOrder.setForeground(new java.awt.Color(0, 0, 0));
-        tblOrder.setModel(itemsModel);
+        tblOrder.setModel(ordersModel);
         tblOrder.setGridColor(java.awt.Color.gray);
         tblOrder.setSelectionBackground(new java.awt.Color(255, 153, 153));
         tblOrder.setShowGrid(true);
         tblOrder.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblOrderMouseClicked(evt);
+            }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 tblOrderMouseReleased(evt);
             }
         });
         srlOrder.setViewportView(tblOrder);
+
+        btnViewAllPO.setBackground(new java.awt.Color(255, 204, 204));
+        btnViewAllPO.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnViewAllPO.setForeground(new java.awt.Color(0, 0, 0));
+        btnViewAllPO.setText("View All Purchase Orders");
+        btnViewAllPO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewAllPOActionPerformed(evt);
+            }
+        });
+
+        btnViewPR.setBackground(new java.awt.Color(255, 204, 204));
+        btnViewPR.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnViewPR.setForeground(new java.awt.Color(0, 0, 0));
+        btnViewPR.setText("View Purchase Requisitions");
+        btnViewPR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewPRActionPerformed(evt);
+            }
+        });
+
+        btnProcessPayment.setBackground(new java.awt.Color(255, 204, 204));
+        btnProcessPayment.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnProcessPayment.setForeground(new java.awt.Color(0, 0, 0));
+        btnProcessPayment.setText("Process Payment");
+        btnProcessPayment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProcessPaymentActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlOrdersLayout = new javax.swing.GroupLayout(pnlOrders);
         pnlOrders.setLayout(pnlOrdersLayout);
@@ -1069,13 +1145,26 @@ public class AdminDashboard extends javax.swing.JFrame {
             .addGroup(pnlOrdersLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(srlOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 737, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(246, Short.MAX_VALUE))
+                .addGap(30, 30, 30)
+                .addGroup(pnlOrdersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnViewAllPO, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
+                    .addComponent(btnViewPR, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnProcessPayment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         pnlOrdersLayout.setVerticalGroup(
             pnlOrdersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlOrdersLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(srlOrder)
+                .addGroup(pnlOrdersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlOrdersLayout.createSequentialGroup()
+                        .addComponent(btnViewAllPO, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(34, 34, 34)
+                        .addComponent(btnViewPR, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(36, 36, 36)
+                        .addComponent(btnProcessPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(srlOrder, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -1923,6 +2012,24 @@ public class AdminDashboard extends javax.swing.JFrame {
     private void tblOrderMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblOrderMouseReleased
         // TODO add your handling code here:
     }//GEN-LAST:event_tblOrderMouseReleased
+
+    private void btnViewAllPOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewAllPOActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnViewAllPOActionPerformed
+
+    private void btnViewPRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewPRActionPerformed
+        PRList prl = new PRList(this, true, lblUserID.getText());
+        prl.setLocationRelativeTo(this);
+        prl.setVisible(true);
+    }//GEN-LAST:event_btnViewPRActionPerformed
+
+    private void btnProcessPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessPaymentActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnProcessPaymentActionPerformed
+
+    private void tblOrderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblOrderMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tblOrderMouseClicked
         
     /**
      * @param args the command line arguments
@@ -1941,10 +2048,13 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnEditItem;
     private javax.swing.JButton btnNewItem;
     private javax.swing.JButton btnNewSupplier;
+    private javax.swing.JButton btnProcessPayment;
     private javax.swing.JButton btnRemoveItem;
     private javax.swing.JButton btnRemoveSupplier;
     private javax.swing.JButton btnUpdateStatus;
     private javax.swing.JButton btnUpdateStock;
+    private javax.swing.JButton btnViewAllPO;
+    private javax.swing.JButton btnViewPR;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1961,7 +2071,6 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel lblDashboardDivider1;
     private javax.swing.JLabel lblDashboardDivider2;
     private javax.swing.JLabel lblDashboardIcon;
-    private javax.swing.JLabel lblEmail;
     private javax.swing.JLabel lblInventory;
     private javax.swing.JLabel lblInventoryDivider1;
     private javax.swing.JLabel lblInventoryDivider2;
@@ -1997,6 +2106,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel lblSuppliersDivider2;
     private javax.swing.JLabel lblSuppliersIcon;
     private javax.swing.JPanel lblUserDetails;
+    private javax.swing.JLabel lblUserID;
     private javax.swing.JLabel lblUsername;
     private javax.swing.JLabel lblUsers;
     private javax.swing.JLabel lblUsersDivider1;
