@@ -1,0 +1,2 @@
+ITM00007	Electronics	Peripheral	LiteTech USB Keyboard	40	40.0
+ITM00004	Electronics	Peripheral	LiteTech Wireless Mouse	30	40.0
