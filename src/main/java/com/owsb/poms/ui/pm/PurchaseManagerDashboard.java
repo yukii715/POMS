@@ -10,9 +10,10 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Alvin Serene
  */
+
 public class PurchaseManagerDashboard extends javax.swing.JFrame {
 
-    private List<POItem> POItemList = new ArrayList<>();;
+    private List<PurchaseOrder> poList;
 
     private DefaultTableModel PurchaseOrderTable = new DefaultTableModel(){
         public boolean isCellEditable(int row, int column){
@@ -23,26 +24,24 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
         PurchaseOrderTable.setColumnIdentifiers(columnName);
         PurchaseOrderTable.setRowCount(0);
 
-    POItemList = POItem.toItemList();
+    poList = POItem.toList();
 
-        for (POItem poItem : POItemList) {
+        for (PurchaseOrder poItem : poList) {
+                                 
             PurchaseOrderTable.addRow(new String[]{
                 poItem.getPOID(),
                 poItem.getPRID(),
-                poItem.getItemID(),
-                String.valueOf(poItem.getQuantity()),
-                String.format("%.2f", poItem.getUnitPrice()),
                 String.format("%.2f", poItem.getTotalPrice()),
                 poItem.getSupplierID(),
                 String.valueOf(poItem.getGenerateDateTime()),
                 String.valueOf(poItem.getDeliveryDate()),
                 poItem.getStatus().name(),
                 poItem.getCreateBy(),
-                poItem.getApprovedBy(),
+                poItem.getPerformedBy(),
             });
         }
     }
-    private String[] columnName = {"Purchase Order ID","Purchase Requisition ID","Item ID","Quantity", "Unit Price", "Total Price","Supplier ID", "Date & Time of generated","Delivery Date", "status", "Created By", "Approved By"};
+    private String[] columnName = {"Purchase Order ID","Purchase Requisition ID", "Total Price","Supplier ID", "Date & Time of generated","Delivery Date", "status", "Created By", "Approved By"};
     public PurchaseManagerDashboard() {
         initComponents();
         loadPurchaseOrder();

@@ -2,6 +2,7 @@
 package com.owsb.poms.ui.pm;
 
 import com.owsb.poms.system.model.POItem;
+import com.owsb.poms.system.model.PurchaseOrder;
 import javax.swing.table.DefaultTableModel;
 import java.io.*;
 import javax.swing.*;
@@ -12,7 +13,7 @@ import java.util.*;
 public class PurchaseOrderTabs extends javax.swing.JFrame {
 
     private POItem po;
-    private List<POItem> POItemList = new ArrayList<>();
+    private List<PurchaseOrder> POList = new ArrayList<>();
 
     private DefaultTableModel PurchaseOrderTable = new DefaultTableModel(){
         public boolean isCellEditable(int row, int column){
@@ -23,27 +24,24 @@ public class PurchaseOrderTabs extends javax.swing.JFrame {
         PurchaseOrderTable.setColumnIdentifiers(columnName);
         PurchaseOrderTable.setRowCount(0);
         
-        POItemList = POItem.toItemList();
+        POList = POItem.toList();
   
                 
-        for (POItem poItem : POItemList) {
+        for (PurchaseOrder poItem : POList) {
             PurchaseOrderTable.addRow(new String[]{
                 poItem.getPOID(),
                 poItem.getPRID(),
-                poItem.getItemID(),
-                String.valueOf(poItem.getQuantity()),
-                String.format("%.2f", poItem.getUnitPrice()),
                 String.format("%.2f", poItem.getTotalPrice()),
                 poItem.getSupplierID(),
                 String.valueOf(poItem.getGenerateDateTime()),
                 String.valueOf(poItem.getDeliveryDate()),
                 poItem.getStatus().name(),
                 poItem.getCreateBy(),
-                poItem.getApprovedBy(),
+                poItem.getPerformedBy(),
             });
         }
     }
-    private String[] columnName = {"Purchase Order ID","Purchase Requisition ID","Item ID","Quantity", "Unit Price", "Total Price","Supplier ID", "Date & Time of generated","Delivery Date", "status", "Created By", "Approved By"};
+    private String[] columnName = {"Purchase Order ID","Purchase Requisition ID", "Total Price","Supplier ID", "Date & Time of generated","Delivery Date", "status", "Created By", "Approved By"};
     private int row = -1;
     
 
@@ -54,7 +52,7 @@ public class PurchaseOrderTabs extends javax.swing.JFrame {
     txtCreateBy.setText("");
     txtApprovedBy.setText("");
     lblItemName.setText(""); 
-    jTextField1.setText("");
+    PoID.setText("");
     if (cmbItemID.getItemCount() > 0) {
         cmbItemID.setSelectedIndex(0);
     }
@@ -68,7 +66,7 @@ private void clearForm() {
     boolean wasEditing = selectedRow >= 0; // remember if editing
     selectedRow = -1; // reset selection status early
 
-    jTextField1.setText("");
+    PoID.setText("");
     txtQuantity.setText("");
     txtUnitPrice.setText("");
     txtSupplierID.setText("");
@@ -222,7 +220,7 @@ private String incrementPOID(String poid) {
         txtCreateBy = new javax.swing.JTextField();
         txtApprovedBy = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        PoID = new javax.swing.JTextField();
         lblPOID = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -369,7 +367,7 @@ private String incrementPOID(String poid) {
                                                     .addGroup(layout.createSequentialGroup()
                                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                                             .addGroup(layout.createSequentialGroup()
-                                                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(PoID, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                             .addGroup(layout.createSequentialGroup()
@@ -438,7 +436,7 @@ private String incrementPOID(String poid) {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel6)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(PoID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -490,7 +488,7 @@ row = poTable.getSelectedRow();
     txtQuantity.setText(quantity);
     txtUnitPrice.setText(unitPriceStr);
     txtSupplierID.setText(supplierId);
-    jTextField1.setText(prId);
+    PoID.setText(prId);
     txtCreateBy.setText(createdBy);
     txtApprovedBy.setText(approvedBy);
 
@@ -505,7 +503,7 @@ row = poTable.getSelectedRow();
         String unitPriceStr = txtUnitPrice.getText();
         String supplierId = txtSupplierID.getText();
         String poId = lblPOID.getText();
-        String prId = jTextField1.getText();
+        String prId = PoID.getText();
         String createBy = txtCreateBy.getText();
         String approvedBy = txtApprovedBy.getText();
         String itemId = cmbItemID.getSelectedItem().toString();
@@ -553,7 +551,7 @@ row = poTable.getSelectedRow();
         String unitPriceStr = txtUnitPrice.getText();
         String supplierId = txtSupplierID.getText();
         String poId = lblPOID.getText();
-        String prId = jTextField1.getText();
+        String prId = PoID.getText();
         String createBy = txtCreateBy.getText();
         String approvedBy = txtApprovedBy.getText();
         String itemId = cmbItemID.getSelectedItem().toString();
@@ -617,7 +615,7 @@ row = poTable.getSelectedRow();
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-        saveTableToFile("C:\\Users\\user\\Downloads\\POMS\\data\\PO\\items.txt");
+//        saveTableToFile("C:\\Users\\user\\Downloads\\POMS\\data\\PO\\items.txt");
     }//GEN-LAST:event_saveButtonActionPerformed
 
     private void returnButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnButtonActionPerformed
@@ -626,6 +624,11 @@ row = poTable.getSelectedRow();
 
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
         clearForm();
+        if (txtQuantity != null && txtSupplierID != null && txtUnitPrice != null && txtSupplierID != null && PoID != null && txtCreateBy != null && txtApprovedBy != null){
+            clearForm();
+        }else{
+            ClearTextField();
+        }
     }//GEN-LAST:event_clearButtonActionPerformed
 
     private void cmbItemIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbItemIDActionPerformed
@@ -668,6 +671,7 @@ row = poTable.getSelectedRow();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField PoID;
     private javax.swing.JButton addButton;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton clearButton;
@@ -685,7 +689,6 @@ row = poTable.getSelectedRow();
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblItemName;
     private javax.swing.JLabel lblPOID;
     private javax.swing.JTable poTable;

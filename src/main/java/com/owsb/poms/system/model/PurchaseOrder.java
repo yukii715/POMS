@@ -15,7 +15,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
     private LocalDate deliveryDate;
     private Status status;
     private String createBy;
-    private String approvedBy;
+    private String performedBy;
     
     private static final String filePath = "data/PO/purchase_order.txt";
     
@@ -43,7 +43,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         this.deliveryDate = deliveryDate;
         this.status = status.NEW;
         this.createBy = createBy;
-        this.approvedBy = approvedBy;
+        this.performedBy = approvedBy;
     }
 
     public String getPOID() {
@@ -110,12 +110,12 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         this.createBy = createBy;
     }
 
-    public String getApprovedBy() {
-        return approvedBy;
+    public String getPerformedBy() {
+        return performedBy;
     }
 
-    public void setApprovedBy(String approvedBy) {
-        this.approvedBy = approvedBy;
+    public void setPerformedBy(String performedBy) {
+        this.performedBy = performedBy;
     }
     
     @Override
@@ -128,7 +128,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
              + deliveryDate.toString() + "\t"
              + status.name() + "\t"
              + createBy + "\t"
-             + approvedBy;
+             + performedBy;
     }
     
     public static PurchaseOrder fromString(String line) {
@@ -146,7 +146,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         po.setDeliveryDate(LocalDate.parse(parts[5]));
         po.setStatus(Status.valueOf(parts[6]));
         po.setCreateBy(parts[7]);
-        po.setApprovedBy(parts[8]);
+        po.setPerformedBy(parts[8]);
 
         return po;
     }
@@ -186,14 +186,14 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         );
     }
     
-    private List<POItem> items = new ArrayList<>();
-
-public List<POItem> getItems() {
-    return items;
-}
-
-public void setItems(List<POItem> items) {
-    this.items = items;
-}
-
+    public void approved(){
+        DataHandler.updateFieldAndSave(toList(),
+                po -> po.getPOID().equals(this.getPOID()),              
+                po -> {
+                    po.setStatus(this.getStatus());
+                    po.setPerformedBy(this.getPerformedBy());
+                            },           
+                list -> this.saveToFile(list)
+        );
+    }
 }

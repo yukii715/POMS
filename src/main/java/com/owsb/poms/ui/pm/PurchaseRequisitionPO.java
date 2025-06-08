@@ -1,83 +1,68 @@
 
 package com.owsb.poms.ui.pm;
 
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.*;
 import com.owsb.poms.system.model.*;
+import com.owsb.poms.ui.admin.Orders.PRDetails;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import javax.swing.table.*;
+
 
 public class PurchaseRequisitionPO extends javax.swing.JFrame {
 
-    private List<PRItem> PRItemList;
     private int row = -1;
-    private DefaultTableModel RequisitionTable = new DefaultTableModel(){
-        public boolean isCellEditable(int row, int column){
+    private List<PurchaseRequisition> prList;
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    
+    private DefaultTableModel prModel = new DefaultTableModel(){
+       public boolean isCellEditable(int row, int column){
            return false;
        } 
-    };
+    } ;
     
-    private PRItem po;
+    PurchaseRequisition pr = new PurchaseRequisition();
     
-    private void PurReq(){
-        RequisitionTable.setRowCount(0);
-        RequisitionTable.setColumnIdentifiers(columnName);
-        
-//        PRItemList = PRItem.toItemList();
-
-        for (PRItem prItem : PRItemList){
-            RequisitionTable.addRow(new String[]{
-                prItem.getPRID(),
-                prItem.getItemID(),
-                String.valueOf(prItem.getQuantity()),
-                prItem.getSupplierID(),
-                String.valueOf(prItem.getRequestDateTime()),
-                String.valueOf(prItem.getRequiredDeliveryDate()),   
-                prItem.getStatus().name(),
-                prItem.getCreateBy()
-                
-            });
-        }
-    }
-    
-private void Verified() {
-    int selectedRow = jTable1.getSelectedRow();
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "Please select a requisition to verify.", "No Selection", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-
-    String prid = (String) jTable1.getValueAt(selectedRow, 0);
-
-    PRItem pr = null;
-    for (PRItem req : PRItemList) {
-        if (req.getPRID().equals(prid)) {
-            pr = req;
-            break;
-        }
-    }
-
-    if (pr == null) {
-        JOptionPane.showMessageDialog(this, "Purchase requisition not found.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    pr.setStatus(PRItem.Status.APPROVED);
-
-    // If updateStatus() persists changes, call it here
-    // Otherwise, you can remove or leave it empty
-    pr.updateStatus();
-
-    JOptionPane.showMessageDialog(this, "Purchase requisition " + prid + " approved.");
-
-    // Refresh table without reloading PRItemList from file
-    PurReq();
-}
+    private String[] prColumnName = {"ID", "Supplier", "Date Time", "Required Delivery On", "Created By", "Status"};
    
-    private String[] columnName = {"Purchase Requisition","Item ID", "Quantity", "Supplier ID", "Date & Time Requested", "Required Delivery Date",  "status", "Created By"};
+    private void PR(){
+        
+        prModel.setRowCount(0);
+        
+        prModel.setColumnIdentifiers(prColumnName);
+                
+        prList = PurchaseRequisition.toList();
+        
+        for (PurchaseRequisition pr : prList) {
+                prModel.addRow(new String[]{
+                    pr.getPRID(),
+                    pr.getSupplierID(),
+                    pr.getRequestDateTime().format(dateTimeFormatter),
+                    pr.getRequiredDeliveryDate().format(dateFormatter),
+                    pr.getCreateBy(),
+                    pr.getStatus().name()
+                });
+        }
+
+        
+        
+        // Create a single “center” renderer:
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Apply it as the default for any Object‐typed cell:
+        tblPR.setDefaultRenderer(Object.class, centerRenderer);
+    }
+
+    
+   
     public PurchaseRequisitionPO() {
         initComponents();
-        PRItemList = PRItem.toItemList();  
-        PurReq();
+        PR();
+        
+        
     }
     
     /**
@@ -92,9 +77,9 @@ private void Verified() {
         jLabel1 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblPR = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnVerify = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -109,8 +94,13 @@ private void Verified() {
             }
         });
 
-        jTable1.setModel(RequisitionTable);
-        jScrollPane1.setViewportView(jTable1);
+        tblPR.setModel(prModel);
+        tblPR.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblPRMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblPR);
 
         jButton1.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jButton1.setText("Purchase order");
@@ -120,11 +110,11 @@ private void Verified() {
             }
         });
 
-        jButton3.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        jButton3.setText("Verify");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnVerify.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        btnVerify.setText("Verify");
+        btnVerify.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnVerifyActionPerformed(evt);
             }
         });
 
@@ -140,7 +130,7 @@ private void Verified() {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(btnVerify, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31))
             .addGroup(layout.createSequentialGroup()
@@ -156,7 +146,7 @@ private void Verified() {
                         .addContainerGap(211, Short.MAX_VALUE)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(149, 149, 149)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnVerify, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(191, 242, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(16, 16, 16)
@@ -180,9 +170,62 @@ private void Verified() {
         tabs.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        Verified();
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void btnVerifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerifyActionPerformed
+    int selectedRow = tblPR.getSelectedRow();
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Please select a purchase requisition to verify.", 
+            "No Selection", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+    
+    String prID = (String) prModel.getValueAt(selectedRow, 0); // Get PR ID from first column
+    String currentStatus = (String) prModel.getValueAt(selectedRow, 5); // Get current status
+    
+    // Check if already approved
+    if ("APPROVED".equalsIgnoreCase(currentStatus)) {
+        JOptionPane.showMessageDialog(this, "This purchase requisition is already approved.", 
+            "Already Approved", JOptionPane.INFORMATION_MESSAGE);
+        return;
+    }
+    
+    int response = JOptionPane.showConfirmDialog(this, 
+        "Are you sure you want to approve Purchase Requisition " + prID + "?", 
+        "Confirm Approval", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+    
+    if (response == JOptionPane.YES_OPTION) {
+        try {
+            // Find the selected PR in the list
+            for (PurchaseRequisition pr : prList) {
+                if (pr.getPRID().equals(prID)) {
+                    // Update the status using your existing methods
+                    pr.setStatus(PurchaseRequisition.Status.APPROVED);
+                    pr.updateStatus();
+                    break;
+                }
+            }
+            
+            // Refresh the table
+            PR();
+            
+            JOptionPane.showMessageDialog(this, "Purchase Requisition " + prID + " has been approved.", 
+                "Approval Successful", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error approving purchase requisition: " + ex.getMessage(), 
+                "Approval Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    }//GEN-LAST:event_btnVerifyActionPerformed
+
+    private void tblPRMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPRMouseClicked
+    if (evt.getClickCount() == 2) { // Double click
+        int selectedRow = tblPR.getSelectedRow();
+        if (selectedRow != -1) {
+            String prID = (String) prModel.getValueAt(selectedRow, 0); // "ID" column
+            PRItemDialog dialog = new PRItemDialog(this, prID);
+            dialog.setVisible(true);
+        }
+    }
+    }//GEN-LAST:event_tblPRMouseClicked
 
     /**
      * @param args the command line arguments
@@ -220,11 +263,11 @@ private void Verified() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnVerify;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tblPR;
     // End of variables declaration//GEN-END:variables
 }
