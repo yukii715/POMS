@@ -11,7 +11,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.*;
 
 public class PRModifier extends javax.swing.JDialog {
-    private String userID;
+    private Admin admin;
     private String supplierID;
     private LocalDate requiredDate;
     private List<Item> items;
@@ -29,11 +29,11 @@ public class PRModifier extends javax.swing.JDialog {
     } ;
     private String[] itemsColumnName = {"ID", "Category", "Type", "Name", "Stock", "Status", "Require", "Quantity"};
 
-    public PRModifier(javax.swing.JDialog parent, boolean modal, String userID) {
+    public PRModifier(javax.swing.JDialog parent, boolean modal, Admin admin) {
         super(parent, modal);
         initComponents();
         
-        this.userID = userID;
+        this.admin = admin;
         setTitle("New Purchase Requisition");
         btnPerform.setText("Create");
         
@@ -417,7 +417,7 @@ public class PRModifier extends javax.swing.JDialog {
         
         if (result == JOptionPane.YES_OPTION){
             if (!edit){
-                pr = new PurchaseRequisition(supplierID, requiredDate, userID);
+                pr = new PurchaseRequisition(supplierID, requiredDate, admin.getUID());
                 pr.add();
             }
             else

@@ -22,6 +22,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         NEW,
         APPROVED,
         REJECTED,
+        DELETED,
         PROCESSING,
         EXTENDED,
         ARRIVED,
@@ -194,5 +195,10 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
                             },           
                 list -> this.saveToFile(list)
         );
+    }
+    
+    public List<POItem> getItems(){
+        String filePath = String.format("data/PO/%s.txt", getPOID());
+        return POItem.read(filePath);
     }
 }

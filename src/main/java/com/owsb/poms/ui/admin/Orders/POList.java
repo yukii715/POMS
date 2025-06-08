@@ -9,7 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 public class POList extends javax.swing.JDialog {
-    private String userID;
+    private Admin admin;
     private List<PurchaseOrder> poList;
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -21,12 +21,14 @@ public class POList extends javax.swing.JDialog {
     } ;
     private String[] poColumnName = {"ID", "From", "Supplier", "Total Price", "Delivery Date", "Created By", "Status"};
 
-    public POList(java.awt.Frame parent, boolean modal, String userID) {
+    public POList(java.awt.Frame parent, boolean modal, Admin admin) {
         super(parent, modal);
         initComponents();
         
-        this.userID = userID;
+        this.admin = admin;
         setTitle("Purchase Orders");
+        
+        cbAllPOs.setSelected(true);
         
         PO();
     }
@@ -78,7 +80,7 @@ public class POList extends javax.swing.JDialog {
         srlPR = new javax.swing.JScrollPane();
         tblPR = new javax.swing.JTable();
         btnNew = new javax.swing.JButton();
-        cbShowAllPr = new javax.swing.JCheckBox();
+        cbAllPOs = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -107,13 +109,13 @@ public class POList extends javax.swing.JDialog {
             }
         });
 
-        cbShowAllPr.setBackground(new java.awt.Color(204, 204, 255));
-        cbShowAllPr.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        cbShowAllPr.setForeground(new java.awt.Color(0, 0, 0));
-        cbShowAllPr.setText("Show All PRs");
-        cbShowAllPr.addActionListener(new java.awt.event.ActionListener() {
+        cbAllPOs.setBackground(new java.awt.Color(204, 204, 255));
+        cbAllPOs.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        cbAllPOs.setForeground(new java.awt.Color(0, 0, 0));
+        cbAllPOs.setLabel("All POs");
+        cbAllPOs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbShowAllPrActionPerformed(evt);
+                cbAllPOsActionPerformed(evt);
             }
         });
 
@@ -124,7 +126,7 @@ public class POList extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                 .addContainerGap(856, Short.MAX_VALUE)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(cbShowAllPr, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
+                    .addComponent(cbAllPOs, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
                     .addComponent(btnNew, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(33, 33, 33))
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -139,7 +141,7 @@ public class POList extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
-                .addComponent(cbShowAllPr)
+                .addComponent(cbAllPOs)
                 .addContainerGap(602, Short.MAX_VALUE))
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlMainLayout.createSequentialGroup()
@@ -169,20 +171,20 @@ public class POList extends javax.swing.JDialog {
     }//GEN-LAST:event_tblPRMouseClicked
 
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
-        POModifier newPO = new POModifier(this, true, userID);
+        POModifier newPO = new POModifier(this, true, admin);
         newPO.setLocationRelativeTo(this);
         newPO.setVisible(true);
         PO();
     }//GEN-LAST:event_btnNewActionPerformed
 
-    private void cbShowAllPrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbShowAllPrActionPerformed
+    private void cbAllPOsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbAllPOsActionPerformed
         
-    }//GEN-LAST:event_cbShowAllPrActionPerformed
+    }//GEN-LAST:event_cbAllPOsActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNew;
-    private javax.swing.JCheckBox cbShowAllPr;
+    private javax.swing.JCheckBox cbAllPOs;
     private javax.swing.JPanel pnlMain;
     private javax.swing.JScrollPane srlPR;
     private javax.swing.JTable tblPR;

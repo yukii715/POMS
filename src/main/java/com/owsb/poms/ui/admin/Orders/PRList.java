@@ -9,7 +9,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.*;
 
 public class PRList extends javax.swing.JDialog {
-    private String userID;
+    private Admin admin;
     private List<PurchaseRequisition> prList;
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -25,11 +25,11 @@ public class PRList extends javax.swing.JDialog {
     /**
      * Creates new form PRList
      */
-    public PRList(java.awt.Frame parent, boolean modal, String userID) {
+    public PRList(java.awt.Frame parent, boolean modal, Admin admin) {
         super(parent, modal);
         initComponents();
         
-        this.userID = userID;
+        this.admin = admin;
         setTitle("Purchase Requisitions");
         
         PR();
@@ -179,7 +179,7 @@ public class PRList extends javax.swing.JDialog {
             pr.setCreateBy(String.valueOf(tblPR.getValueAt(row, 4)));
             pr.setStatus(PurchaseRequisition.Status.valueOf(String.valueOf(tblPR.getValueAt(row, 5))));
             
-            PRDetails prd = new PRDetails(this, true, pr, userID);
+            PRDetails prd = new PRDetails(this, true, pr, admin.getUID());
             prd.setLocationRelativeTo(this);
             prd.setVisible(true);
             PR();
@@ -187,7 +187,7 @@ public class PRList extends javax.swing.JDialog {
     }//GEN-LAST:event_tblPRMouseClicked
 
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
-        PRModifier newPR = new PRModifier(this, true, userID);
+        PRModifier newPR = new PRModifier(this, true, admin);
         newPR.setLocationRelativeTo(this);
         newPR.setVisible(true);
         PR();

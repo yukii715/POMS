@@ -4,18 +4,13 @@ import com.owsb.poms.system.model.*;
 import com.owsb.poms.ui.common.CommonMethod;
 import java.awt.Image;
 import java.time.format.DateTimeFormatter;
-import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
+import javax.swing.*;
+import javax.swing.table.*;
 
-public class PRDetails extends javax.swing.JDialog {
-    private PurchaseRequisition pr;
+
+public class PODetails extends javax.swing.JDialog {
+    private PurchaseOrder po;
     private Admin admin;
-    private boolean newPR = false;
-    private boolean approvedPR = false;
-    private boolean rejectedOrDeletedPR = false;
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss");
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
     
@@ -24,50 +19,31 @@ public class PRDetails extends javax.swing.JDialog {
             return false;
         } 
     } ;
-    private String[] itemsColumnName = {"ID", "Category", "Type", "Name", "Quantity"};
+    private String[] itemsColumnName = {"ID", "Category", "Type", "Name", "Quantity", "Unit Price"};
 
-    public PRDetails(javax.swing.JDialog parent, boolean modal, PurchaseRequisition pr, Admin admin) {
+    public PODetails(java.awt.Frame parent, boolean modal,PurchaseOrder po, Admin admin) {
         super(parent, modal);
         initComponents();
         
-        this.pr = pr;
+        this.po = po;
         this.admin = admin;
-        setTitle(pr.getPRID());
+        setTitle(po.getPOID());
         new CommonMethod().setLabelIcon("/icons/edit.png", 20, 20, Image.SCALE_SMOOTH, lblEdit);
         
-        lblPRID.setText(pr.getPRID());
-        lblSupplierID.setText(pr.getSupplierID());
-        lblSupplierName.setText(Supplier.getNameById(pr.getSupplierID()));
-        lblRequestDateTime.setText(pr.getRequestDateTime().format(dateTimeFormatter));
-        lblCreatedBy.setText(pr.getCreateBy());
-        lblStatus.setText(pr.getStatus().name());
-        
-        PurchaseRequisition.Status status = pr.getStatus();
-
-        if (status == PurchaseRequisition.Status.NEW) {
-            newPR = true;
-            btn1.setText("Approve");
-            btn2.setText("Reject");
-            btn3.setText("Delete");
-        } else {
-            btn1.setVisible(false);
-            btn3.setVisible(false);
-            lblEdit.setVisible(false);
-
-            if (status == PurchaseRequisition.Status.APPROVED) {
-                approvedPR = true;
-                btn2.setText("OK");
-            } else {
-                rejectedOrDeletedPR = true;
-                btn2.setText("Set as New");
-            }
-        }
+        lblPOID.setText(po.getPOID());
+        lblPRID.setText(po.getPRID());
+        lblSupplierID.setText(po.getSupplierID());
+        lblSupplierName.setText(Supplier.getNameById(po.getSupplierID()));
+        lblGeneratedDateTime.setText(po.getGeneratedDateTime().format(dateTimeFormatter));
+        lblCreatedBy.setText(po.getCreateBy());
+        lblStatus.setText(po.getStatus().name());
         
         refresh();
     }
     
     private void refresh(){
-        lblRequiredDeliveryDate.setText(pr.getRequiredDeliveryDate().format(dateFormatter));
+        lblTotalPrice.setText(String.format("RM %.2f", po.getTotalPrice()));
+        lblDeliveryDate.setText(po.getDeliveryDate().format(dateFormatter));
         
         itemsModel.setRowCount(0);
         itemsModel.setColumnIdentifiers(itemsColumnName);
@@ -81,15 +57,16 @@ public class PRDetails extends javax.swing.JDialog {
         tblItems.getColumnModel().getColumn(2).setPreferredWidth(100);
         tblItems.getColumnModel().getColumn(3).setPreferredWidth(200);
         
-        var items = pr.getItems();
+        var items = po.getItems();
         
-        for (PRItem item : items) {
+        for (POItem item : items) {
             itemsModel.addRow(new String[]{
                 item.getItemID(),
                 item.getItemCategory(),
                 item.getItemType(),
                 item.getItemName(),
-                String.valueOf(item.getQuantity())
+                String.valueOf(item.getQuantity()),
+                String.valueOf(item.getUnitPrice())
             });
         }
         
@@ -112,15 +89,15 @@ public class PRDetails extends javax.swing.JDialog {
 
         pnlMain = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        lblPRID = new javax.swing.JLabel();
+        lblPOID = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         lblSupplierID = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         lblSupplierName = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        lblRequestDateTime = new javax.swing.JLabel();
+        lblGeneratedDateTime = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        lblRequiredDeliveryDate = new javax.swing.JLabel();
+        lblDeliveryDate = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         lblCreatedBy = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
@@ -132,8 +109,15 @@ public class PRDetails extends javax.swing.JDialog {
         tblItems = new javax.swing.JTable();
         btn3 = new javax.swing.JButton();
         lblEdit = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        lblPerformdBy = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        lblTotalPrice = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        lblPRID = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(641, 760));
 
         pnlMain.setBackground(new java.awt.Color(255, 204, 204));
 
@@ -142,10 +126,10 @@ public class PRDetails extends javax.swing.JDialog {
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel2.setText("ID:");
 
-        lblPRID.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblPRID.setForeground(new java.awt.Color(0, 0, 0));
-        lblPRID.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lblPRID.setText("[PRID]");
+        lblPOID.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblPOID.setForeground(new java.awt.Color(0, 0, 0));
+        lblPOID.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblPOID.setText("[POID]");
 
         jLabel4.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
@@ -170,23 +154,23 @@ public class PRDetails extends javax.swing.JDialog {
         jLabel8.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(0, 0, 0));
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel8.setText("Request Date Time:");
+        jLabel8.setText("Generated Date Time:");
 
-        lblRequestDateTime.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblRequestDateTime.setForeground(new java.awt.Color(0, 0, 0));
-        lblRequestDateTime.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lblRequestDateTime.setText("[RequestDateTime]");
-        lblRequestDateTime.setToolTipText("");
+        lblGeneratedDateTime.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblGeneratedDateTime.setForeground(new java.awt.Color(0, 0, 0));
+        lblGeneratedDateTime.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblGeneratedDateTime.setText("[GeneratedDateTime]");
+        lblGeneratedDateTime.setToolTipText("");
 
         jLabel10.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(0, 0, 0));
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel10.setText("Required Delivery Date:");
+        jLabel10.setText("Delivery Date:");
 
-        lblRequiredDeliveryDate.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblRequiredDeliveryDate.setForeground(new java.awt.Color(0, 0, 0));
-        lblRequiredDeliveryDate.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lblRequiredDeliveryDate.setText("[RequiredDeliveryDate]");
+        lblDeliveryDate.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblDeliveryDate.setForeground(new java.awt.Color(0, 0, 0));
+        lblDeliveryDate.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblDeliveryDate.setText("[DeliveryDate]");
 
         jLabel12.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(0, 0, 0));
@@ -262,6 +246,38 @@ public class PRDetails extends javax.swing.JDialog {
             }
         });
 
+        jLabel15.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel15.setText("Performed By:");
+
+        lblPerformdBy.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblPerformdBy.setForeground(new java.awt.Color(0, 0, 0));
+        lblPerformdBy.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblPerformdBy.setText("[PerformedBy]");
+        lblPerformdBy.setToolTipText("");
+
+        jLabel9.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel9.setText("Total Price:");
+
+        lblTotalPrice.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblTotalPrice.setForeground(new java.awt.Color(0, 0, 0));
+        lblTotalPrice.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblTotalPrice.setText("[TotalPrice]");
+        lblTotalPrice.setToolTipText("");
+
+        jLabel3.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel3.setText("From PR:");
+
+        lblPRID.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblPRID.setForeground(new java.awt.Color(0, 0, 0));
+        lblPRID.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblPRID.setText("[PRID]");
+
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
         pnlMainLayout.setHorizontalGroup(
@@ -270,50 +286,54 @@ public class PRDetails extends javax.swing.JDialog {
                 .addGap(62, 62, 62)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addComponent(srlItems, javax.swing.GroupLayout.PREFERRED_SIZE, 517, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(jLabel2)
+                        .addGap(194, 194, 194)
+                        .addComponent(lblPOID)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblEdit)
+                        .addGap(70, 70, 70))
                     .addGroup(pnlMainLayout.createSequentialGroup()
                         .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel16)
                             .addGroup(pnlMainLayout.createSequentialGroup()
-                                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel6)
-                                    .addComponent(jLabel8))
-                                .addGap(96, 96, 96)
-                                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblSupplierName)
-                                    .addComponent(lblRequestDateTime)))
-                            .addGroup(pnlMainLayout.createSequentialGroup()
-                                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel4))
-                                .addGap(143, 143, 143)
-                                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblSupplierID)
-                                    .addGroup(pnlMainLayout.createSequentialGroup()
-                                        .addComponent(lblPRID)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 235, Short.MAX_VALUE)
-                                        .addComponent(lblEdit))))
-                            .addGroup(pnlMainLayout.createSequentialGroup()
-                                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel10)
-                                        .addComponent(jLabel12)
-                                        .addComponent(jLabel14)))
+                                .addComponent(jLabel3)
+                                .addGap(154, 154, 154)
+                                .addComponent(lblPRID))
+                            .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(pnlMainLayout.createSequentialGroup()
-                                        .addGap(71, 71, 71)
+                                        .addComponent(jLabel6)
+                                        .addGap(158, 158, 158)
                                         .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(lblStatus)
-                                            .addComponent(lblCreatedBy)
-                                            .addComponent(lblRequiredDeliveryDate)))
+                                            .addComponent(lblTotalPrice)
+                                            .addComponent(lblSupplierName)))
                                     .addGroup(pnlMainLayout.createSequentialGroup()
-                                        .addGap(60, 60, 60)
-                                        .addComponent(btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(60, 60, 60)
-                                        .addComponent(btn3, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addGap(70, 70, 70))))
+                                        .addComponent(jLabel4)
+                                        .addGap(143, 143, 143)
+                                        .addComponent(lblSupplierID))
+                                    .addComponent(jLabel16)
+                                    .addComponent(jLabel10)
+                                    .addComponent(jLabel12)
+                                    .addComponent(jLabel14)
+                                    .addComponent(jLabel9)
+                                    .addComponent(srlItems, javax.swing.GroupLayout.PREFERRED_SIZE, 517, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(pnlMainLayout.createSequentialGroup()
+                                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel8)
+                                            .addComponent(jLabel15))
+                                        .addGap(80, 80, 80)
+                                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(lblPerformdBy)
+                                            .addComponent(lblDeliveryDate)
+                                            .addComponent(lblGeneratedDateTime)
+                                            .addComponent(lblCreatedBy)
+                                            .addComponent(lblStatus))))
+                                .addGroup(pnlMainLayout.createSequentialGroup()
+                                    .addComponent(btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(92, 92, 92)
+                                    .addComponent(btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(92, 92, 92)
+                                    .addComponent(btn3, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 62, Short.MAX_VALUE))))
         );
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -325,8 +345,12 @@ public class PRDetails extends javax.swing.JDialog {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                         .addGap(28, 28, 28)
                         .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblPRID)
+                            .addComponent(lblPOID)
                             .addComponent(lblEdit))))
+                .addGap(18, 18, 18)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(lblPRID))
                 .addGap(18, 18, 18)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -337,12 +361,16 @@ public class PRDetails extends javax.swing.JDialog {
                     .addComponent(lblSupplierName))
                 .addGap(18, 18, 18)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(lblTotalPrice))
+                .addGap(18, 18, 18)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(lblRequestDateTime))
+                    .addComponent(lblGeneratedDateTime))
                 .addGap(18, 18, 18)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(lblRequiredDeliveryDate))
+                    .addComponent(lblDeliveryDate))
                 .addGap(18, 18, 18)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel12)
@@ -352,15 +380,19 @@ public class PRDetails extends javax.swing.JDialog {
                     .addComponent(jLabel14)
                     .addComponent(lblStatus))
                 .addGap(18, 18, 18)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel15)
+                    .addComponent(lblPerformdBy))
+                .addGap(18, 18, 18)
                 .addComponent(jLabel16)
                 .addGap(18, 18, 18)
                 .addComponent(srlItems, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGap(20, 20, 20))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -380,37 +412,37 @@ public class PRDetails extends javax.swing.JDialog {
     private void btn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn1ActionPerformed
         if (newPR){
             int result = JOptionPane.showConfirmDialog(
-                this, 
-                "Are you sure to approve this PR?", 
-                String.format("Approve %s", getTitle()), 
-                JOptionPane.YES_NO_OPTION, 
+                this,
+                "Are you sure to approve this PR?",
+                String.format("Approve %s", getTitle()),
+                JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE
             );
 
             if (result == JOptionPane.YES_OPTION){
                 pr.setStatus(PurchaseRequisition.Status.APPROVED);
-                pr.setPerformedBy(admin.getUID());
+                pr.setPerformedBy(userID);
                 pr.updateStatus();
                 JOptionPane.showMessageDialog(this, "This PR has been approved!");
                 dispose();
             }
-                return;
+            return;
         }
     }//GEN-LAST:event_btn1ActionPerformed
 
     private void btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn2ActionPerformed
         if (newPR){
             int result = JOptionPane.showConfirmDialog(
-                this, 
-                "Are you sure to reject this PR?", 
-                String.format("Reject %s", getTitle()), 
-                JOptionPane.YES_NO_OPTION, 
+                this,
+                "Are you sure to reject this PR?",
+                String.format("Reject %s", getTitle()),
+                JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE
             );
 
             if (result == JOptionPane.YES_OPTION){
                 pr.setStatus(PurchaseRequisition.Status.REJECTED);
-                pr.setPerformedBy(admin.getUID());
+                pr.setPerformedBy(userID);
                 pr.updateStatus();
                 JOptionPane.showMessageDialog(this, "This PR has been rejected!");
                 dispose();
@@ -423,10 +455,10 @@ public class PRDetails extends javax.swing.JDialog {
         }
         if (rejectedOrDeletedPR){
             int result = JOptionPane.showConfirmDialog(
-                this, 
-                "Are you sure to reset this PR as new?", 
-                String.format("Reset PR", getTitle()), 
-                JOptionPane.YES_NO_OPTION, 
+                this,
+                "Are you sure to reset this PR as new?",
+                String.format("Reset PR", getTitle()),
+                JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE
             );
 
@@ -444,16 +476,16 @@ public class PRDetails extends javax.swing.JDialog {
     private void btn3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn3ActionPerformed
         if (newPR){
             int result = JOptionPane.showConfirmDialog(
-                this, 
-                "Are you sure to delete this PR?", 
-                String.format("Reject %s", getTitle()), 
-                JOptionPane.YES_NO_OPTION, 
+                this,
+                "Are you sure to delete this PR?",
+                String.format("Reject %s", getTitle()),
+                JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE
             );
 
             if (result == JOptionPane.YES_OPTION){
                 pr.setStatus(PurchaseRequisition.Status.DELETED);
-                pr.setPerformedBy(admin.getUID());
+                pr.setPerformedBy(userID);
                 pr.updateStatus();
                 JOptionPane.showMessageDialog(this, "This PR has been deleted!");
                 dispose();
@@ -463,12 +495,11 @@ public class PRDetails extends javax.swing.JDialog {
     }//GEN-LAST:event_btn3ActionPerformed
 
     private void lblEditMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblEditMouseClicked
-       PRModifier PR = new PRModifier(this, true, pr);
-       PR.setLocationRelativeTo(this);
-       PR.setVisible(true);
-       refresh();
+        PRModifier PR = new PRModifier(this, true, pr);
+        PR.setLocationRelativeTo(this);
+        PR.setVisible(true);
+        refresh();
     }//GEN-LAST:event_lblEditMouseClicked
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn1;
@@ -477,19 +508,25 @@ public class PRDetails extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel lblCreatedBy;
+    private javax.swing.JLabel lblDeliveryDate;
     private javax.swing.JLabel lblEdit;
+    private javax.swing.JLabel lblGeneratedDateTime;
+    private javax.swing.JLabel lblPOID;
     private javax.swing.JLabel lblPRID;
-    private javax.swing.JLabel lblRequestDateTime;
-    private javax.swing.JLabel lblRequiredDeliveryDate;
+    private javax.swing.JLabel lblPerformdBy;
     private javax.swing.JLabel lblStatus;
     private javax.swing.JLabel lblSupplierID;
     private javax.swing.JLabel lblSupplierName;
+    private javax.swing.JLabel lblTotalPrice;
     private javax.swing.JPanel pnlMain;
     private javax.swing.JScrollPane srlItems;
     private javax.swing.JTable tblItems;

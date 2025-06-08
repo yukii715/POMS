@@ -11,7 +11,7 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 public class POModifier extends javax.swing.JDialog {
-    private String userID;
+    private Admin admin;
     private String supplierID;
     private LocalDate deliveryDate;
     private double totalPrice;
@@ -31,11 +31,11 @@ public class POModifier extends javax.swing.JDialog {
     } ;
     
     private String[] itemsColumnName = {"ID", "Category", "Type", "Name", "Stock", "Status", "Quantity", "Unit Price"};
-    public POModifier(javax.swing.JDialog parent, boolean modal, String userID) {
+    public POModifier(javax.swing.JDialog parent, boolean modal, Admin admin) {
         super(parent, modal);
         initComponents();
         
-        this.userID = userID;
+        this.admin = admin;
         setTitle("New Purchase Order");
         btnPerform.setText("Create");
         
@@ -428,7 +428,7 @@ public class POModifier extends javax.swing.JDialog {
 
         if (result == JOptionPane.YES_OPTION){
             if (!edit){
-                po = new PurchaseOrder(pr.getPRID(), totalPrice, pr.getSupplierID(), deliveryDate, userID);
+                po = new PurchaseOrder(pr.getPRID(), totalPrice, pr.getSupplierID(), deliveryDate, admin.getUID());
                 po.add();
                 pr.setStatus(PurchaseRequisition.Status.POGENERATED);
                 pr.updateStatus();

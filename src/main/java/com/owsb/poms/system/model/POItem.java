@@ -102,7 +102,7 @@ public class POItem extends PurchaseOrder{
         FileHandler.saveToFile(filePath, list, POItem::toString);
     }
     
-    public static List<POItem> read(){
+    public static List<POItem> read(String filePath){
         return FileHandler.readFromFile(filePath, POItem::fromString);
     }
 }
