@@ -13,6 +13,9 @@ public class PODetails extends javax.swing.JDialog {
     private Admin admin;
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss");
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+    private boolean newPO = false;
+    private boolean approvedPO = false;
+    private boolean rejectedOrDeletedPO = false;
     
     private DefaultTableModel itemsModel = new DefaultTableModel(){
         public boolean isCellEditable(int row, int column){
@@ -37,6 +40,10 @@ public class PODetails extends javax.swing.JDialog {
         lblGeneratedDateTime.setText(po.getGeneratedDateTime().format(dateTimeFormatter));
         lblCreatedBy.setText(po.getCreateBy());
         lblStatus.setText(po.getStatus().name());
+        
+        PurchaseOrder.Status status = po.getStatus();
+        
+        
         
         refresh();
     }
@@ -410,7 +417,7 @@ public class PODetails extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn1ActionPerformed
-        if (newPR){
+        if (newPO){
             int result = JOptionPane.showConfirmDialog(
                 this,
                 "Are you sure to approve this PR?",
@@ -420,9 +427,9 @@ public class PODetails extends javax.swing.JDialog {
             );
 
             if (result == JOptionPane.YES_OPTION){
-                pr.setStatus(PurchaseRequisition.Status.APPROVED);
-                pr.setPerformedBy(userID);
-                pr.updateStatus();
+                po.setStatus(PurchaseOrder.Status.APPROVED);
+                po.setPerformedBy(admin.getUID());
+                po.updateStatus();
                 JOptionPane.showMessageDialog(this, "This PR has been approved!");
                 dispose();
             }
@@ -431,7 +438,7 @@ public class PODetails extends javax.swing.JDialog {
     }//GEN-LAST:event_btn1ActionPerformed
 
     private void btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn2ActionPerformed
-        if (newPR){
+        if (newPO){
             int result = JOptionPane.showConfirmDialog(
                 this,
                 "Are you sure to reject this PR?",
@@ -441,19 +448,19 @@ public class PODetails extends javax.swing.JDialog {
             );
 
             if (result == JOptionPane.YES_OPTION){
-                pr.setStatus(PurchaseRequisition.Status.REJECTED);
-                pr.setPerformedBy(userID);
-                pr.updateStatus();
+                po.setStatus(PurchaseOrder.Status.REJECTED);
+                po.setPerformedBy(admin.getUID());
+                po.updateStatus();
                 JOptionPane.showMessageDialog(this, "This PR has been rejected!");
                 dispose();
             }
             return;
         }
-        if (approvedPR){
+        if (approvedPO){
             dispose();
             return;
         }
-        if (rejectedOrDeletedPR){
+        if (rejectedOrDeletedPO){
             int result = JOptionPane.showConfirmDialog(
                 this,
                 "Are you sure to reset this PR as new?",
@@ -463,9 +470,9 @@ public class PODetails extends javax.swing.JDialog {
             );
 
             if (result == JOptionPane.YES_OPTION){
-                pr.setStatus(PurchaseRequisition.Status.NEW);
-                pr.setPerformedBy("None");
-                pr.updateStatus();
+                po.setStatus(PurchaseOrder.Status.NEW);
+                po.setPerformedBy("None");
+                po.updateStatus();
                 JOptionPane.showMessageDialog(this, "This PR has been resetted as New!");
                 dispose();
             }
@@ -474,7 +481,7 @@ public class PODetails extends javax.swing.JDialog {
     }//GEN-LAST:event_btn2ActionPerformed
 
     private void btn3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn3ActionPerformed
-        if (newPR){
+        if (newPO){
             int result = JOptionPane.showConfirmDialog(
                 this,
                 "Are you sure to delete this PR?",
@@ -484,9 +491,9 @@ public class PODetails extends javax.swing.JDialog {
             );
 
             if (result == JOptionPane.YES_OPTION){
-                pr.setStatus(PurchaseRequisition.Status.DELETED);
-                pr.setPerformedBy(userID);
-                pr.updateStatus();
+                po.setStatus(PurchaseOrder.Status.DELETED);
+                po.setPerformedBy(admin.getUID());
+                po.updateStatus();
                 JOptionPane.showMessageDialog(this, "This PR has been deleted!");
                 dispose();
             }
@@ -495,9 +502,9 @@ public class PODetails extends javax.swing.JDialog {
     }//GEN-LAST:event_btn3ActionPerformed
 
     private void lblEditMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblEditMouseClicked
-        PRModifier PR = new PRModifier(this, true, pr);
-        PR.setLocationRelativeTo(this);
-        PR.setVisible(true);
+        POModifier PO = new POModifier(this, true, admin);
+        PO.setLocationRelativeTo(this);
+        PO.setVisible(true);
         refresh();
     }//GEN-LAST:event_lblEditMouseClicked
 
