@@ -11,7 +11,7 @@ import javax.swing.SwingConstants;
 import javax.swing.table.*;
 
 public class PRModifier extends javax.swing.JDialog {
-    private String userID;
+    private Admin admin;
     private String supplierID;
     private LocalDate requiredDate;
     private List<Item> items;
@@ -29,12 +29,12 @@ public class PRModifier extends javax.swing.JDialog {
     } ;
     private String[] itemsColumnName = {"ID", "Category", "Type", "Name", "Stock", "Status", "Require", "Quantity"};
 
-    public PRModifier(javax.swing.JDialog parent, boolean modal, String userID) {
+    public PRModifier(javax.swing.JDialog parent, boolean modal, Admin admin) {
         super(parent, modal);
         initComponents();
         
-        this.userID = userID;
-        setTitle("NewPR");
+        this.admin = admin;
+        setTitle("New Purchase Requisition");
         btnPerform.setText("Create");
         
         initialSetting();
@@ -158,9 +158,11 @@ public class PRModifier extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(700, 680));
 
         pnlMain.setBackground(new java.awt.Color(255, 204, 204));
         pnlMain.setForeground(new java.awt.Color(0, 0, 0));
+        pnlMain.setPreferredSize(new java.awt.Dimension(700, 700));
 
         jLabel2.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
@@ -206,7 +208,7 @@ public class PRModifier extends javax.swing.JDialog {
         btnPerform.setBackground(new java.awt.Color(255, 153, 0));
         btnPerform.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
         btnPerform.setForeground(new java.awt.Color(252, 251, 249));
-        btnPerform.setText("Create PR");
+        btnPerform.setText("Perform");
         btnPerform.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnPerformActionPerformed(evt);
@@ -273,7 +275,7 @@ public class PRModifier extends javax.swing.JDialog {
                                         .addComponent(lblSupplierID))))
                             .addComponent(jLabel6)))
                     .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGap(286, 286, 286)
+                        .addGap(288, 288, 288)
                         .addComponent(btnPerform, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(45, Short.MAX_VALUE))
         );
@@ -297,9 +299,9 @@ public class PRModifier extends javax.swing.JDialog {
                 .addComponent(jLabel6)
                 .addGap(18, 18, 18)
                 .addComponent(srlItems, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                 .addComponent(btnPerform, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(19, 19, 19))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -310,7 +312,7 @@ public class PRModifier extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlMain, javax.swing.GroupLayout.PREFERRED_SIZE, 598, Short.MAX_VALUE)
         );
 
         pack();
@@ -415,8 +417,13 @@ public class PRModifier extends javax.swing.JDialog {
         
         if (result == JOptionPane.YES_OPTION){
             if (!edit){
-                pr = new PurchaseRequisition(supplierID, requiredDate, userID);
+                pr = new PurchaseRequisition(supplierID, requiredDate, admin.getUID());
                 pr.add();
+            }
+            else
+            {
+                pr.setRequiredDeliveryDate(requiredDate);
+                pr.updateRequiredDate();
             }
             
             PRItem pri = new PRItem();
