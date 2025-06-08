@@ -421,7 +421,7 @@ public class PODetails extends javax.swing.JDialog {
 
             if (result == JOptionPane.YES_OPTION){
                 pr.setStatus(PurchaseRequisition.Status.APPROVED);
-                pr.setPerformedBy(userID);
+                pr.setPerformedBy(admin);
                 pr.updateStatus();
                 JOptionPane.showMessageDialog(this, "This PR has been approved!");
                 dispose();

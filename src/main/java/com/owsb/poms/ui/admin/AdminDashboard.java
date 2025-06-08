@@ -2018,7 +2018,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_tblOrderMouseReleased
 
     private void btnViewAllPOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewAllPOActionPerformed
-        POList pol = new POList(this, true, lblUserID.getText());
+        POList pol = new POList(this, true, admin);
         pol.setLocationRelativeTo(this);
         pol.setVisible(true);
     }//GEN-LAST:event_btnViewAllPOActionPerformed
