@@ -19,16 +19,18 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
     private static final String filePath = "data/PO/purchase_order.txt";
     
     public enum Status{
-        NEW,
-        APPROVED,
-        REJECTED,
-        DELETED,
-        PROCESSING,
-        EXTENDED,
-        ARRIVED,
-        VERIFIED,
-        COMPLETED,
-        CANCELLED
+        NEW,        // approve, reject or delete
+        APPROVED,   // processing or cancel
+        REJECTED,   // set as new
+        DELETED,    // set as new
+        PROCESSING, // extend, arrived or cancel
+        EXTENDED,   // arrived or cancel
+        ARRIVED,    // verified, extend or cancel
+        VERIFIED,   // invalid or confirm
+        INVALID,    // extend or cancel
+        CONFIRMED,  // completed
+        COMPLETED,  // ok
+        CANCELLED   // ok*
     }
     
     public PurchaseOrder(){
