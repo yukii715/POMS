@@ -7,6 +7,7 @@ import com.owsb.poms.ui.common.*;
 import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.EnumSet;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.plaf.basic.*;
@@ -18,14 +19,14 @@ public class AdminDashboard extends javax.swing.JFrame {
     private boolean summary = false;  
     private Admin admin;
     private String currentTab = "Dashboard";
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     
     // Users
     
     // Sales
     
     // Orders
-    private int selectedOrderRow;
-    private PurchaseOrder selectedOrder = new PurchaseOrder();
     private List<PurchaseOrder> orderList;
     private DefaultTableModel ordersModel = new DefaultTableModel(){
        public boolean isCellEditable(int row, int column){
@@ -49,7 +50,6 @@ public class AdminDashboard extends javax.swing.JFrame {
     private int selectedSupplierRow;
     private Supplier selectedSupplier = new Supplier();
     private List<Supplier> suppliersList;
-    private DateTimeFormatter supplierAddedTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private DefaultTableModel suppliersModel = new DefaultTableModel(){
        public boolean isCellEditable(int row, int column){
            return false;
@@ -133,7 +133,6 @@ public class AdminDashboard extends javax.swing.JFrame {
     
     // Orders Tab
     private void Orders(){
-        selectedOrderRow = -1;
         ordersModel.setRowCount(0);
         
         ordersModel.setColumnIdentifiers(ordersColumnName);
@@ -141,6 +140,32 @@ public class AdminDashboard extends javax.swing.JFrame {
         header.setBackground(new java.awt.Color(255, 255, 204));
         
         srlOrder.getViewport().setBackground(new java.awt.Color(255, 255, 204));
+        
+        tblOrder.getColumnModel().getColumn(2).setPreferredWidth(100);
+        
+        orderList = PurchaseOrder.toList();
+        
+        for (PurchaseOrder po : orderList) {
+            if (EnumSet.of(
+                    PurchaseOrder.Status.PROCESSING,
+                    PurchaseOrder.Status.EXTENDED,
+                    PurchaseOrder.Status.ARRIVED,
+                    PurchaseOrder.Status.VERIFIED,
+                    PurchaseOrder.Status.INVALID,
+                    PurchaseOrder.Status.CONFIRMED
+                ).contains(po.getStatus()) )
+            {
+                ordersModel.addRow(new String[]{
+                    po.getPOID(),
+                    po.getSupplierID(),
+                    po.getGeneratedDateTime().format(dateTimeFormatter),
+                    po.getDeliveryDate().format(dateFormatter),
+                    po.getCreateBy(),
+                    po.getPerformedBy(),
+                    po.getStatus().name()
+                });
+            }
+        }
         
         // Create a single “center” renderer:
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -229,7 +254,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                 suppliersModel.addRow(new String[]{
                     supplier.getSupplierID(),
                     supplier.getSupplierName(),
-                    supplier.getAddedTime().format(supplierAddedTimeFormatter)
+                    supplier.getAddedTime().format(dateTimeFormatter)
                 });
             }
         }
@@ -326,7 +351,6 @@ public class AdminDashboard extends javax.swing.JFrame {
         tblOrder = new javax.swing.JTable();
         btnViewAllPO = new javax.swing.JButton();
         btnViewPR = new javax.swing.JButton();
-        btnProcessPayment = new javax.swing.JButton();
         pnlInventory = new javax.swing.JPanel();
         srlItems = new javax.swing.JScrollPane();
         tblItems = new javax.swing.JTable();
@@ -1106,9 +1130,6 @@ public class AdminDashboard extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblOrderMouseClicked(evt);
             }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                tblOrderMouseReleased(evt);
-            }
         });
         srlOrder.setViewportView(tblOrder);
 
@@ -1132,16 +1153,6 @@ public class AdminDashboard extends javax.swing.JFrame {
             }
         });
 
-        btnProcessPayment.setBackground(new java.awt.Color(255, 204, 204));
-        btnProcessPayment.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnProcessPayment.setForeground(new java.awt.Color(0, 0, 0));
-        btnProcessPayment.setText("Process Payment");
-        btnProcessPayment.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnProcessPaymentActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout pnlOrdersLayout = new javax.swing.GroupLayout(pnlOrders);
         pnlOrders.setLayout(pnlOrdersLayout);
         pnlOrdersLayout.setHorizontalGroup(
@@ -1152,8 +1163,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                 .addGap(30, 30, 30)
                 .addGroup(pnlOrdersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnViewAllPO, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
-                    .addComponent(btnViewPR, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnProcessPayment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnViewPR, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         pnlOrdersLayout.setVerticalGroup(
@@ -1165,8 +1175,6 @@ public class AdminDashboard extends javax.swing.JFrame {
                         .addComponent(btnViewAllPO, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(34, 34, 34)
                         .addComponent(btnViewPR, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36)
-                        .addComponent(btnProcessPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(srlOrder, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE))
                 .addContainerGap())
@@ -1960,11 +1968,11 @@ public class AdminDashboard extends javax.swing.JFrame {
        
         selectedSupplier.setSupplierID(String.valueOf(suppliersModel.getValueAt(selectedSupplierRow, 0)));
         selectedSupplier.setSupplierName(String.valueOf(suppliersModel.getValueAt(selectedSupplierRow, 1)));
-        selectedSupplier.setAddedTime(LocalDateTime.parse(String.valueOf(suppliersModel.getValueAt(selectedSupplierRow, 2)), supplierAddedTimeFormatter));
+        selectedSupplier.setAddedTime(LocalDateTime.parse(String.valueOf(suppliersModel.getValueAt(selectedSupplierRow, 2)), dateTimeFormatter));
         
         lblSupplierID.setText(selectedSupplier.getSupplierID());
         lblSupplierName.setText(selectedSupplier.getSupplierName());
-        lblSupplierAddedTime.setText(selectedSupplier.getAddedTime().format(supplierAddedTimeFormatter));
+        lblSupplierAddedTime.setText(selectedSupplier.getAddedTime().format(dateTimeFormatter));
     }//GEN-LAST:event_tblSuppliersMouseReleased
 
     private void btnNewSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewSupplierActionPerformed
@@ -2013,14 +2021,11 @@ public class AdminDashboard extends javax.swing.JFrame {
         Suppliers();
     }//GEN-LAST:event_btnChangeSupplierNameActionPerformed
 
-    private void tblOrderMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblOrderMouseReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tblOrderMouseReleased
-
     private void btnViewAllPOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewAllPOActionPerformed
         POList pol = new POList(this, true, admin);
         pol.setLocationRelativeTo(this);
         pol.setVisible(true);
+        Orders();
     }//GEN-LAST:event_btnViewAllPOActionPerformed
 
     private void btnViewPRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewPRActionPerformed
@@ -2029,12 +2034,18 @@ public class AdminDashboard extends javax.swing.JFrame {
         prl.setVisible(true);
     }//GEN-LAST:event_btnViewPRActionPerformed
 
-    private void btnProcessPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessPaymentActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnProcessPaymentActionPerformed
-
     private void tblOrderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblOrderMouseClicked
-        // TODO add your handling code here:
+        if (evt.getClickCount() == 2 && tblOrder.getSelectedRow() != -1) {
+            int row = tblOrder.getSelectedRow();
+            
+            PurchaseOrder po = PurchaseOrder.getPoById(String.valueOf(tblOrder.getValueAt(row, 0)));
+            PurchaseRequisition pr = PurchaseRequisition.getPrById(po.getPRID());
+            
+            PODetails pod = new PODetails(this, true, po, pr, admin);
+            pod.setLocationRelativeTo(this);
+            pod.setVisible(true);
+            Orders();
+        }
     }//GEN-LAST:event_tblOrderMouseClicked
         
     /**
@@ -2054,7 +2065,6 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnEditItem;
     private javax.swing.JButton btnNewItem;
     private javax.swing.JButton btnNewSupplier;
-    private javax.swing.JButton btnProcessPayment;
     private javax.swing.JButton btnRemoveItem;
     private javax.swing.JButton btnRemoveSupplier;
     private javax.swing.JButton btnUpdateStatus;

@@ -1,0 +1,3 @@
+ITM00011	Grocery	Instant Food	SunGro Instant Noodles Chicken 5s	25
+ITM00012	Grocery	Canned Food	SunGro Sardines in Tomato Sauce	30
+ITM00013	Grocery	Dairy Product	SunGro Evaporated Milk 400g	20

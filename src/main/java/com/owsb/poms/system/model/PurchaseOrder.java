@@ -25,11 +25,11 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         REJECTED,   // set as new
         DELETED,    // ok
         PROCESSING, // arrived, extend or cancel
-        EXTENDED,   // arrived or cancel
+        EXTENDED,   // arrived, extend or cancel
         ARRIVED,    // verified, extend or cancel
         VERIFIED,   // invalid or confirm
         INVALID,    // extend or cancel
-        CONFIRMED,  // completed
+        CONFIRMED,  // process payment
         COMPLETED,  // ok
         CANCELLED   // ok
     }
