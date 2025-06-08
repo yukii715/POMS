@@ -68,7 +68,7 @@ private List<PurchaseOrder> PoList;
                 String status = entry.getStringValue(6);
                 if (status == null) return true;
                 status = status.trim().toUpperCase();                
-                return !(status.equals("DELETED") || status.equals("REJECTED"));            
+                return !(status.equals("DELETED") || status.equals("REJECTED")||status.equals("CANCELLED"));            
             }
         };
         sorter.setRowFilter(filter);
@@ -245,7 +245,7 @@ private List<PurchaseOrder> PoList;
     }//GEN-LAST:event_prButtonActionPerformed
 
     private void poButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_poButtonActionPerformed
-        PurchaseOrderTabs tabs = new PurchaseOrderTabs();
+        PurchaseOrderCreationTest tabs = new PurchaseOrderCreationTest();
         tabs.setVisible(true);
     }//GEN-LAST:event_poButtonActionPerformed
 
@@ -257,8 +257,8 @@ private List<PurchaseOrder> PoList;
        if (evt.getClickCount() == 2) { // Double click
         int selectedRow = tblPO.getSelectedRow();
         if (selectedRow != -1) {
-            String prID = (String) poTable.getValueAt(selectedRow, 0); // "ID" column
-            PRItemDialog dialog = new PRItemDialog(this, prID);
+            String poID = (String) poTable.getValueAt(selectedRow, 0); // Use tblPO here
+            POItemDialog dialog = new POItemDialog(this, poID);
             dialog.setVisible(true);
         }
     }
@@ -290,7 +290,7 @@ private List<PurchaseOrder> PoList;
                 String status = entry.getStringValue(6); // column 6 for status
                 if (status == null) return true;
                 status = status.trim().toUpperCase();
-                return !(status.equals("DELETED") || status.equals("REJECTED"));  
+                return !(status.equals("DELETED") || status.equals("REJECTED")||status.equals("CANCELLED"));  
             }
         };
         sorter.setRowFilter(filter);

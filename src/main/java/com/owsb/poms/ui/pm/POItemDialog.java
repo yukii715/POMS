@@ -25,16 +25,17 @@ public class POItemDialog extends JDialog{
 
         // Read items from file named prID.txt
         // Read items from file named prID.txt
-    List<POItem> items = read("data/PR/" + poID + ".txt");
-    if (items != null && !items.isEmpty()) {
-        for (POItem item : items) {
+    List<POItem> Poitems = read("data/PO/" + poID + ".txt");
+    if (Poitems != null && !Poitems.isEmpty()) {
+        for (POItem poItem : Poitems) {
+            String formattedPrice = String.format("%.2f", poItem.getUnitPrice());
             model.addRow(new Object[] {
-                item.getItemID(),
-                item.getItemCategory(),
-                item.getItemType(),
-                item.getItemName(),
-                item.getQuantity(),
-                item.getUnitPrice()
+                poItem.getItemID(),
+                poItem.getItemCategory(),
+                poItem.getItemType(),
+                poItem.getItemName(),
+                poItem.getQuantity(),
+                formattedPrice
             });
         }
     } else {
