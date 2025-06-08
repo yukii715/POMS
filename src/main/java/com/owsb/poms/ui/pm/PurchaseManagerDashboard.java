@@ -3,8 +3,13 @@ package com.owsb.poms.ui.pm;
 
 import com.owsb.poms.system.model.POItem;
 import com.owsb.poms.system.model.PurchaseOrder;
+import com.owsb.poms.system.model.PurchaseRequisition;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -12,39 +17,65 @@ import javax.swing.table.DefaultTableModel;
  */
 
 public class PurchaseManagerDashboard extends javax.swing.JFrame {
-
-    private List<PurchaseOrder> poList;
-
-    private DefaultTableModel PurchaseOrderTable = new DefaultTableModel(){
-        public boolean isCellEditable(int row, int column){
+private List<PurchaseOrder> PoList;
+    private List<PurchaseRequisition> prList;
+    
+    
+    private String[] columnName = {"Purchase Order ID","Purchase Requisition ID", "Total Price","Supplier ID", "Date & Time of generated","Delivery Date", "status", "Created By", "Approved By"};
+    private DefaultTableModel poTable = new DefaultTableModel(){
+       public boolean isCellEditable(int row, int column){
            return false;
        } 
-    };
-    public void loadPurchaseOrder(){
-        PurchaseOrderTable.setColumnIdentifiers(columnName);
-        PurchaseOrderTable.setRowCount(0);
+    } ;    
+    
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    
+    private void loadPurchaseOrder(){
+        poTable.setColumnIdentifiers(columnName);
+        poTable.setRowCount(0);
 
-    poList = POItem.toList();
+    PoList = POItem.toList();
 
-        for (PurchaseOrder poItem : poList) {
-                                 
-            PurchaseOrderTable.addRow(new String[]{
+        for (PurchaseOrder poItem : PoList) {
+            poTable.addRow(new String[]{
                 poItem.getPOID(),
                 poItem.getPRID(),
                 String.format("%.2f", poItem.getTotalPrice()),
                 poItem.getSupplierID(),
-                String.valueOf(poItem.getGeneratedDateTime()),
-                String.valueOf(poItem.getDeliveryDate()),
+                poItem.getGeneratedDateTime().format(dateTimeFormatter),
+                poItem.getDeliveryDate().format(dateFormatter),
                 poItem.getStatus().name(),
                 poItem.getCreateBy(),
                 poItem.getPerformedBy(),
             });
         }
     }
-    private String[] columnName = {"Purchase Order ID","Purchase Requisition ID", "Total Price","Supplier ID", "Date & Time of generated","Delivery Date", "status", "Created By", "Approved By"};
+    
     public PurchaseManagerDashboard() {
         initComponents();
         loadPurchaseOrder();
+        
+        if (tblPO.getRowSorter() == null) {
+            TableRowSorter<TableModel> sorter = new TableRowSorter<>(tblPO.getModel());
+            tblPO.setRowSorter(sorter);
+        }
+        if (!checkAll.isSelected()) {
+        TableRowSorter<TableModel> sorter = (TableRowSorter<TableModel>) tblPO.getRowSorter();
+        RowFilter<TableModel, Integer> filter = new RowFilter<TableModel, Integer>() {
+            @Override
+            public boolean include(RowFilter.Entry<? extends TableModel, ? extends Integer> entry) {
+                String status = entry.getStringValue(6);
+                if (status == null) return true;
+                status = status.trim().toUpperCase();                
+                return !(status.equals("DELETED") || status.equals("REJECTED"));            
+            }
+        };
+        sorter.setRowFilter(filter);
+    } else {
+        // Show all rows if checkbox is selected on load
+        ((TableRowSorter<TableModel>) tblPO.getRowSorter()).setRowFilter(null);
+    }
     }
 
     /**
@@ -63,8 +94,9 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
         poButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
         jScrollPane5 = new javax.swing.JScrollPane();
-        poTable = new javax.swing.JTable();
+        tblPO = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
+        checkAll = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -113,22 +145,29 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
             }
         });
 
-        poTable.setModel(PurchaseOrderTable);
-        poTable.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblPO.setModel(poTable);
+        tblPO.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                poTableMouseClicked(evt);
+                tblPOMouseClicked(evt);
             }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
-                poTableMouseReleased(evt);
+                tblPOMouseReleased(evt);
             }
         });
-        jScrollPane5.setViewportView(poTable);
+        jScrollPane5.setViewportView(tblPO);
 
         jButton1.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jButton1.setText("Refresh");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
+            }
+        });
+
+        checkAll.setText("Show All");
+        checkAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkAllActionPerformed(evt);
             }
         });
 
@@ -155,7 +194,9 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
                         .addComponent(prButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(89, 89, 89)
                         .addComponent(poButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(100, 100, 100))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(checkAll, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(9, 9, 9))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 1100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(50, 50, 50))))
@@ -170,13 +211,19 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(36, 36, 36)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(supplierButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(itemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(prButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(poButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(35, 35, 35))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(supplierButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(itemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(prButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(poButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(35, 35, 35))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(checkAll)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         pack();
@@ -206,17 +253,49 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_closeButtonActionPerformed
 
-    private void poTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_poTableMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_poTableMouseClicked
+    private void tblPOMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPOMouseClicked
+       if (evt.getClickCount() == 2) { // Double click
+        int selectedRow = tblPO.getSelectedRow();
+        if (selectedRow != -1) {
+            String prID = (String) poTable.getValueAt(selectedRow, 0); // "ID" column
+            PRItemDialog dialog = new PRItemDialog(this, prID);
+            dialog.setVisible(true);
+        }
+    }
+    }//GEN-LAST:event_tblPOMouseClicked
 
-    private void poTableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_poTableMouseReleased
+    private void tblPOMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPOMouseReleased
 
-    }//GEN-LAST:event_poTableMouseReleased
+    }//GEN-LAST:event_tblPOMouseReleased
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         loadPurchaseOrder();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void checkAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkAllActionPerformed
+        TableRowSorter<TableModel> sorter = (TableRowSorter<TableModel>) tblPO.getRowSorter();
+    if (sorter == null) {
+        sorter = new TableRowSorter<>(tblPO.getModel());
+        tblPO.setRowSorter(sorter);
+    }
+
+    if (checkAll.isSelected()) {
+        // Show all rows
+        sorter.setRowFilter(null);
+    } else {
+        // Filter out rows with status "DELETED" in column 6
+        RowFilter<TableModel, Integer> filter = new RowFilter<TableModel, Integer>() {
+            @Override
+            public boolean include(RowFilter.Entry<? extends TableModel, ? extends Integer> entry) {
+                String status = entry.getStringValue(6); // column 6 for status
+                if (status == null) return true;
+                status = status.trim().toUpperCase();
+                return !(status.equals("DELETED") || status.equals("REJECTED"));  
+            }
+        };
+        sorter.setRowFilter(filter);
+    }
+    }//GEN-LAST:event_checkAllActionPerformed
 
     /**
      * @param args the command line arguments
@@ -254,14 +333,15 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox checkAll;
     private javax.swing.JButton closeButton;
     private javax.swing.JButton itemButton;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JButton poButton;
-    private javax.swing.JTable poTable;
     private javax.swing.JButton prButton;
     private javax.swing.JButton supplierButton;
+    private javax.swing.JTable tblPO;
     // End of variables declaration//GEN-END:variables
 }

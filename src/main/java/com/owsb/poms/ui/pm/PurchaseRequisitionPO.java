@@ -3,7 +3,6 @@ package com.owsb.poms.ui.pm;
 
 import javax.swing.*;
 import com.owsb.poms.system.model.*;
-import com.owsb.poms.ui.admin.Orders.PRDetails;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -61,7 +60,30 @@ public class PurchaseRequisitionPO extends javax.swing.JFrame {
     public PurchaseRequisitionPO() {
         initComponents();
         PR();
-        
+        // Initialize and set the row sorter if not already set
+    if (tblPR.getRowSorter() == null) {
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(tblPR.getModel());
+        tblPR.setRowSorter(sorter);
+    }
+
+        // After tblPR and sorter are initialized:
+    if (!cBoxCancel.isSelected()) {
+        TableRowSorter<TableModel> sorter = (TableRowSorter<TableModel>) tblPR.getRowSorter();
+        RowFilter<TableModel, Integer> filter = new RowFilter<TableModel, Integer>() {
+            @Override
+            public boolean include(Entry<? extends TableModel, ? extends Integer> entry) {
+                String status = entry.getStringValue(5);
+                if (status == null) return true;
+                status = status.trim().toUpperCase();                
+                return !(status.equals("DELETED") || status.equals("REJECTED"));            
+            }
+        };
+        sorter.setRowFilter(filter);
+    } else {
+        // Show all rows if checkbox is selected on load
+        ((TableRowSorter<TableModel>) tblPR.getRowSorter()).setRowFilter(null);
+    }
+
         
     }
     
@@ -80,6 +102,8 @@ public class PurchaseRequisitionPO extends javax.swing.JFrame {
         tblPR = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         btnVerify = new javax.swing.JButton();
+        btnReject = new javax.swing.JButton();
+        cBoxCancel = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -111,10 +135,24 @@ public class PurchaseRequisitionPO extends javax.swing.JFrame {
         });
 
         btnVerify.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        btnVerify.setText("Verify");
+        btnVerify.setText("Approve");
         btnVerify.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnVerifyActionPerformed(evt);
+            }
+        });
+
+        btnReject.setText("Reject");
+        btnReject.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRejectActionPerformed(evt);
+            }
+        });
+
+        cBoxCancel.setText("Show all");
+        cBoxCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cBoxCancelActionPerformed(evt);
             }
         });
 
@@ -123,14 +161,18 @@ public class PurchaseRequisitionPO extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(72, Short.MAX_VALUE)
+                .addContainerGap(84, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1000, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-                            .addComponent(btnVerify, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(btnVerify, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnReject, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(cBoxCancel))))
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31))
             .addGroup(layout.createSequentialGroup()
@@ -141,19 +183,21 @@ public class PurchaseRequisitionPO extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(16, 16, 16)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(42, 42, 42)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(211, Short.MAX_VALUE)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(149, 149, 149)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnVerify, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(191, 242, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(16, 16, 16)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(42, 42, 42)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(111, 111, 111)
+                        .addComponent(btnReject, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(36, 36, 36))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(4, 4, 4)
+                .addComponent(cBoxCancel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17))
         );
@@ -187,6 +231,13 @@ public class PurchaseRequisitionPO extends javax.swing.JFrame {
             "Already Approved", JOptionPane.INFORMATION_MESSAGE);
         return;
     }
+    
+    if ("REJECTED".equalsIgnoreCase(currentStatus) || "DELETED".equalsIgnoreCase(currentStatus)) {
+    JOptionPane.showMessageDialog(this, "You cannot append rejected or deleted Purchase Requisition.", 
+        "Denied", JOptionPane.INFORMATION_MESSAGE);
+    return;
+}
+
     
     int response = JOptionPane.showConfirmDialog(this, 
         "Are you sure you want to approve Purchase Requisition " + prID + "?", 
@@ -227,6 +278,77 @@ public class PurchaseRequisitionPO extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_tblPRMouseClicked
 
+    private void btnRejectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRejectActionPerformed
+        int selectedRow = tblPR.getSelectedRow();
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Please select a purchase requisition to verify.", 
+            "No Selection", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+    
+    String prID = (String) prModel.getValueAt(selectedRow, 0); // Get PR ID from first column
+    String currentStatus = (String) prModel.getValueAt(selectedRow, 5); // Get current status
+    
+    // Check if already approved
+    if ("REJECTED".equalsIgnoreCase(currentStatus)) {
+        JOptionPane.showMessageDialog(this, "This purchase requisition is already rejected.", 
+            "Already rejected", JOptionPane.INFORMATION_MESSAGE);
+        return;
+    }
+    
+    int response = JOptionPane.showConfirmDialog(this, 
+        "Are you sure you want to reject Purchase Requisition " + prID + "?", 
+        "Confirm Rejection", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+    
+    if (response == JOptionPane.YES_OPTION) {
+        try {
+            // Find the selected PR in the list
+            for (PurchaseRequisition pr : prList) {
+                if (pr.getPRID().equals(prID)) {
+                    // Update the status using your existing methods
+                    pr.setStatus(PurchaseRequisition.Status.REJECTED);
+                    pr.updateStatus();
+                    break;
+                }
+            }
+            
+            // Refresh the table
+            PR();
+            
+            JOptionPane.showMessageDialog(this, "Purchase Requisition " + prID + " has been rejected.", 
+                "Rejected", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error rejecting purchase requisition: " + ex.getMessage(), 
+                "Rejection Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    }//GEN-LAST:event_btnRejectActionPerformed
+
+    private void cBoxCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cBoxCancelActionPerformed
+        TableRowSorter<TableModel> sorter = (TableRowSorter<TableModel>) tblPR.getRowSorter();
+    if (sorter == null) {
+        sorter = new TableRowSorter<>(tblPR.getModel());
+        tblPR.setRowSorter(sorter);
+    }
+
+    if (cBoxCancel.isSelected()) {
+        // Show all rows
+        sorter.setRowFilter(null);
+    } else {
+        // Filter out rows with status "DELETED" in column 6
+        RowFilter<TableModel, Integer> filter = new RowFilter<TableModel, Integer>() {
+            @Override
+            public boolean include(Entry<? extends TableModel, ? extends Integer> entry) {
+                String status = entry.getStringValue(5); // column 6 for status
+                if (status == null) return true;
+                status = status.trim().toUpperCase();
+                return !(status.equals("DELETED") || status.equals("REJECTED"));  
+            }
+        };
+        sorter.setRowFilter(filter);
+    }
+    }//GEN-LAST:event_cBoxCancelActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -263,7 +385,9 @@ public class PurchaseRequisitionPO extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnReject;
     private javax.swing.JButton btnVerify;
+    private javax.swing.JCheckBox cBoxCancel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;

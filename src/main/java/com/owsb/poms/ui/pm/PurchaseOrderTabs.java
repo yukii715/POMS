@@ -33,7 +33,7 @@ public class PurchaseOrderTabs extends javax.swing.JFrame {
                 poItem.getPRID(),
                 String.format("%.2f", poItem.getTotalPrice()),
                 poItem.getSupplierID(),
-                String.valueOf(poItem.getGenerateDateTime()),
+                String.valueOf(poItem.getGeneratedDateTime()),
                 String.valueOf(poItem.getDeliveryDate()),
                 poItem.getStatus().name(),
                 poItem.getCreateBy(),
