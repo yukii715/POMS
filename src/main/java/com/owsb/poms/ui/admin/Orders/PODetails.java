@@ -105,11 +105,11 @@ public class PODetails extends javax.swing.JDialog {
                 btn2.setText("Extend");
                 btn3.setText("Cancel");
                 break;
-            case ARRIVED:   // verified, extend or cancel
+            case ARRIVED:   // verified or invalid
                 arrivedPO = true;
+                btn2.setVisible(false);
                 btn1.setText("Verified");
-                btn2.setText("Extend");
-                btn3.setText("Cancel");
+                btn3.setText("Invalid");
                 break;
             case VERIFIED:  // confirm or invalid
                 verifiedPO = true;
@@ -219,7 +219,6 @@ public class PODetails extends javax.swing.JDialog {
         txtRemark = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(650, 820));
 
         pnlMain.setBackground(new java.awt.Color(255, 204, 204));
 
@@ -683,7 +682,7 @@ public class PODetails extends javax.swing.JDialog {
         }
         
         // Extend
-        if (processingOrExtendedPO || arrivedPO){
+        if (processingOrExtendedPO){
             po.setRemark(remark);
             DateModifier dateModifier = new DateModifier(this, true, po);
             dateModifier.setLocationRelativeTo(this);
@@ -767,7 +766,7 @@ public class PODetails extends javax.swing.JDialog {
         }
         
         // Invalid
-        if (verifiedPO){
+        if (arrivedPO || verifiedPO){
             int result = JOptionPane.showConfirmDialog(
                 this,
                 "Are you sure to change this PO to Invalid?",
