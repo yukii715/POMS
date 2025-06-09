@@ -1,0 +1,2 @@
+ITM00017	Hardware	Hand Tool	MegaTools Pliers Set	10
+ITM00018	Hardware	Power Tool	MegaTools Electric Drill 650W	5

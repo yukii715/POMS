@@ -1,0 +1,2 @@
+ITM00015	Grocery	Fresh Produce	FreshFarm Fresh Eggs Grade A 10s	30	5.0
+ITM00016	Grocery	Fresh Produce	FreshFarm Lettuce (per kg)	30	2.0
