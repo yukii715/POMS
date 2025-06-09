@@ -1,0 +1,2 @@
+ITM00020	Electronics	Mobile Accessory	LiteTech Portable Charger 10000mAh	20	50.0
+ITM00021	Electronics	Home Appliance	LiteTech LED Bulb 10W	25	5.0

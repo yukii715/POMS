@@ -7,15 +7,45 @@ import java.util.List;
 
 public class Report implements hasFile<Report>{
     private String reportID;
+    private type reportType;
+    private String message;
     private LocalDateTime dateTime;
     
     private static final String filePath = "data/Reports/reports.txt";
 
+    public enum type{
+        StockReport,
+        PurchaseReport
+    }
+    
     public Report() {
+    }
+
+    public Report(String reportID, type reportType, String message, LocalDateTime dateTime) {
+        this.reportID = reportID;
+        this.reportType = reportType;
+        this.message = message;
+        this.dateTime = dateTime;
     }
 
     public String getReportID() {
         return reportID;
+    }
+
+    public type getReportType() {
+        return reportType;
+    }
+
+    public void setReportType(type reportType) {
+        this.reportType = reportType;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public void setReportID(String reportID) {
@@ -32,18 +62,19 @@ public class Report implements hasFile<Report>{
     
     public String toString() {
         return reportID + "\t"
+                + reportType + "\t"
+                + message + "\t"
                 + dateTime;
     }
 
     public static Report fromString(String line) {
         String[] parts = line.split("\t");
-        if (parts.length != 2) {
-            throw new IllegalArgumentException("Invalid input line for PurchaseRequisition: " + line);
-        }
 
         Report report = new Report();
         report.setReportID(parts[0]);
-        report.setDateTime(LocalDateTime.parse(parts[1]));
+        report.setReportType(type.valueOf(parts[1]));
+        report.setMessage(parts[2]);
+        report.setDateTime(LocalDateTime.parse(parts[3]));
 
         return report;
     }
@@ -62,5 +93,10 @@ public class Report implements hasFile<Report>{
         var report = toList();
         report.add(this);
         this.saveToFile(report);
+    }
+    
+    public List<StockReport> getStockReport(){
+        String filePath = String.format("data/Reports/Stock/%s.txt", FileHandler.findFileByPrefix(StockReport.filePath, reportID));
+        return StockReport.read(filePath);
     }
 }

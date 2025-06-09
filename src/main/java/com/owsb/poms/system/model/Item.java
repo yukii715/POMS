@@ -21,6 +21,7 @@ public class Item implements hasFile<Item>, hasId, hasStatus{
         NEW,
         SUFFICIENT,
         SHORTAGE,
+        REQUESTING,
         REMOVED
     }
 
@@ -192,5 +193,13 @@ public class Item implements hasFile<Item>, hasId, hasStatus{
     
     public static List<Item> getItemsFromSupplier(String supplierID){
         return DataHandler.getValuesByKey(toList(), Item::getSupplierID, supplierID);
+    }
+    
+    public static List<Item> getItemsFromPR(List<PRItem> pRItems){
+        return DataHandler.findMatchingByKey(toList(), pRItems, Item::getItemID, PRItem::getItemID);
+    }
+    
+    public static List<Item> getItemsFromPO(List<POItem> pOItems){
+        return DataHandler.findMatchingByKey(toList(), pOItems, Item::getItemID, POItem::getItemID);
     }
 }
