@@ -2,8 +2,7 @@ package com.owsb.poms.ui.admin.Orders;
 
 import com.owsb.poms.system.model.*;
 import com.owsb.poms.ui.common.CommonMethod;
-import java.awt.Image;
-import java.time.LocalDate;
+import java.awt.*;
 import java.time.format.DateTimeFormatter;
 import javax.swing.*;
 import javax.swing.table.*;
@@ -17,14 +16,13 @@ public class PODetails extends javax.swing.JDialog {
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
     private boolean newPO = false;
     private boolean approvedPO = false;
-    private boolean rejectedOrDeletedPO = false;
-    private boolean processingPO = false;
-    private boolean extendedPO = false;
+    private boolean rejectedPO = false;
+    private boolean processingOrExtendedPO = false;
     private boolean arrivedPO = false;
     private boolean verifiedPO = false;
     private boolean invalidPO = false;
     private boolean confirmedPO = false;
-    private boolean completedOrCancelledPO = false;
+    private boolean completedOrCancelledOrDeletedPO = false;
     
     private DefaultTableModel itemsModel = new DefaultTableModel(){
         public boolean isCellEditable(int row, int column){
@@ -43,12 +41,30 @@ public class PODetails extends javax.swing.JDialog {
         setTitle(po.getPOID());
         new CommonMethod().setLabelIcon("/icons/edit.png", 20, 20, Image.SCALE_SMOOTH, lblEdit);
         
+        initialSetting();
+        refresh();
+    }
+    
+    public PODetails(java.awt.Frame parent, boolean modal,PurchaseOrder po,PurchaseRequisition pr, Admin admin) {
+        super(parent, modal);
+        initComponents();
+        
+        this.po = po;
+        this.pr = pr;
+        this.admin = admin;
+        setTitle(po.getPOID());
+        new CommonMethod().setLabelIcon("/icons/edit.png", 20, 20, Image.SCALE_SMOOTH, lblEdit);
+        
+        initialSetting();
+        refresh();
+    }
+    
+    private void initialSetting(){
         lblPOID.setText(po.getPOID());
         lblPRID.setText(po.getPRID());
         lblSupplierID.setText(po.getSupplierID());
         lblSupplierName.setText(Supplier.getNameById(po.getSupplierID()));
         lblGeneratedDateTime.setText(po.getGeneratedDateTime().format(dateTimeFormatter));
-        lblDeliveryDate.setText(po.getDeliveryDate().format(dateFormatter));
         lblCreatedBy.setText(po.getCreateBy());
         lblStatus.setText(po.getStatus().name());
         lblEdit.setVisible(false);
@@ -74,8 +90,8 @@ public class PODetails extends javax.swing.JDialog {
                 btn1.setText("Processing");
                 btn3.setText("Cancel");
                 break;
-            case REJECTED, DELETED:   // set as new
-                rejectedOrDeletedPO = true;
+            case REJECTED:   // set as new
+                rejectedPO = true;
                 String perform = status == PurchaseOrder.Status.REJECTED ? "Rejected By" : "Deleted By";
                 lblPerform.setText(perform);
                 lblPerformdBy.setText(po.getPerformedBy());
@@ -83,16 +99,10 @@ public class PODetails extends javax.swing.JDialog {
                 btn3.setVisible(false);
                 btn2.setText("Set as New");
                 break;
-            case PROCESSING:// arrived, extend or cancel
-                processingPO = true;
+            case PROCESSING, EXTENDED:// arrived, extend or cancel
+                processingOrExtendedPO = true;
                 btn1.setText("Arrived");
                 btn2.setText("Extend");
-                btn3.setText("Cancel");
-                break;
-            case EXTENDED:  // arrived or cancel
-                extendedPO = true;
-                btn2.setVisible(false);
-                btn1.setText("Arrived");
                 btn3.setText("Cancel");
                 break;
             case ARRIVED:   // verified, extend or cancel
@@ -101,7 +111,7 @@ public class PODetails extends javax.swing.JDialog {
                 btn2.setText("Extend");
                 btn3.setText("Cancel");
                 break;
-            case VERIFIED:  // invalid or confirm
+            case VERIFIED:  // confirm or invalid
                 verifiedPO = true;
                 btn2.setVisible(false);
                 btn1.setText("Confirm");
@@ -113,27 +123,25 @@ public class PODetails extends javax.swing.JDialog {
                 btn1.setText("Extend");
                 btn3.setText("Cancel");
                 break;
-            case CONFIRMED: // completed
+            case CONFIRMED: // process payment
                 confirmedPO = true;
                 btn1.setVisible(false);
                 btn3.setVisible(false);
-                btn2.setText("Completed");
+                btn2.setText("Process Payment");
                 break;
-            case COMPLETED,CANCELLED: //ok
-                completedOrCancelledPO = true;
+            case COMPLETED,CANCELLED,DELETED: //ok
+                completedOrCancelledOrDeletedPO = true;
                 btn1.setVisible(false);
                 btn3.setVisible(false);
                 txtRemark.setEnabled(false);
                 btn2.setText("OK");
                 break;
         }
-        
-        refresh();
     }
-
     
     private void refresh(){
         lblTotalPrice.setText(String.format("RM %.2f", po.getTotalPrice()));
+        lblDeliveryDate.setText(po.getDeliveryDate().format(dateFormatter));
         txtRemark.setText(po.getRemark());
         
         itemsModel.setRowCount(0);
@@ -307,6 +315,7 @@ public class PODetails extends javax.swing.JDialog {
         btn2.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
         btn2.setForeground(new java.awt.Color(252, 251, 249));
         btn2.setText("btn2");
+        btn2.setMaximumSize(new java.awt.Dimension(200, 100));
         btn2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn2ActionPerformed(evt);
@@ -392,8 +401,6 @@ public class PODetails extends javax.swing.JDialog {
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addGap(62, 62, 62)
                 .addComponent(jLabel2)
-                .addGap(194, 194, 194)
-                .addComponent(lblPOID)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblEdit)
                 .addGap(70, 70, 70))
@@ -401,10 +408,6 @@ public class PODetails extends javax.swing.JDialog {
                 .addContainerGap(62, Short.MAX_VALUE)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jLabel17, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlMainLayout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(154, 154, 154)
-                        .addComponent(lblPRID))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlMainLayout.createSequentialGroup()
                         .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
@@ -434,26 +437,28 @@ public class PODetails extends javax.swing.JDialog {
                             .addComponent(lblCreatedBy)
                             .addComponent(lblStatus)))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addComponent(btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlMainLayout.createSequentialGroup()
+                        .addComponent(btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(52, 52, 52)
+                        .addComponent(btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(92, 92, 92)
-                        .addComponent(btn3, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btn3, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlMainLayout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(154, 154, 154)
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblPOID)
+                            .addComponent(lblPRID))))
                 .addGap(0, 71, Short.MAX_VALUE))
         );
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addComponent(jLabel2))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblPOID)
-                            .addComponent(lblEdit))))
+                .addGap(31, 31, 31)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblPOID)
+                    .addComponent(lblEdit)
+                    .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -521,11 +526,12 @@ public class PODetails extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn1ActionPerformed
+        String remark = txtRemark.getText().isBlank() ? "None" : txtRemark.getText().trim();
         // Approve
         if (newPO){ 
             int result = JOptionPane.showConfirmDialog(
                 this,
-                "Are you sure to approve this PR?",
+                "Are you sure to approve this PO?",
                 String.format("Approve %s", getTitle()),
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE
@@ -534,16 +540,107 @@ public class PODetails extends javax.swing.JDialog {
             if (result == JOptionPane.YES_OPTION){
                 po.setStatus(PurchaseOrder.Status.APPROVED);
                 po.setPerformedBy(admin.getUID());
-                po.setRemark(txtRemark.getText().trim());
+                po.setRemark(remark);
                 po.updateStatus();
-                JOptionPane.showMessageDialog(this, "This PR has been approved!");
+                JOptionPane.showMessageDialog(this, "This PO has been approved!");
                 dispose();
             }
+            return;
+        }
+        
+        // Processing
+        if (approvedPO){
+            int result = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure to change this PO to Processing?",
+                String.format("Change %s status to Processing", getTitle()),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (result == JOptionPane.YES_OPTION){
+                po.setStatus(PurchaseOrder.Status.PROCESSING);
+                po.setRemark(remark);
+                po.updateStatus();
+                JOptionPane.showMessageDialog(this, String.format("Order %s has been set as Processing", getTitle()));
+                dispose();
+            }
+            return;
+        }
+        
+        // Arrived
+        if (processingOrExtendedPO){
+            int result = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure to change this PO to Arrived?",
+                String.format("Change %s status to Arrived", getTitle()),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (result == JOptionPane.YES_OPTION){
+                po.setStatus(PurchaseOrder.Status.ARRIVED);
+                po.setRemark(remark);
+                po.updateStatus();
+                JOptionPane.showMessageDialog(this, String.format("Order %s has been set as Arrived", getTitle()));
+                dispose();
+            }
+            return;
+        }
+        
+        // Verified
+        if (arrivedPO){
+            int result = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure to change this PO to Verified?",
+                String.format("Change %s status to Verified", getTitle()),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (result == JOptionPane.YES_OPTION){
+                po.setStatus(PurchaseOrder.Status.VERIFIED);
+                po.setRemark(remark);
+                po.updateStatus();
+                JOptionPane.showMessageDialog(this, String.format("Order %s has been set as Verified", getTitle()));
+                dispose();
+            }
+            return;
+        }
+        
+        // Confirm
+        if (verifiedPO){
+            int result = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure to change this PO to Confirmed?",
+                String.format("Change %s status to Confirmed", getTitle()),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (result == JOptionPane.YES_OPTION){
+                po.setStatus(PurchaseOrder.Status.CONFIRMED);
+                po.setRemark(remark);
+                po.updateStatus();
+                JOptionPane.showMessageDialog(this, String.format("Order %s has been set as Confirmed", getTitle()));
+                dispose();
+            }
+            return;
+        }
+        
+        // Extend
+        if (invalidPO){
+            po.setRemark(remark);
+            DateModifier dateModifier = new DateModifier(this, true, po);
+            dateModifier.setLocationRelativeTo(this);
+            dateModifier.setVisible(true);
+            dispose();
             return;
         }
     }//GEN-LAST:event_btn1ActionPerformed
 
     private void btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn2ActionPerformed
+        String remark = txtRemark.getText().isBlank() ? "None" : txtRemark.getText().trim();
         // Reject
         if (newPO){
             int result = JOptionPane.showConfirmDialog(
@@ -557,15 +654,15 @@ public class PODetails extends javax.swing.JDialog {
             if (result == JOptionPane.YES_OPTION){
                 po.setStatus(PurchaseOrder.Status.REJECTED);
                 po.setPerformedBy(admin.getUID());
-                po.setRemark(txtRemark.getText().trim());
+                po.setRemark(remark);
                 po.updateStatus();
-                JOptionPane.showMessageDialog(this, "This PO has been rejected!");
+                JOptionPane.showMessageDialog(this, "This PO has been Rejected!");
                 dispose();
             }
             return;
         }
         // Set as New
-        if (rejectedOrDeletedPO){
+        if (rejectedPO){
             int result = JOptionPane.showConfirmDialog(
                 this,
                 "Are you sure to reset this PO as new?",
@@ -577,18 +674,53 @@ public class PODetails extends javax.swing.JDialog {
             if (result == JOptionPane.YES_OPTION){
                 po.setStatus(PurchaseOrder.Status.NEW);
                 po.setPerformedBy("None");
-                po.setRemark(txtRemark.getText().trim());
+                po.setRemark(remark);
                 po.updateStatus();
-                JOptionPane.showMessageDialog(this, "This PO has been resetted as New!");
+                JOptionPane.showMessageDialog(this, "This PO has been reset to New!");
                 dispose();
             }
             return;
         }
         
-        // po.setDeliveryDate(LocalDate.parse(lblDeliveryDate.getText(), dateFormatter));
+        // Extend
+        if (processingOrExtendedPO || arrivedPO){
+            po.setRemark(remark);
+            DateModifier dateModifier = new DateModifier(this, true, po);
+            dateModifier.setLocationRelativeTo(this);
+            dateModifier.setVisible(true);
+            dispose();
+            return;
+        }
+        
+        // Process Payment
+        if (confirmedPO){
+            int result = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure to change this PO to Completed?",
+                String.format("Change %s status to Completed", getTitle()),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (result == JOptionPane.YES_OPTION){
+                po.setStatus(PurchaseOrder.Status.COMPLETED);
+                po.setRemark(remark);
+                po.updateStatus();
+                JOptionPane.showMessageDialog(this, String.format("Order %s has been set as Completed", getTitle()));
+                dispose();
+            }
+            return;
+        }
+        
+        // OK
+        if (completedOrCancelledOrDeletedPO){
+            dispose();
+            return;
+        }
     }//GEN-LAST:event_btn2ActionPerformed
 
     private void btn3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn3ActionPerformed
+        String remark = txtRemark.getText().isBlank() ? "None" : txtRemark.getText().trim();
         // Delete
         if (newPO){
             int result = JOptionPane.showConfirmDialog(
@@ -604,8 +736,51 @@ public class PODetails extends javax.swing.JDialog {
                 pr.updateStatus();
                 po.setStatus(PurchaseOrder.Status.DELETED);
                 po.setPerformedBy(admin.getUID());
+                po.setRemark(remark);
                 po.updateStatus();
-                JOptionPane.showMessageDialog(this, "This PO has been deleted!");
+                JOptionPane.showMessageDialog(this, "This PO has been Deleted!");
+                dispose();
+            }
+            return;
+        }
+        
+        // Cancel
+        if (approvedPO || processingOrExtendedPO || arrivedPO || invalidPO){
+            int result = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure to cancel this PO?\nWarning: This action cannot be reverted!",
+                String.format("Cancel %s", getTitle()),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+            );
+
+            if (result == JOptionPane.YES_OPTION){
+                pr.setStatus(PurchaseRequisition.Status.DELETED);
+                pr.updateStatus();
+                po.setStatus(PurchaseOrder.Status.CANCELLED);
+                po.setRemark(remark);
+                po.updateStatus();
+                JOptionPane.showMessageDialog(this, "This PO has been Cancelled!");
+                dispose();
+            }
+            return;
+        }
+        
+        // Invalid
+        if (verifiedPO){
+            int result = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure to change this PO to Invalid?",
+                String.format("Change %s status to Invalid", getTitle()),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (result == JOptionPane.YES_OPTION){
+                po.setStatus(PurchaseOrder.Status.INVALID);
+                po.setRemark(remark);
+                po.updateStatus();
+                JOptionPane.showMessageDialog(this, String.format("Order %s has been set as Invalid", getTitle()));
                 dispose();
             }
             return;
@@ -613,7 +788,7 @@ public class PODetails extends javax.swing.JDialog {
     }//GEN-LAST:event_btn3ActionPerformed
 
     private void lblEditMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblEditMouseClicked
-        POModifier PO = new POModifier(this, true, admin);
+        POModifier PO = new POModifier(this, true, po);
         PO.setLocationRelativeTo(this);
         PO.setVisible(true);
         refresh();

@@ -23,13 +23,13 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         NEW,        // approve, reject or delete
         APPROVED,   // processing or cancel
         REJECTED,   // set as new
-        DELETED,    // set as new
+        DELETED,    // ok
         PROCESSING, // arrived, extend or cancel
-        EXTENDED,   // arrived or cancel
+        EXTENDED,   // arrived, extend or cancel
         ARRIVED,    // verified, extend or cancel
         VERIFIED,   // invalid or confirm
         INVALID,    // extend or cancel
-        CONFIRMED,  // completed
+        CONFIRMED,  // process payment
         COMPLETED,  // ok
         CANCELLED   // ok
     }
@@ -37,7 +37,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
     public PurchaseOrder(){
     }
 
-    public PurchaseOrder(String PRID, double totalPrice, String supplierID, LocalDate deliveryDate, String createBy) {
+    public PurchaseOrder(String PRID, double totalPrice, String supplierID, LocalDate deliveryDate, String createBy, String remark) {
         this.POID = generateID();
         this.PRID = PRID;
         this.totalPrice = totalPrice;
@@ -47,7 +47,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         this.status = status.NEW;
         this.createBy = createBy;
         this.performedBy = "None";
-        this.remark = "None";
+        this.remark = remark;
     }
 
     public String getPOID() {
@@ -195,6 +195,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
                 po -> {
                     po.setStatus(this.getStatus());
                     po.setPerformedBy(this.getPerformedBy());
+                    po.setTotalPrice(this.getTotalPrice());
                     po.setDeliveryDate(this.getDeliveryDate());
                     po.setRemark(this.getRemark());
                             },             
