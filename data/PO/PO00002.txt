@@ -1,2 +1,2 @@
-ITM00002	Grocery	Staple Food	SunGro Premium Rice 5kg	40	50.0
-ITM00003	Grocery	Dry Ingredient	SunGro Brown Sugar 1kg	50	20.0
+ITM00002	Grocery	Staple Food	SunGro Premium Rice 5kg	30	15.0
+ITM00003	Grocery	Dry Ingredient	SunGro Brown Sugar 1kg	20	1.0

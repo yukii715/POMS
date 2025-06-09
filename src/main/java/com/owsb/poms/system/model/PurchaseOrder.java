@@ -15,6 +15,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
     private Status status;
     private String createBy;
     private String performedBy;
+    private String remark;
     
     private static final String filePath = "data/PO/purchase_order.txt";
     
@@ -22,21 +23,21 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         NEW,        // approve, reject or delete
         APPROVED,   // processing or cancel
         REJECTED,   // set as new
-        DELETED,    // set as new
-        PROCESSING, // extend, arrived or cancel
+        DELETED,    // ok
+        PROCESSING, // arrived, extend or cancel
         EXTENDED,   // arrived or cancel
         ARRIVED,    // verified, extend or cancel
         VERIFIED,   // invalid or confirm
         INVALID,    // extend or cancel
         CONFIRMED,  // completed
         COMPLETED,  // ok
-        CANCELLED   // ok*
+        CANCELLED   // ok
     }
     
     public PurchaseOrder(){
     }
 
-    public PurchaseOrder(String PRID, double totalPrice, String supplierID, LocalDate deliveryDate, String createBy) {
+    public PurchaseOrder(String PRID, double totalPrice, String supplierID, LocalDate deliveryDate, String createBy, String remark) {
         this.POID = generateID();
         this.PRID = PRID;
         this.totalPrice = totalPrice;
@@ -46,6 +47,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         this.status = status.NEW;
         this.createBy = createBy;
         this.performedBy = "None";
+        this.remark = remark;
     }
 
     public String getPOID() {
@@ -119,6 +121,14 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
     public void setPerformedBy(String performedBy) {
         this.performedBy = performedBy;
     }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
     
     @Override
     public String toString() {
@@ -130,14 +140,12 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
              + deliveryDate.toString() + "\t"
              + status.name() + "\t"
              + createBy + "\t"
-             + performedBy;
+             + performedBy + "\t"
+             + remark;
     }
     
     public static PurchaseOrder fromString(String line) {
         String[] parts = line.split("\t");
-        if (parts.length != 9) {
-            throw new IllegalArgumentException("Invalid input line for PurchaseOrder: " + line);
-        }
 
         PurchaseOrder po = new PurchaseOrder();
         po.setPOID(parts[0]);
@@ -149,6 +157,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         po.setStatus(Status.valueOf(parts[6]));
         po.setCreateBy(parts[7]);
         po.setPerformedBy(parts[8]);
+        po.setRemark(parts[9]);
 
         return po;
     }
@@ -186,18 +195,10 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
                 po -> {
                     po.setStatus(this.getStatus());
                     po.setPerformedBy(this.getPerformedBy());
-                },           
-                list -> this.saveToFile(list)
-        );
-    }
-    
-    public void approved(){
-        DataHandler.updateFieldAndSave(toList(),
-                po -> po.getPOID().equals(this.getPOID()),              
-                po -> {
-                    po.setStatus(this.getStatus());
-                    po.setPerformedBy(this.getPerformedBy());
-                            },           
+                    po.setTotalPrice(this.getTotalPrice());
+                    po.setDeliveryDate(this.getDeliveryDate());
+                    po.setRemark(this.getRemark());
+                            },             
                 list -> this.saveToFile(list)
         );
     }
@@ -205,5 +206,9 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
     public List<POItem> getItems(){
         String filePath = String.format("data/PO/%s.txt", getPOID());
         return POItem.read(filePath);
+    }
+    
+    public static PurchaseOrder getPoById(String id){
+        return DataHandler.getByKey(toList(), id, PurchaseOrder::getPOID);
     }
 }

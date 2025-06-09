@@ -251,6 +251,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        lblLogo = new javax.swing.JLabel();
         pnlNorthMargin = new javax.swing.JPanel();
         pnlNorthWestMargin = new javax.swing.JPanel();
         pnlNorthEastMargin = new javax.swing.JPanel();
@@ -263,7 +264,6 @@ public class AdminDashboard extends javax.swing.JFrame {
         mainSplitPane = new javax.swing.JSplitPane();
         pnlNavigator = new javax.swing.JPanel();
         pnlLogo = new javax.swing.JPanel();
-        lblLogo = new javax.swing.JLabel();
         pnlTabs = new javax.swing.JPanel();
         pnlDashboardTab = new javax.swing.JPanel();
         pnlDashboardIndicator = new javax.swing.JPanel();
@@ -366,6 +366,9 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlSummary = new javax.swing.JPanel();
         pnlSummaryDivider = new javax.swing.JPanel();
         pnlSummaryMain = new javax.swing.JPanel();
+
+        lblLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblLogo.setPreferredSize(new java.awt.Dimension(90, 90));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Admin Dashboard");
@@ -530,12 +533,9 @@ public class AdminDashboard extends javax.swing.JFrame {
         getContentPane().add(pnlEastMargin, java.awt.BorderLayout.EAST);
 
         mainSplitPane.setBackground(new java.awt.Color(255, 237, 237));
-        mainSplitPane.setBorder(null);
         mainSplitPane.setDividerLocation(200);
-        mainSplitPane.setDividerSize(5);
         mainSplitPane.setForeground(new java.awt.Color(255, 204, 204));
         mainSplitPane.setToolTipText("");
-        mainSplitPane.setContinuousLayout(true);
         mainSplitPane.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         mainSplitPane.setPreferredSize(new java.awt.Dimension(1200, 800));
 
@@ -546,10 +546,6 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         pnlLogo.setBackground(new java.awt.Color(255, 180, 180));
         pnlLogo.setLayout(new java.awt.BorderLayout());
-
-        lblLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblLogo.setPreferredSize(new java.awt.Dimension(90, 90));
-        pnlLogo.add(lblLogo, java.awt.BorderLayout.CENTER);
 
         pnlTabs.setLayout(new java.awt.GridLayout(6, 0));
 
@@ -944,7 +940,6 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         lblMinimise.setBackground(new java.awt.Color(243, 220, 220));
         lblMinimise.setFont(new java.awt.Font("Franklin Gothic Heavy", 1, 18)); // NOI18N
-        lblMinimise.setForeground(new java.awt.Color(0, 0, 0));
         lblMinimise.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblMinimise.setToolTipText("Minimise");
         lblMinimise.setOpaque(true);
@@ -964,7 +959,6 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         lblMaximise.setBackground(new java.awt.Color(243, 220, 220));
         lblMaximise.setFont(new java.awt.Font("Franklin Gothic Heavy", 1, 18)); // NOI18N
-        lblMaximise.setForeground(new java.awt.Color(0, 0, 0));
         lblMaximise.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblMaximise.setToolTipText("Maximise");
         lblMaximise.setOpaque(true);
@@ -983,7 +977,6 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         lblClose.setBackground(new java.awt.Color(243, 220, 220));
         lblClose.setFont(new java.awt.Font("Franklin Gothic Heavy", 1, 18)); // NOI18N
-        lblClose.setForeground(new java.awt.Color(0, 0, 0));
         lblClose.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblClose.setToolTipText("Close");
         lblClose.setOpaque(true);
@@ -1097,7 +1090,6 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlOrders.setName(""); // NOI18N
 
         tblOrder.setBackground(new java.awt.Color(255, 255, 204));
-        tblOrder.setForeground(new java.awt.Color(0, 0, 0));
         tblOrder.setModel(ordersModel);
         tblOrder.setGridColor(java.awt.Color.gray);
         tblOrder.setSelectionBackground(new java.awt.Color(255, 153, 153));
@@ -1114,7 +1106,6 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         btnViewAllPO.setBackground(new java.awt.Color(255, 204, 204));
         btnViewAllPO.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnViewAllPO.setForeground(new java.awt.Color(0, 0, 0));
         btnViewAllPO.setText("View All Purchase Orders");
         btnViewAllPO.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1124,7 +1115,6 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         btnViewPR.setBackground(new java.awt.Color(255, 204, 204));
         btnViewPR.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnViewPR.setForeground(new java.awt.Color(0, 0, 0));
         btnViewPR.setText("View Purchase Requisitions");
         btnViewPR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1134,7 +1124,6 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         btnProcessPayment.setBackground(new java.awt.Color(255, 204, 204));
         btnProcessPayment.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnProcessPayment.setForeground(new java.awt.Color(0, 0, 0));
         btnProcessPayment.setText("Process Payment");
         btnProcessPayment.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1177,7 +1166,6 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlInventory.setBackground(new java.awt.Color(255, 153, 51));
 
         tblItems.setBackground(new java.awt.Color(255, 255, 204));
-        tblItems.setForeground(new java.awt.Color(0, 0, 0));
         tblItems.setModel(itemsModel);
         tblItems.setGridColor(java.awt.Color.gray);
         tblItems.setSelectionBackground(new java.awt.Color(255, 153, 153));
@@ -1190,64 +1178,49 @@ public class AdminDashboard extends javax.swing.JFrame {
         srlItems.setViewportView(tblItems);
 
         jLabel1.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("ID:");
 
         lblItemID.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblItemID.setForeground(new java.awt.Color(0, 0, 0));
         lblItemID.setText("[Item ID]");
 
         jLabel2.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Category:");
 
         lblItemCategory.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblItemCategory.setForeground(new java.awt.Color(0, 0, 0));
         lblItemCategory.setText("[Category]");
 
         jLabel3.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("Type:");
 
         lblItemType.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblItemType.setForeground(new java.awt.Color(0, 0, 0));
         lblItemType.setText("[Type]");
 
         jLabel4.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Price:");
 
         lblItemPrice.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblItemPrice.setForeground(new java.awt.Color(0, 0, 0));
         lblItemPrice.setText("[Price]");
 
         jLabel5.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setText("Stock");
 
         lblItemStock.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblItemStock.setForeground(new java.awt.Color(0, 0, 0));
         lblItemStock.setText("[Stock]");
 
         jLabel6.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
         jLabel6.setText("Status:");
 
         lblItemStatus.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblItemStatus.setForeground(new java.awt.Color(0, 0, 0));
         lblItemStatus.setText("[Status]");
 
         jLabel7.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
         jLabel7.setText("Name:");
 
         lblItemName.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblItemName.setForeground(new java.awt.Color(0, 0, 0));
         lblItemName.setText("[Name]");
 
         btnNewItem.setBackground(new java.awt.Color(255, 204, 204));
         btnNewItem.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnNewItem.setForeground(new java.awt.Color(0, 0, 0));
         btnNewItem.setText("New Item");
         btnNewItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1257,7 +1230,6 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         btnRemoveItem.setBackground(new java.awt.Color(255, 204, 204));
         btnRemoveItem.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnRemoveItem.setForeground(new java.awt.Color(0, 0, 0));
         btnRemoveItem.setText("Remove Item");
         btnRemoveItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1267,7 +1239,6 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         btnEditItem.setBackground(new java.awt.Color(255, 204, 204));
         btnEditItem.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnEditItem.setForeground(new java.awt.Color(0, 0, 0));
         btnEditItem.setText("Edit Item");
         btnEditItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1277,7 +1248,6 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         btnUpdateStock.setBackground(new java.awt.Color(255, 204, 204));
         btnUpdateStock.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnUpdateStock.setForeground(new java.awt.Color(0, 0, 0));
         btnUpdateStock.setText("Update Stock");
         btnUpdateStock.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1287,7 +1257,6 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         btnUpdateStatus.setBackground(new java.awt.Color(255, 204, 204));
         btnUpdateStatus.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnUpdateStatus.setForeground(new java.awt.Color(0, 0, 0));
         btnUpdateStatus.setText("Update Status");
         btnUpdateStatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1296,11 +1265,9 @@ public class AdminDashboard extends javax.swing.JFrame {
         });
 
         lblSupplier.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblSupplier.setForeground(new java.awt.Color(0, 0, 0));
         lblSupplier.setText("[SupplierName]");
 
         jLabel11.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel11.setForeground(new java.awt.Color(0, 0, 0));
         jLabel11.setText("Supplier");
 
         javax.swing.GroupLayout pnlInventoryLayout = new javax.swing.GroupLayout(pnlInventory);
@@ -1405,7 +1372,6 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlSuppliers.setBackground(new java.awt.Color(255, 198, 157));
 
         tblSuppliers.setBackground(new java.awt.Color(255, 255, 204));
-        tblSuppliers.setForeground(new java.awt.Color(0, 0, 0));
         tblSuppliers.setModel(suppliersModel);
         tblSuppliers.setGridColor(java.awt.Color.gray);
         tblSuppliers.setSelectionBackground(new java.awt.Color(255, 153, 153));
@@ -1418,32 +1384,25 @@ public class AdminDashboard extends javax.swing.JFrame {
         srlSuppliers.setViewportView(tblSuppliers);
 
         jLabel8.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
         jLabel8.setText("ID:");
 
         lblSupplierID.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblSupplierID.setForeground(new java.awt.Color(0, 0, 0));
         lblSupplierID.setText("[Supplier ID]");
 
         lblSupplierName.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblSupplierName.setForeground(new java.awt.Color(0, 0, 0));
         lblSupplierName.setText("[Supplier Name]");
 
         jLabel9.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel9.setForeground(new java.awt.Color(0, 0, 0));
         jLabel9.setText("Name:");
 
         lblSupplierAddedTime.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblSupplierAddedTime.setForeground(new java.awt.Color(0, 0, 0));
         lblSupplierAddedTime.setText("[Supplier Added Time]");
 
         jLabel10.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(0, 0, 0));
         jLabel10.setText("Added Time:");
 
         btnNewSupplier.setBackground(new java.awt.Color(255, 204, 204));
         btnNewSupplier.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnNewSupplier.setForeground(new java.awt.Color(0, 0, 0));
         btnNewSupplier.setText("New Supplier");
         btnNewSupplier.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1453,7 +1412,6 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         btnRemoveSupplier.setBackground(new java.awt.Color(255, 204, 204));
         btnRemoveSupplier.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnRemoveSupplier.setForeground(new java.awt.Color(0, 0, 0));
         btnRemoveSupplier.setText("Remove Supplier");
         btnRemoveSupplier.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1463,7 +1421,6 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         btnChangeSupplierName.setBackground(new java.awt.Color(255, 204, 204));
         btnChangeSupplierName.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnChangeSupplierName.setForeground(new java.awt.Color(0, 0, 0));
         btnChangeSupplierName.setText("Change Name");
         btnChangeSupplierName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

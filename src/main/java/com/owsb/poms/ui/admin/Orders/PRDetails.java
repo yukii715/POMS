@@ -425,7 +425,7 @@ public class PRDetails extends javax.swing.JDialog {
             int result = JOptionPane.showConfirmDialog(
                 this, 
                 "Are you sure to reset this PR as new?", 
-                String.format("Reset PR", getTitle()), 
+                "Reset PR", 
                 JOptionPane.YES_NO_OPTION, 
                 JOptionPane.QUESTION_MESSAGE
             );
@@ -446,7 +446,7 @@ public class PRDetails extends javax.swing.JDialog {
             int result = JOptionPane.showConfirmDialog(
                 this, 
                 "Are you sure to delete this PR?", 
-                String.format("Reject %s", getTitle()), 
+                String.format("Delete %s", getTitle()), 
                 JOptionPane.YES_NO_OPTION, 
                 JOptionPane.QUESTION_MESSAGE
             );

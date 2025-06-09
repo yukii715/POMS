@@ -35,7 +35,7 @@ public class PODetailFrame extends javax.swing.JFrame {
         POItemTable = new javax.swing.JTable();
         PODetailsEditButton = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 245, 247));
 
@@ -136,8 +136,9 @@ public class PODetailFrame extends javax.swing.JFrame {
            return;
        }
        String itemID = POItemTable.getValueAt(selectedRow, 0).toString();
-       String filePath = "data/PO/" + currentPOID + ".txt";
-       List<POItem> items = POItem.read(filePath);
+       String itemfilePath = "data/PO/" + currentPOID + ".txt";
+       
+       List<POItem> items = POItem.read(itemfilePath);
        
        for (POItem item : items) {
            if (item.getItemID().equals(itemID)) {
@@ -146,19 +147,20 @@ public class PODetailFrame extends javax.swing.JFrame {
            }
        }
        
-       FileHandler.saveToFile(filePath, items, POItem::toString);
-       double newTotal = 0;
+       FileHandler.saveToFile(itemfilePath, items, POItem::toString);
+       double newTotalprice = 0;
        for(POItem item : items){
-           newTotal =+ item.getQuantity()*item.getUnitPrice();
+           newTotalprice += item.getQuantity()*item.getUnitPrice();
        }
        List<PurchaseOrder> poList = PurchaseOrder.toList();
        for(PurchaseOrder po : poList){
            if(po.getPOID().equals(currentPOID)){
-               po.setTotalPrice(newTotal);
+               po.setTotalPrice(newTotalprice);
                break;
            }
        }
        FileHandler.saveToFile("data/PO/purchase_order.txt", poList, PurchaseOrder::toString);
+       
        loadPODetailData(currentPOID);
        JOptionPane.showMessageDialog(this, "Edit successfully.");
 

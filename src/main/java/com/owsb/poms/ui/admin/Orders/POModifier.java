@@ -20,9 +20,10 @@ public class POModifier extends javax.swing.JDialog {
     private List<POItem> previousItems = new ArrayList<>();
     private PurchaseRequisition pr;
     private PurchaseOrder po;
+    private PurchaseOrder previousOrder;
     private boolean edit = false;
     private boolean isInitializing = false;
-    private boolean isFilling = false;
+    private boolean isFilling = false; // prevent action performed when add items
     
     private DefaultTableModel itemsModel = new DefaultTableModel(){
         public boolean isCellEditable(int row, int column){
@@ -31,6 +32,7 @@ public class POModifier extends javax.swing.JDialog {
     } ;
     
     private String[] itemsColumnName = {"ID", "Category", "Type", "Name", "Stock", "Status", "Quantity", "Unit Price"};
+    
     public POModifier(javax.swing.JDialog parent, boolean modal, Admin admin) {
         super(parent, modal);
         initComponents();
@@ -39,14 +41,6 @@ public class POModifier extends javax.swing.JDialog {
         setTitle("New Purchase Order");
         btnPerform.setText("Create");
         
-        initialSetting();
-        
-        cmbPR.setSelectedIndex(-1);
-        
-        refreshItem();
-    }
-
-    public void initialSetting(){
         isFilling = true;
         var prs = PurchaseRequisition.getAllPRs();
         for (String prid : prs) {
@@ -59,6 +53,33 @@ public class POModifier extends javax.swing.JDialog {
         cmbYear.setEnabled(false);
         cmbMonth.setEnabled(false);
         cmbDay.setEnabled(false);
+        
+        cmbPR.setSelectedIndex(-1);
+        
+        refreshItem();
+    }
+    
+    public POModifier(javax.swing.JDialog parent, boolean modal, PurchaseOrder po) {
+        super(parent, modal);
+        initComponents();
+        
+        this.po = po;
+        this.previousOrder = po;
+        setTitle(String.format("%s (Edit)", po.getPOID()));
+        btnPerform.setText("OK");
+        txtRemark.setText(po.getRemark());
+        edit = true;
+        
+        isFilling = true;
+        cmbPR.addItem(po.getPRID());
+        isFilling = false;
+        cmbPR.setSelectedIndex(0);
+        cmbPR.setEnabled(false);
+        
+        refreshItem();
+        
+        orderItems = po.getItems();
+        previousItems = po.getItems();
     }
     
     public void refreshItem(){
@@ -77,26 +98,53 @@ public class POModifier extends javax.swing.JDialog {
         tblItems.getColumnModel().getColumn(5).setPreferredWidth(100);
         
         if (cmbPR.getSelectedIndex() != -1){
-            var pri = pr.getItems();
-            items = Item.getItemsFromPR(pri);
-            
-            Map<String, PRItem> priMap = pri.stream().collect(Collectors.toMap(PRItem::getItemID, Function.identity()));
-            
-            for (Item item : items) {
-                if (item.getStatus() != Item.Status.REMOVED)
-                {
-                    PRItem prItem = priMap.get(item.getItemID());
-                    
-                    itemsModel.addRow(new String[]{
-                        item.getItemID(),
-                        item.getItemCategory(),
-                        item.getItemType(),
-                        item.getItemName(),
-                        String.valueOf(item.getStock()),
-                        item.getStatus().name(),
-                        String.valueOf(prItem.getQuantity()),
-                        ""
-                    });
+            if (!edit)
+            {
+                var pri = pr.getItems();
+                items = Item.getItemsFromPR(pri);
+
+                Map<String, PRItem> priMap = pri.stream().collect(Collectors.toMap(PRItem::getItemID, Function.identity()));
+
+                for (Item item : items) {
+                    if (item.getStatus() != Item.Status.REMOVED)
+                    {
+                        PRItem prItem = priMap.get(item.getItemID());
+
+                        itemsModel.addRow(new String[]{
+                            item.getItemID(),
+                            item.getItemCategory(),
+                            item.getItemType(),
+                            item.getItemName(),
+                            String.valueOf(item.getStock()),
+                            item.getStatus().name(),
+                            String.valueOf(prItem.getQuantity()),
+                            ""
+                        });
+                    }
+                }
+            }
+            else{
+                var pro = po.getItems();
+                items = Item.getItemsFromPO(pro);
+
+                Map<String, POItem> proMap = pro.stream().collect(Collectors.toMap(POItem::getItemID, Function.identity()));
+
+                for (Item item : items) {
+                    if (item.getStatus() != Item.Status.REMOVED)
+                    {
+                        POItem poItem = proMap.get(item.getItemID());
+
+                        itemsModel.addRow(new String[]{
+                            item.getItemID(),
+                            item.getItemCategory(),
+                            item.getItemType(),
+                            item.getItemName(),
+                            String.valueOf(item.getStock()),
+                            item.getStatus().name(),
+                            String.valueOf(poItem.getQuantity()),
+                            String.format("%.2f", poItem.getUnitPrice())
+                        });
+                    }
                 }
             }
         }
@@ -132,6 +180,9 @@ public class POModifier extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         lblSupplier = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtRemark = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -219,6 +270,15 @@ public class POModifier extends javax.swing.JDialog {
         lblSupplier.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblSupplier.setText("[Supplier]");
 
+        jLabel8.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel8.setText("Remark:");
+
+        txtRemark.setColumns(20);
+        txtRemark.setRows(5);
+        jScrollPane1.setViewportView(txtRemark);
+
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
         pnlMainLayout.setHorizontalGroup(
@@ -227,8 +287,8 @@ public class POModifier extends javax.swing.JDialog {
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlMainLayout.createSequentialGroup()
                         .addGap(41, 41, 41)
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(srlItems, javax.swing.GroupLayout.PREFERRED_SIZE, 614, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(srlItems, javax.swing.GroupLayout.DEFAULT_SIZE, 614, Short.MAX_VALUE)
                             .addGroup(pnlMainLayout.createSequentialGroup()
                                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel2)
@@ -249,9 +309,11 @@ public class POModifier extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(22, 22, 22)
-                                .addComponent(cmbDay, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(cmbDay, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel8)
+                            .addComponent(jScrollPane1)))
                     .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGap(287, 287, 287)
+                        .addGap(276, 276, 276)
                         .addComponent(btnPerform, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(45, Short.MAX_VALUE))
         );
@@ -276,11 +338,15 @@ public class POModifier extends javax.swing.JDialog {
                     .addComponent(jLabel5))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel6)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(srlItems, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
                 .addComponent(btnPerform, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(19, 19, 19))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -291,7 +357,7 @@ public class POModifier extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlMain, javax.swing.GroupLayout.DEFAULT_SIZE, 860, Short.MAX_VALUE)
         );
 
         pack();
@@ -311,7 +377,7 @@ public class POModifier extends javax.swing.JDialog {
             
             DateResolver.connect(cmbYear, cmbMonth, cmbDay, isInitializing);
             
-            deliveryDate = pr.getRequiredDeliveryDate();
+            deliveryDate = edit ? po.getDeliveryDate() : pr.getRequiredDeliveryDate();
             cmbYear.setSelectedItem(String.valueOf(deliveryDate.getYear()));
             cmbMonth.setSelectedItem(String.format("%02d", deliveryDate.getMonthValue()));
             cmbDay.setSelectedItem(String.format("%02d", deliveryDate.getDayOfMonth()));
@@ -390,12 +456,33 @@ public class POModifier extends javax.swing.JDialog {
         }
 
         String Message = edit ?
-        String.format("Are you sure to edit this PO?%n%s →%n%n%s ",
-            previousItems.stream()
-            .map(item -> String.format("%s (Qty: %d)", item.getItemName(), item.getQuantity()))
+        String.format("Are you sure to edit this PO (ID: %s)?%n"
+                + "Delivery Date: %s%n"
+                + "Total Price: RM %.2f%n"
+                + "Items:%n"
+                + "%s →%n%n"
+                + "Delivery Date: %s%n"
+                + "Total Price: RM %.2f%n"
+                + "Items:%n"
+                + "%s",
+            po.getPOID(),
+            previousOrder.getDeliveryDate().format(DateTimeFormatter.ofPattern("yyyy MMMM dd")),
+            previousOrder.getTotalPrice(),
+            IntStream.range(0, orderItems.size())
+            .mapToObj(i -> String.format("%d. %s (Qty: %d) (U/P: RM %.2f)",
+                i + 1,
+                previousItems.get(i).getItemName(),
+                previousItems.get(i).getQuantity(),
+                previousItems.get(i).getUnitPrice()))
             .collect(Collectors.joining("\n")),
-            orderItems.stream()
-            .map(item -> String.format("%s (Qty: %d)", item.getItemName(), item.getQuantity()))
+            deliveryDate.format(DateTimeFormatter.ofPattern("yyyy MMMM dd")),
+            totalPrice,
+            IntStream.range(0, orderItems.size())
+            .mapToObj(i -> String.format("%d. %s (Qty: %d) (U/P: RM %.2f)",
+                i + 1,
+                orderItems.get(i).getItemName(),
+                orderItems.get(i).getQuantity(),
+                orderItems.get(i).getUnitPrice()))
             .collect(Collectors.joining("\n"))
         ):
         String.format("Are you sure to create a new PO from %s?%n"
@@ -427,11 +514,18 @@ public class POModifier extends javax.swing.JDialog {
         );
 
         if (result == JOptionPane.YES_OPTION){
+            String remark = txtRemark.getText().isBlank() ? "None" : txtRemark.getText().trim();
             if (!edit){
-                po = new PurchaseOrder(pr.getPRID(), totalPrice, pr.getSupplierID(), deliveryDate, admin.getUID());
+                po = new PurchaseOrder(pr.getPRID(), totalPrice, pr.getSupplierID(), deliveryDate, admin.getUID(), remark);
                 po.add();
                 pr.setStatus(PurchaseRequisition.Status.POGENERATED);
                 pr.updateStatus();
+            }
+            else{
+                po.setDeliveryDate(deliveryDate);
+                po.setTotalPrice(totalPrice);
+                po.setRemark(remark);
+                po.updateStatus();
             }
 
             POItem poi = new POItem();
@@ -499,9 +593,12 @@ public class POModifier extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblSupplier;
     private javax.swing.JPanel pnlMain;
     private javax.swing.JScrollPane srlItems;
     private javax.swing.JTable tblItems;
+    private javax.swing.JTextArea txtRemark;
     // End of variables declaration//GEN-END:variables
 }
