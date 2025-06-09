@@ -3,32 +3,34 @@ package com.owsb.poms.system.model;
 import com.owsb.poms.system.functions.FileHandler;
 import java.util.List;
 
-public class POItem extends PurchaseOrder{
+public class DSItem extends DailySales{
     private String itemID;
     private String itemCategory;
     private String itemType;
     private String itemName;
     private int quantity;
-    private double unitPrice;
+    private double sellPrice;
     
-    private static final String filePath = "data/PO/";
+    private static final String filePath = "data/Sales/";
 
-    public POItem() {
+    public DSItem() {
     }
 
-    public POItem(String itemID, String itemCategory, String itemType, String itemName) {
+    public DSItem(String itemID, String itemCategories, String itemType, String itemName, int quantity, double sellPrice) {
         this.itemID = itemID;
-        this.itemCategory = itemCategory;
+        this.itemCategory = itemCategories;
         this.itemType = itemType;
         this.itemName = itemName;
+        this.quantity = quantity;
+        this.sellPrice = sellPrice;
     }
 
     public String getItemID() {
         return itemID;
     }
 
-    public void setItemID(String ItemID) {
-        this.itemID = ItemID;
+    public void setItemID(String itemID) {
+        this.itemID = itemID;
     }
 
     public String getItemCategory() {
@@ -63,12 +65,12 @@ public class POItem extends PurchaseOrder{
         this.quantity = quantity;
     }
 
-    public double getUnitPrice() {
-        return unitPrice;
+    public double getSellPrice() {
+        return sellPrice;
     }
 
-    public void setUnitPrice(double unitPrice) {
-        this.unitPrice = unitPrice;
+    public void setSellPrice(double sellPrice) {
+        this.sellPrice = sellPrice;
     }
     
     @Override
@@ -78,31 +80,31 @@ public class POItem extends PurchaseOrder{
                 + itemType + "\t"
                 + itemName + "\t"
                 + quantity + "\t"
-                + unitPrice;
+                + sellPrice;
     }
 
-    public static POItem fromString(String line) {
+    public static DSItem fromString(String line) {
         String[] parts = line.split("\t");
 
-        POItem poi = new POItem();
-        poi.setItemID(parts[0]);
-        poi.setItemCategory(parts[1]);
-        poi.setItemType(parts[2]);
-        poi.setItemName(parts[3]);
-        poi.setQuantity(Integer.parseInt(parts[4]));
-        poi.setUnitPrice(Double.parseDouble(parts[5]));
+        DSItem dsi = new DSItem();
+        dsi.setItemID(parts[0]);
+        dsi.setItemCategory(parts[1]);
+        dsi.setItemType(parts[2]);
+        dsi.setItemName(parts[3]);
+        dsi.setQuantity(Integer.parseInt(parts[4]));
+        dsi.setSellPrice(Double.parseDouble(parts[5]));
 
-        return poi;
+        return dsi;
     }
     
-    public void save(List<POItem> list) {
-        String fileName = this.getPOID() + ".txt";
+    public void save(List<DSItem> list) {
+        String fileName = this.getSalesID()+ ".txt";
         String filePath = this.filePath + fileName;
         
-        FileHandler.saveToFile(filePath, list, POItem::toString);
+        FileHandler.saveToFile(filePath, list, DSItem::toString);
     }
     
-    public static List<POItem> read(String filePath){
-        return FileHandler.readFromFile(filePath, POItem::fromString);
+    public static List<DSItem> read(String filePath){
+        return FileHandler.readFromFile(filePath, DSItem::fromString);
     }
 }

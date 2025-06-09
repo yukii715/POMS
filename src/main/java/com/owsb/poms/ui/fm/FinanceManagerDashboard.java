@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import javax.swing.table.DefaultTableModel;
@@ -418,7 +419,15 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             .addGroup(processPaymentPanelLayout.createSequentialGroup()
                 .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(processPaymentPanelLayout.createSequentialGroup()
-                        .addGap(29, 29, 29)
+                        .addGap(89, 89, 89)
+                        .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ProcessingPaymentStatusLabel)
+                            .addGroup(processPaymentPanelLayout.createSequentialGroup()
+                                .addComponent(ProcessPaymentButton)
+                                .addGap(161, 161, 161)
+                                .addComponent(ClearFormButton, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(processPaymentPanelLayout.createSequentialGroup()
+                        .addGap(33, 33, 33)
                         .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(bankAccNumberLabel)
@@ -429,22 +438,14 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                         .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(bankNameTextfield, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(BankAccNumberTextfield, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(selectPOComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, 463, Short.MAX_VALUE)
-                            .addComponent(AmountTextfield)))
-                    .addGroup(processPaymentPanelLayout.createSequentialGroup()
-                        .addGap(89, 89, 89)
-                        .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ProcessingPaymentStatusLabel)
-                            .addGroup(processPaymentPanelLayout.createSequentialGroup()
-                                .addComponent(ProcessPaymentButton)
-                                .addGap(161, 161, 161)
-                                .addComponent(ClearFormButton, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(126, Short.MAX_VALUE))
+                            .addComponent(selectPOComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(AmountTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(122, Short.MAX_VALUE))
         );
         processPaymentPanelLayout.setVerticalGroup(
             processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(processPaymentPanelLayout.createSequentialGroup()
-                .addGap(60, 60, 60)
+                .addGap(139, 139, 139)
                 .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(selectPOOrderLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectPOComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -460,9 +461,9 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(AmountLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(AmountTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(79, 79, 79)
+                .addGap(56, 56, 56)
                 .addComponent(ProcessingPaymentStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(93, 93, 93)
+                .addGap(37, 37, 37)
                 .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ProcessPaymentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ClearFormButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -953,21 +954,21 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         selectPOComboBox.removeAllItems();
         approvedPOMap.clear();
         
-        boolean hasVerified = false;
-        List<Item> items = Item.toList();
+        List<PurchaseOrder> orders = com.owsb.poms.system.model.PurchaseOrder.toList();
+        boolean hasConfirmPO = false;
         
-        for (Item item : items) {
-            if (item.getStatus() == Item.Status.SHORTAGE && !isPOAlreadyPaid(item.getItemID())) {
-                String label = item.getItemID() + " - " + item.getItemName();
-                approvedPOMap.put(label, new Object[]{item.getItemID(), item.getItemName(), item.getStock(), item.getSellPrice()});
+        for (PurchaseOrder po : orders) {
+            if (po.getStatus() == com.owsb.poms.system.model.PurchaseOrder.Status.CONFIRMED && !isPOAlreadyPaid(po.getPOID())) {
+                String label = po.getPOID();
+                approvedPOMap.put(label, new Object[]{po.getPOID(),po.getSupplierID(),po.getTotalPrice()});
                 selectPOComboBox.addItem(label);
-                hasVerified = true;
+                hasConfirmPO = true;
             }
         }
         
-        if (selectPOComboBox.getItemCount() == 0) {
+        if (!hasConfirmPO) {
             disablePaymentFields();
-            ProcessingPaymentStatusLabel.setText("Status: No verified purchase orders found.");
+            ProcessingPaymentStatusLabel.setText("Status: No confirmed purchase orders available for payment.");
         } else {
             enablePaymentFields();
             selectPOComboBox.setEnabled(true);
@@ -976,8 +977,9 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     }
         
         private boolean isPOAlreadyPaid(String poID) {
-            for (Object[] tx : transactionList) {
-                if (tx[0].toString().contains(poID)) {
+            List <Transaction> transanctions = Transaction.toList();
+            for (Transaction tx : transanctions) {
+                if (tx.getTransactionID().contains(poID)) {
                     return true;
                 }
             }
@@ -1010,7 +1012,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         
     private void processPayment() {
         int index = selectPOComboBox.getSelectedIndex();
-        String selected = (String) selectPOComboBox.getSelectedItem();
+        String poID = (String) selectPOComboBox.getSelectedItem();
         String bank = bankNameTextfield.getText().trim();
         String accountnumber = BankAccNumberTextfield.getText().trim();
         String amountText = AmountTextfield.getText().trim();
@@ -1019,37 +1021,37 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             ProcessingPaymentStatusLabel.setText("Status: Please fill in all fields.");
             return;
         }
-
-        String transactionID = "PO" + String.format("%03d", transactionCounter++);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String dateTime = java.time.LocalDateTime.now().format(formatter);
-        double amount = Double.parseDouble(amountText);
-
-        transactionList.add(new Object[]{transactionID, bank, accountnumber, dateTime, amount});
-        Object[] poDetails = approvedPOMap.get(selected);
-        String poID = poDetails[0].toString();
-        Item paidItem = new Item();
-        paidItem.setItemID(poID);
-        paidItem.setStatus(Item.Status.REMOVED);
-        paidItem.updateStatus();
+        
+        double amount;
+        try{
+            amount = Double.parseDouble(amountText);
+        }catch(NumberFormatException e){
+            ProcessingPaymentStatusLabel.setText("Status : Invalid Amount");
+            return;
+        }
+        
+        Transaction tx = new Transaction();
+        tx.setTransactionID(tx.generateID());
+        tx.setBankReceived(bank);
+        tx.setBankAccountNumber(Long.parseLong(accountnumber));
+        tx.setDateTime(LocalDateTime.now());
+        tx.setAmount(amount);
+        tx.add();
+        
+        PurchaseOrder po = com.owsb.poms.system.model.PurchaseOrder.getPoById(poID);
+        if(po != null){
+            po.setStatus(com.owsb.poms.system.model.PurchaseOrder.Status.COMPLETED);
+            po.setPerformedBy("FM001");
+            po.updateStatus();
+        }
                 
-        approvedPOMap.remove(selected);
-        selectPOComboBox.removeItemAt(index);
+      
         
         refreshTransactionTable();
-        updatePurchaseReportListFromTransactions();
-        populateReportDateComboboxes();
+        initProcessPaymentFunctionality();
         refreshPurchaseOrderTable(viewPOComboBox.getSelectedItem().toString());
-
-    if (selectPOComboBox.getItemCount() == 0) {
-        disablePaymentFields();
-        ProcessingPaymentStatusLabel.setText("Status: All verified orders are paid.");
-    } else {
-        enablePaymentFields();
-        ProcessingPaymentStatusLabel.setText("Status: Payment successful for " + transactionID);
+        ProcessingPaymentStatusLabel.setText("Status : Payment Successful For "+ poID);
     }
-    }
-   
 
     private void initTransactionTable(){
         String[] columns = {"Transaction ID","Bank Name","Bank Account","Date Time","Amount"};
@@ -1063,9 +1065,16 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     
     private void refreshTransactionTable() {
         transactionTableModel.setRowCount(0);
-        for (Object[] row : transactionList) {
-            transactionTableModel.addRow(row);
-        }   
+        List<Transaction> transactions = Transaction.toList();
+        for (Transaction tx : transactions) {
+            transactionTableModel.addRow(new Object[]{
+                tx.getTransactionID(),
+                tx.getBankReceived(),
+                tx.getBankAccountNumber(),
+                tx.getDateTime().toString().replace("T", " "),
+                tx.getAmount()
+            });
+        }
     }
     
     DefaultTableModel purchaseOrderTableModel;

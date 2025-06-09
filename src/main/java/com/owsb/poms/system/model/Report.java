@@ -21,6 +21,13 @@ public class Report implements hasFile<Report>{
     public Report() {
     }
 
+    public Report(String reportID, type reportType, String message, LocalDateTime dateTime) {
+        this.reportID = reportID;
+        this.reportType = reportType;
+        this.message = message;
+        this.dateTime = dateTime;
+    }
+
     public String getReportID() {
         return reportID;
     }
