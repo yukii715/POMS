@@ -1,10 +1,11 @@
 package com.owsb.poms.ui.sm;
 
+import com.owsb.poms.system.functions.*;
 import com.owsb.poms.system.model.*;
 import java.awt.CardLayout;
-import java.io.*;
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.table.*;
 
@@ -13,22 +14,68 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
     //item list
     private List<Item> itemList = Item.toList();
     private String[] itemListHeader = {"Item ID", "Item Name", "Item Category", "Item Type", "Supplier ID", "Price (RM)", "Stock", "Status"};
-    private DefaultTableModel itemListTableModel = new DefaultTableModel(itemListHeader, 0);
+    private DefaultTableModel itemListTableModel = new DefaultTableModel(itemListHeader, 0){
+       public boolean isCellEditable(int row, int column){
+           return false;
+       }
+    };
+    //item edit
     private String[] editItemListHeader = {"Item ID", "Item Name", "Supplier ID", "Price (RM)"};
-    private DefaultTableModel editItemListTableModel = new DefaultTableModel(editItemListHeader, 0);
+    private DefaultTableModel editItemListTableModel = new DefaultTableModel(editItemListHeader, 0){
+       public boolean isCellEditable(int row, int column){
+           return false;
+       }
+    };
     
     //supplier list
     private List<Supplier> supplierList = Supplier.toList();
     private String[] supplierListHeader = {"Supplier ID", "Supplier Name", "Date Added"};
-    private DefaultTableModel supplierListTableModel = new DefaultTableModel(supplierListHeader, 0);
+    private DefaultTableModel supplierListTableModel = new DefaultTableModel(supplierListHeader, 0){
+       public boolean isCellEditable(int row, int column){
+           return false;
+       }
+    };
+    
+    //PR list
+    private List<PurchaseRequisition> purchaseReqList = PurchaseRequisition.toList();
+    private String[] purchaseReqListHeader = {"PR ID", "Supplier ID", "Requested", "Required By", "Created By", "Approved By", "Status"};
+    private DefaultTableModel purchaseReqListTableModel = new DefaultTableModel(purchaseReqListHeader, 0){
+        public boolean isCellEditable(int row, int column){
+           return false;
+       }
+    };
+    //supplier item list
+    private List<Item> supplierItemList;
+    private String[] supplierItemListHeader = {"Item ID", "Item Category", "Item Type", "Item Name", "Quantity"};
+    private DefaultTableModel supplierItemListTableModel = new DefaultTableModel(supplierItemListHeader, 0){
+        public boolean isCellEditable(int row, int column){
+           return column == 4;
+       }
+    };
+    //created PR item list
+    private List<PurchaseRequisition> createdPRList;
+    private List<PRItem> selectedPRItems;
+    private String userID = "AD001";
+    private String[] createdPRListHeader = {"Item ID", "Item Category", "Item Type", "Item Name", "Quantity"};
+    private DefaultTableModel createdPRListTableModel = new DefaultTableModel(createdPRListHeader, 0){
+        public boolean isCellEditable(int row, int column){
+           return false;
+       }
+    };
     
     public SalesManagerDashboard() {
         initComponents();
+        tblItemList.getTableHeader().setReorderingAllowed(false);
+        tblItemList.getTableHeader().setResizingAllowed(false);
         
-        displayItemList();
-        displayEditItemList();
-        displaySupplierList();
-        initNewItemFormComboBox();
+        tblEditItem.getTableHeader().setReorderingAllowed(false);
+        tblEditItem.getTableHeader().setResizingAllowed(false);
+        
+        tblSupplierList.getTableHeader().setReorderingAllowed(false);
+        tblSupplierList.getTableHeader().setResizingAllowed(false);
+        
+        tblPurchaseReq.getTableHeader().setReorderingAllowed(false);
+        tblPurchaseReq.getTableHeader().setResizingAllowed(false);
     }
 
     /**
@@ -49,6 +96,7 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         frmDailyItemSales = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         btnSalesUpdate = new javax.swing.JButton();
+        cmbSalesDate = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDailyItemSales = new javax.swing.JTable();
         btnSalesReturn = new javax.swing.JButton();
@@ -130,26 +178,41 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         btnSupplierReturn = new javax.swing.JButton();
         frmPurchaseReq = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
-        btnPurchaseReqDetails = new javax.swing.JButton();
+        btnPurchaseReqAdd = new javax.swing.JButton();
+        btnPurchaseReqEdit = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         tblPurchaseReq = new javax.swing.JTable();
         btnPurchaseReqReturn = new javax.swing.JButton();
-        frmManagePurchaseReq = new javax.swing.JPanel();
+        frmAddPurchaseReq = new javax.swing.JPanel();
+        jLabel34 = new javax.swing.JLabel();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel38 = new javax.swing.JLabel();
+        cmbAddPRSupplierName = new javax.swing.JComboBox<>();
+        jLabel37 = new javax.swing.JLabel();
+        lblAddPRSupplierID = new javax.swing.JLabel();
+        jLabel39 = new javax.swing.JLabel();
+        cmbAddPRYear = new javax.swing.JComboBox<>();
+        cmbAddPRMonth = new javax.swing.JComboBox<>();
+        cmbAddPRDay = new javax.swing.JComboBox<>();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        tblAddPR = new javax.swing.JTable();
+        btnAddPRConfirm = new javax.swing.JButton();
+        btnAddPRReturn = new javax.swing.JButton();
+        frmEditPurchaseReq = new javax.swing.JPanel();
         jLabel23 = new javax.swing.JLabel();
-        btnManagePRReturn = new javax.swing.JButton();
-        jLabel31 = new javax.swing.JLabel();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel24 = new javax.swing.JLabel();
-        cmbNewPRItemID = new javax.swing.JComboBox<>();
-        jLabel30 = new javax.swing.JLabel();
-        cmbNewPRSupplierID = new javax.swing.JComboBox<>();
-        jLabel27 = new javax.swing.JLabel();
-        txtNewPRQuantity = new javax.swing.JTextField();
-        btnNewPRConfirm = new javax.swing.JButton();
-        jLabel32 = new javax.swing.JLabel();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        tblManagePurchaseReq = new javax.swing.JTable();
-        btnSentPRDelete = new javax.swing.JButton();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel40 = new javax.swing.JLabel();
+        cmbEditPRID = new javax.swing.JComboBox<>();
+        jLabel41 = new javax.swing.JLabel();
+        lblEditPRSupplierID = new javax.swing.JLabel();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        tblEditPR = new javax.swing.JTable();
+        btnEditPRConfirm = new javax.swing.JButton();
+        jLabel42 = new javax.swing.JLabel();
+        cmbEditPRYear = new javax.swing.JComboBox<>();
+        cmbEditPRMonth = new javax.swing.JComboBox<>();
+        cmbEditPRDay = new javax.swing.JComboBox<>();
+        btnEditPRReturn = new javax.swing.JButton();
         temp = new javax.swing.JPanel();
         btnDailyItemSales = new javax.swing.JButton();
         btnItemList = new javax.swing.JButton();
@@ -225,6 +288,8 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
             }
         });
 
+        cmbSalesDate.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         tblDailyItemSales.setBackground(new java.awt.Color(153, 153, 153));
         tblDailyItemSales.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -271,15 +336,19 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         frmDailyItemSalesLayout.setHorizontalGroup(
             frmDailyItemSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(frmDailyItemSalesLayout.createSequentialGroup()
-                .addContainerGap(40, Short.MAX_VALUE)
                 .addGroup(frmDailyItemSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(frmDailyItemSalesLayout.createSequentialGroup()
-                        .addComponent(btnSalesReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(40, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1076, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(frmDailyItemSalesLayout.createSequentialGroup()
                         .addGap(100, 100, 100)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 580, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(87, 87, 87)
-                        .addComponent(btnSalesUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1076, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnSalesReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(64, 64, 64)
+                        .addComponent(cmbSalesDate, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnSalesUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(40, Short.MAX_VALUE))
         );
         frmDailyItemSalesLayout.setVerticalGroup(
@@ -289,7 +358,8 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
                 .addGroup(frmDailyItemSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(btnSalesUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSalesReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnSalesReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbSalesDate, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 505, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(40, Short.MAX_VALUE))
@@ -792,6 +862,11 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         });
 
         btnEditItemSave.setText("Save");
+        btnEditItemSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditItemSaveActionPerformed(evt);
+            }
+        });
 
         tblEditItem.setModel(editItemListTableModel);
         tblEditItem.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -812,6 +887,12 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         jLabel29.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel29.setText("Supplier Name");
 
+        cmbEditSupplierName.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbEditSupplierNameItemStateChanged(evt);
+            }
+        });
+
         jLabel35.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel35.setText("Supplier ID");
 
@@ -822,8 +903,18 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         jLabel33.setText("Price (RM)");
 
         btnEditItemApply.setText("Apply");
+        btnEditItemApply.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditItemApplyActionPerformed(evt);
+            }
+        });
 
         btnEditItemDelete.setText("Delete Row");
+        btnEditItemDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditItemDeleteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -926,13 +1017,21 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel20.setText("Supplier Name:");
 
-        txtSupplierName.setText("jTextField5");
-
         btnSupplierAdd.setFont(new java.awt.Font("KaiTi", 0, 14)); // NOI18N
         btnSupplierAdd.setText("Add");
+        btnSupplierAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSupplierAddActionPerformed(evt);
+            }
+        });
 
         btnSupplierDelete.setFont(new java.awt.Font("KaiTi", 0, 14)); // NOI18N
         btnSupplierDelete.setText("Delete");
+        btnSupplierDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSupplierDeleteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -1014,37 +1113,23 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("Purchase Requisition");
 
-        btnPurchaseReqDetails.setFont(new java.awt.Font("KaiTi", 0, 14)); // NOI18N
-        btnPurchaseReqDetails.setText("Details");
-        btnPurchaseReqDetails.addActionListener(new java.awt.event.ActionListener() {
+        btnPurchaseReqAdd.setFont(new java.awt.Font("KaiTi", 0, 14)); // NOI18N
+        btnPurchaseReqAdd.setText("Add");
+        btnPurchaseReqAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPurchaseReqDetailsActionPerformed(evt);
+                btnPurchaseReqAddActionPerformed(evt);
             }
         });
 
-        tblPurchaseReq.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "PR ID", "Item ID", "Supplier ID", "Quantity", "Requested By", "Request Time", "Status"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+        btnPurchaseReqEdit.setFont(new java.awt.Font("KaiTi", 0, 14)); // NOI18N
+        btnPurchaseReqEdit.setText("Edit");
+        btnPurchaseReqEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPurchaseReqEditActionPerformed(evt);
             }
         });
+
+        tblPurchaseReq.setModel(purchaseReqListTableModel);
         tblPurchaseReq.setOpaque(false);
         jScrollPane4.setViewportView(tblPurchaseReq);
 
@@ -1061,14 +1146,16 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         frmPurchaseReqLayout.setHorizontalGroup(
             frmPurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(frmPurchaseReqLayout.createSequentialGroup()
-                .addGroup(frmPurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(frmPurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(frmPurchaseReqLayout.createSequentialGroup()
                         .addGap(100, 100, 100)
                         .addComponent(btnPurchaseReqReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(100, 100, 100)
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 580, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(67, 67, 67)
-                        .addComponent(btnPurchaseReqDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnPurchaseReqAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnPurchaseReqEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(frmPurchaseReqLayout.createSequentialGroup()
                         .addGap(40, 40, 40)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 1076, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -1078,10 +1165,13 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
             frmPurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(frmPurchaseReqLayout.createSequentialGroup()
                 .addGap(15, 15, 15)
-                .addGroup(frmPurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(btnPurchaseReqDetails, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnPurchaseReqReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(frmPurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(frmPurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnPurchaseReqAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnPurchaseReqEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(frmPurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel6)
+                        .addComponent(btnPurchaseReqReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 505, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(40, Short.MAX_VALUE))
@@ -1089,180 +1179,280 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
 
         mainFrame.add(frmPurchaseReq, "frmPurchaseReq");
 
-        frmManagePurchaseReq.setBackground(new java.awt.Color(255, 255, 153));
-        frmManagePurchaseReq.setName("frmManagePurchaseReq"); // NOI18N
+        frmAddPurchaseReq.setBackground(new java.awt.Color(255, 255, 153));
+        frmAddPurchaseReq.setName("frmAddPurchaseReq"); // NOI18N
+
+        jLabel34.setFont(new java.awt.Font("High Tower Text", 0, 36)); // NOI18N
+        jLabel34.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel34.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel34.setText("Add Purchase Requisition");
+
+        jPanel6.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jLabel38.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
+        jLabel38.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel38.setText("Supplier Name:");
+
+        cmbAddPRSupplierName.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cmbAddPRSupplierName.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbAddPRSupplierNameItemStateChanged(evt);
+            }
+        });
+
+        jLabel37.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
+        jLabel37.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel37.setText("Supplier ID:");
+
+        lblAddPRSupplierID.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
+        lblAddPRSupplierID.setText("-");
+
+        jLabel39.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
+        jLabel39.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel39.setText("Required Date:");
+
+        cmbAddPRYear.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        cmbAddPRMonth.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        cmbAddPRDay.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        tblAddPR.setModel(supplierItemListTableModel);
+        jScrollPane7.setViewportView(tblAddPR);
+
+        btnAddPRConfirm.setFont(new java.awt.Font("KaiTi", 0, 12)); // NOI18N
+        btnAddPRConfirm.setText("Confirm");
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(415, 415, 415)
+                        .addComponent(btnAddPRConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(45, 45, 45)
+                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 862, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(89, 89, 89)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jLabel39, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(cmbAddPRYear, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(cmbAddPRMonth, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(43, 43, 43)
+                                .addComponent(cmbAddPRDay, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jLabel38, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(cmbAddPRSupplierName, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(44, 44, 44)
+                        .addComponent(jLabel37, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblAddPRSupplierID, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(45, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmbAddPRSupplierName, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel38, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel37, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblAddPRSupplierID))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmbAddPRYear, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel39, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbAddPRMonth, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbAddPRDay, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(btnAddPRConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(19, 19, 19))
+        );
+
+        btnAddPRReturn.setFont(new java.awt.Font("KaiTi", 0, 12)); // NOI18N
+        btnAddPRReturn.setText("Return");
+        btnAddPRReturn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddPRReturnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout frmAddPurchaseReqLayout = new javax.swing.GroupLayout(frmAddPurchaseReq);
+        frmAddPurchaseReq.setLayout(frmAddPurchaseReqLayout);
+        frmAddPurchaseReqLayout.setHorizontalGroup(
+            frmAddPurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frmAddPurchaseReqLayout.createSequentialGroup()
+                .addGap(217, 217, 217)
+                .addComponent(btnAddPRReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addComponent(jLabel34, javax.swing.GroupLayout.PREFERRED_SIZE, 441, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(351, 351, 351))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, frmAddPurchaseReqLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(100, 100, 100))
+        );
+        frmAddPurchaseReqLayout.setVerticalGroup(
+            frmAddPurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frmAddPurchaseReqLayout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addGroup(frmAddPurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel34)
+                    .addComponent(btnAddPRReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(50, 50, 50)
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        mainFrame.add(frmAddPurchaseReq, "frmAddPurchaseReq");
+
+        frmEditPurchaseReq.setBackground(new java.awt.Color(255, 255, 153));
+        frmEditPurchaseReq.setName("frmEditPurchaseReq"); // NOI18N
 
         jLabel23.setFont(new java.awt.Font("High Tower Text", 0, 36)); // NOI18N
         jLabel23.setForeground(new java.awt.Color(0, 0, 0));
         jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel23.setText("Manage Purchase Requisition");
+        jLabel23.setText("Edit Purchase Requisition");
 
-        btnManagePRReturn.setFont(new java.awt.Font("KaiTi", 0, 12)); // NOI18N
-        btnManagePRReturn.setText("Return");
-        btnManagePRReturn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnManagePRReturnActionPerformed(evt);
+        jPanel7.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jLabel40.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
+        jLabel40.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel40.setText("Purchase Requisition ID:");
+
+        cmbEditPRID.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cmbEditPRID.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbEditPRIDItemStateChanged(evt);
             }
         });
 
-        jLabel31.setFont(new java.awt.Font("Palatino Linotype", 0, 24)); // NOI18N
-        jLabel31.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel31.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel31.setText("New PR");
+        jLabel41.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
+        jLabel41.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel41.setText("Supplier ID:");
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        lblEditPRSupplierID.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
+        lblEditPRSupplierID.setText("-");
 
-        jLabel24.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
-        jLabel24.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel24.setText("Item ID:");
+        tblEditPR.setModel(createdPRListTableModel);
+        jScrollPane8.setViewportView(tblEditPR);
 
-        cmbNewPRItemID.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cmbNewPRItemID.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        btnEditPRConfirm.setFont(new java.awt.Font("KaiTi", 0, 12)); // NOI18N
+        btnEditPRConfirm.setText("Confirm");
 
-        jLabel30.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
-        jLabel30.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel30.setText("Supplier ID:");
+        jLabel42.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
+        jLabel42.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel42.setText("Required Date:");
 
-        cmbNewPRSupplierID.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cmbNewPRSupplierID.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbEditPRYear.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        jLabel27.setFont(new java.awt.Font("Rockwell", 0, 18)); // NOI18N
-        jLabel27.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel27.setText("Quantity:");
+        cmbEditPRMonth.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        btnNewPRConfirm.setFont(new java.awt.Font("KaiTi", 0, 12)); // NOI18N
-        btnNewPRConfirm.setText("Confirm");
+        cmbEditPRDay.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtNewPRQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(jPanel4Layout.createSequentialGroup()
-                                    .addComponent(jLabel30, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(cmbNewPRSupplierID, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel4Layout.createSequentialGroup()
-                                    .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(cmbNewPRItemID, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(128, 128, 128)
-                        .addComponent(btnNewPRConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(47, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(52, 52, 52)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbNewPRItemID, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel30, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbNewPRSupplierID, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtNewPRQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
-                .addComponent(btnNewPRConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(56, 56, 56))
-        );
-
-        jLabel32.setFont(new java.awt.Font("Palatino Linotype", 0, 24)); // NOI18N
-        jLabel32.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel32.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel32.setText("Sent PR");
-
-        tblManagePurchaseReq.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "PR ID", "Item ID", "Supplier ID", "Quantity", "Time Requested", "Status"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane6.setViewportView(tblManagePurchaseReq);
-
-        btnSentPRDelete.setFont(new java.awt.Font("KaiTi", 0, 12)); // NOI18N
-        btnSentPRDelete.setText("Delete Selected PR");
-
-        javax.swing.GroupLayout frmManagePurchaseReqLayout = new javax.swing.GroupLayout(frmManagePurchaseReq);
-        frmManagePurchaseReq.setLayout(frmManagePurchaseReqLayout);
-        frmManagePurchaseReqLayout.setHorizontalGroup(
-            frmManagePurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(frmManagePurchaseReqLayout.createSequentialGroup()
-                .addGap(217, 217, 217)
-                .addComponent(btnManagePRReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-                .addComponent(jLabel23)
-                .addGap(351, 351, 351))
-            .addGroup(frmManagePurchaseReqLayout.createSequentialGroup()
-                .addGroup(frmManagePurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(frmManagePurchaseReqLayout.createSequentialGroup()
-                        .addGap(47, 47, 47)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(frmManagePurchaseReqLayout.createSequentialGroup()
-                        .addGap(65, 65, 65)
-                        .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(frmManagePurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(frmManagePurchaseReqLayout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(415, 415, 415)
+                        .addComponent(btnEditPRConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGap(45, 45, 45)
+                        .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 862, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addGap(54, 54, 54)
+                                .addComponent(jLabel40, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addGap(109, 109, 109)
+                                .addComponent(jLabel42, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 661, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(frmManagePurchaseReqLayout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnSentPRDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(93, 93, 93))))
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(cmbEditPRYear, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(cmbEditPRMonth, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(cmbEditPRDay, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(cmbEditPRID, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(146, 146, 146)
+                                .addComponent(jLabel41, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(lblEditPRSupplierID, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
-        frmManagePurchaseReqLayout.setVerticalGroup(
-            frmManagePurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(frmManagePurchaseReqLayout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addGroup(frmManagePurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel23)
-                    .addComponent(btnManagePRReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
-                .addGroup(frmManagePurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSentPRDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(frmManagePurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(76, Short.MAX_VALUE))
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmbEditPRID, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel40, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel41, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblEditPRSupplierID, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmbEditPRYear, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel42, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbEditPRMonth, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbEditPRDay, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(btnEditPRConfirm, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(19, 19, 19))
         );
 
-        mainFrame.add(frmManagePurchaseReq, "frmManagePurchaseReq");
+        btnEditPRReturn.setFont(new java.awt.Font("KaiTi", 0, 12)); // NOI18N
+        btnEditPRReturn.setText("Return");
+        btnEditPRReturn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditPRReturnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout frmEditPurchaseReqLayout = new javax.swing.GroupLayout(frmEditPurchaseReq);
+        frmEditPurchaseReq.setLayout(frmEditPurchaseReqLayout);
+        frmEditPurchaseReqLayout.setHorizontalGroup(
+            frmEditPurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frmEditPurchaseReqLayout.createSequentialGroup()
+                .addGap(217, 217, 217)
+                .addComponent(btnEditPRReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 441, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(351, 351, 351))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, frmEditPurchaseReqLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(100, 100, 100))
+        );
+        frmEditPurchaseReqLayout.setVerticalGroup(
+            frmEditPurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(frmEditPurchaseReqLayout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addGroup(frmEditPurchaseReqLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel23)
+                    .addComponent(btnEditPRReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(50, 50, 50)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(60, Short.MAX_VALUE))
+        );
+
+        mainFrame.add(frmEditPurchaseReq, "frmEditPurchaseReq");
 
         javax.swing.GroupLayout tempLayout = new javax.swing.GroupLayout(temp);
         temp.setLayout(tempLayout);
@@ -1351,18 +1541,22 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
 
     private void btnDailyItemSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDailyItemSalesActionPerformed
         getFrame(mainFrame, frmDailyItemSales);
+        initComboBox();
     }//GEN-LAST:event_btnDailyItemSalesActionPerformed
 
     private void btnItemListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnItemListActionPerformed
         getFrame(mainFrame, frmItemList);
+        displayItemList();
     }//GEN-LAST:event_btnItemListActionPerformed
 
     private void btnSupplierListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSupplierListActionPerformed
         getFrame(mainFrame, frmSupplierList);
+        displaySupplierList();
     }//GEN-LAST:event_btnSupplierListActionPerformed
 
     private void btnPurchaseReqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPurchaseReqActionPerformed
         getFrame(mainFrame, frmPurchaseReq);
+        displayPurchaseRequisitionList();
     }//GEN-LAST:event_btnPurchaseReqActionPerformed
 
     private void btnSalesReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalesReturnActionPerformed
@@ -1383,14 +1577,17 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
 
     private void btnItemEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnItemEditActionPerformed
         getFrame(mainFrame, frmEditItem);
+        displayEditItemList();
     }//GEN-LAST:event_btnItemEditActionPerformed
 
     private void btnItemAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnItemAddActionPerformed
         getFrame(mainFrame, frmNewItem);
+        initComboBox();
     }//GEN-LAST:event_btnItemAddActionPerformed
 
     private void btnNewItemCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewItemCancelActionPerformed
         getFrame(mainFrame, frmItemList);
+        displayItemList();
     }//GEN-LAST:event_btnNewItemCancelActionPerformed
 
     private void btnSalesUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalesUpdateActionPerformed
@@ -1403,15 +1600,13 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
 
     private void btnEditItemCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditItemCancelActionPerformed
         getFrame(mainFrame, frmItemList);
+        displayItemList();
     }//GEN-LAST:event_btnEditItemCancelActionPerformed
 
-    private void btnPurchaseReqDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPurchaseReqDetailsActionPerformed
-        getFrame(mainFrame, frmManagePurchaseReq);
-    }//GEN-LAST:event_btnPurchaseReqDetailsActionPerformed
-
-    private void btnManagePRReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnManagePRReturnActionPerformed
+    private void btnEditPRReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditPRReturnActionPerformed
         getFrame(mainFrame, frmPurchaseReq);
-    }//GEN-LAST:event_btnManagePRReturnActionPerformed
+        displayPurchaseRequisitionList();
+    }//GEN-LAST:event_btnEditPRReturnActionPerformed
 
     private void radItemCategoryItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_radItemCategoryItemStateChanged
         cmbItemCategory.setSelectedIndex(0);
@@ -1470,7 +1665,7 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         cmbItemType.removeAllItems();
         cmbItemType.addItem("Select Type");
 
-        if (!"Select Category".equals(category)) {
+        if(!"Select Category".equals(category)) {
             for (String type : Item.getAllTypes(category)) {
                 cmbItemType.addItem(type);
             }
@@ -1503,39 +1698,39 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         boolean validPrice;
         try{
             price = Double.parseDouble(txtItemPrice.getText().trim());
-            if (price <= 0){
+            if(price <= 0){
                 validPrice = false;
-            }
-            else{
+            } else{
                 validPrice = true;
             }
-        } catch (NumberFormatException e){
+        } catch(NumberFormatException e){
             validPrice = false;
         }
         
-        if (!validCategoryTypeName){
-            JOptionPane.showMessageDialog(this, "Invalid Category, Type or Name", "Error", JOptionPane.ERROR_MESSAGE);
+        if(!validCategoryTypeName){
+            JOptionPane.showMessageDialog(this, "Invalid Category, Type or Name", "ERROR", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
-        if (!validPrice){
-            JOptionPane.showMessageDialog(this, "Invalid Price", "Error", JOptionPane.ERROR_MESSAGE);
+        if(!validPrice){
+            JOptionPane.showMessageDialog(this, "Invalid Price", "ERROR", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
-        if (cmbItemSupplier.getSelectedIndex() == -1){
-            JOptionPane.showMessageDialog(this, "Please select a supplier", "Error", JOptionPane.ERROR_MESSAGE);
+        if(cmbItemSupplier.getSelectedIndex() == -1){
+            JOptionPane.showMessageDialog(this, "Please select a supplier", "ERROR", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
         int result = JOptionPane.showConfirmDialog(this, "Are you sure to add this new item?", "Add New Item", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-        if (result == JOptionPane.YES_OPTION){
+        if(result == JOptionPane.YES_OPTION){
             Item item = new Item(category, type, name, supplierID, price);
             item.add();
             JOptionPane.showMessageDialog(this, "Successfully added a new item!");
         }
-        displayItemList();
         getFrame(mainFrame, frmItemList);
+        displayItemList();
+        initComboBox();
     }//GEN-LAST:event_btnNewItemConfirmActionPerformed
 
     private void cmbItemSupplierItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbItemSupplierItemStateChanged
@@ -1543,30 +1738,169 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
             lblItemSupplierID.setText("-");
         } else{
             for(Supplier sp : supplierList){
-                if (sp.isDeleted()!= true)
-                {
-                    if(sp.getSupplierName().equals(cmbItemSupplier.getSelectedItem())){
-                        lblItemSupplierID.setText(sp.getSupplierID());
-                        break;
-                    }
+                if(sp.getSupplierName().equals(cmbItemSupplier.getSelectedItem())){
+                    lblItemSupplierID.setText(sp.getSupplierID());
+                    break;
                 }
             }
         }
     }//GEN-LAST:event_cmbItemSupplierItemStateChanged
 
     private void tblEditItemMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblEditItemMouseReleased
-        int selectedRow = tblEditItem.getSelectedRow();
-        Item selectedItem = new Item();
-       
-        selectedItem.setItemID(String.valueOf(editItemListTableModel.getValueAt(selectedRow, 0)));
-        selectedItem.setItemName(String.valueOf(editItemListTableModel.getValueAt(selectedRow, 1)));
-        selectedItem.setSupplierID(String.valueOf(editItemListTableModel.getValueAt(selectedRow, 2)));
-        selectedItem.setSellPrice(Double.valueOf(editItemListTableModel.getValueAt(selectedRow, 3)));
-        
-        lblSupplierID.setText(selectedSupplier.getSupplierID());
-        lblSupplierName.setText(selectedSupplier.getSupplierName());
-        lblSupplierAddedTime.setText(selectedSupplier.getAddedTime().format(supplierAddedTimeFormatter));
+        int row = tblEditItem.getSelectedRow();
+        String supplierID = String.valueOf(editItemListTableModel.getValueAt(row, 2));
+        txtEditItemName.setText(String.valueOf(editItemListTableModel.getValueAt(row, 1)));
+
+        Object value = editItemListTableModel.getValueAt(row, 3);
+        double price = Double.parseDouble(value.toString());
+        txtEditItemPrice.setText(String.format("%.2f", price));
+
+        for(int i = 0; i < supplierList.size(); i++){
+            if(supplierList.get(i).getSupplierID().equals(supplierID)){
+                cmbEditSupplierName.setSelectedIndex(i);
+                break;
+            }
+        }
     }//GEN-LAST:event_tblEditItemMouseReleased
+
+    private void cmbEditSupplierNameItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbEditSupplierNameItemStateChanged
+        for(Supplier sp : supplierList){
+            if(sp.getSupplierName().equals(cmbEditSupplierName.getSelectedItem())){
+                lblEditSupplierID.setText(sp.getSupplierID());
+                break;
+            }
+        }
+    }//GEN-LAST:event_cmbEditSupplierNameItemStateChanged
+
+    private void btnEditItemApplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditItemApplyActionPerformed
+        int row = tblEditItem.getSelectedRow();
+        if(row != -1){
+            String itemID = String.valueOf(editItemListTableModel.getValueAt(row, 0));
+            String itemName = txtEditItemName.getText();
+            String itemSupplierID = lblEditSupplierID.getText();
+            String itemPrice = txtEditItemPrice.getText();
+
+            editItemListTableModel.setValueAt(itemName, row, 1);
+            editItemListTableModel.setValueAt(itemSupplierID, row, 2);
+            editItemListTableModel.setValueAt(itemPrice, row, 3);
+
+            for(Item item : itemList){
+                if(item.getItemID().equals(itemID)){
+                    item.setItemName(itemName);
+                    item.setSupplierID(itemSupplierID);
+                    item.setSellPrice(Double.parseDouble(itemPrice));
+                    break;
+                }
+            }
+        } else{
+            JOptionPane.showMessageDialog(this, "Please select a row to be edited", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEditItemApplyActionPerformed
+
+    private void btnEditItemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditItemSaveActionPerformed
+        int confirm = JOptionPane.showConfirmDialog(this, "Save all changes?", "Save Item List", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if(confirm == JOptionPane.YES_OPTION){
+            new Item().saveToFile(itemList);
+            getFrame(mainFrame, frmItemList);
+            displayItemList();
+        }
+    }//GEN-LAST:event_btnEditItemSaveActionPerformed
+
+    private void btnEditItemDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditItemDeleteActionPerformed
+        int row = tblEditItem.getSelectedRow();
+        if(row != -1){
+            int confirm = JOptionPane.showConfirmDialog(this, "Delete selected item?", "Delete Item", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            if(confirm == JOptionPane.YES_OPTION){
+                String itemID = String.valueOf(editItemListTableModel.getValueAt(row, 0));
+                for(Item item : itemList){
+                    if(item.getItemID().equals(itemID)){
+                        item.setStatus(Item.Status.REMOVED);
+                        break;
+                    }
+                }
+                editItemListTableModel.removeRow(row);
+            }
+        } else{
+            JOptionPane.showMessageDialog(this, "Please select a row to be deleted", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEditItemDeleteActionPerformed
+
+    private void btnSupplierAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSupplierAddActionPerformed
+        String newSupplier = txtSupplierName.getText().trim();
+        boolean exists = false;
+        
+        if(newSupplier.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Supplier name cannot be empty", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        for(Supplier sp : supplierList){
+            if(!sp.isDeleted() && sp.getSupplierName().equalsIgnoreCase(newSupplier)){
+                exists = true;
+                break;
+            }
+        }
+        
+        if(!exists){
+            Supplier spNew = new Supplier(newSupplier);
+            spNew.add();
+            JOptionPane.showMessageDialog(this, "Supplier added successfully!");
+            displaySupplierList();
+        } else{
+            JOptionPane.showMessageDialog(this, "Supplier record exists", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSupplierAddActionPerformed
+
+    private void btnSupplierDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSupplierDeleteActionPerformed
+        int row = tblSupplierList.getSelectedRow();
+        if(row != -1){
+            int confirm = JOptionPane.showConfirmDialog(this, "Delete selected supplier?", "Delete Supplier", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            if(confirm == JOptionPane.YES_OPTION){
+                String supplierID = String.valueOf(supplierListTableModel.getValueAt(row, 0));
+                for(Supplier sp : supplierList){
+                    if(sp.getSupplierID().equals(supplierID)){
+                        sp.setIsDeleted(true);
+                        break;
+                    }
+                }
+                supplierListTableModel.removeRow(row);
+            }
+        } else{
+            JOptionPane.showMessageDialog(this, "Please select a row to be deleted", "ERROR", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSupplierDeleteActionPerformed
+
+    private void btnPurchaseReqAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPurchaseReqAddActionPerformed
+        getFrame(mainFrame, frmAddPurchaseReq);
+        initAddPRComboBox();
+    }//GEN-LAST:event_btnPurchaseReqAddActionPerformed
+
+    private void btnPurchaseReqEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPurchaseReqEditActionPerformed
+        getFrame(mainFrame, frmEditPurchaseReq);
+        initEditPRComboBox(userID);
+    }//GEN-LAST:event_btnPurchaseReqEditActionPerformed
+
+    private void btnAddPRReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPRReturnActionPerformed
+        getFrame(mainFrame, frmPurchaseReq);
+        displayPurchaseRequisitionList();
+    }//GEN-LAST:event_btnAddPRReturnActionPerformed
+
+    private void cmbAddPRSupplierNameItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbAddPRSupplierNameItemStateChanged
+        int selected = cmbAddPRSupplierName.getSelectedIndex();
+        if(selected != -1){
+            String spName = cmbAddPRSupplierName.getSelectedItem().toString();
+            String spID = Supplier.getIdByName(spName);
+            lblAddPRSupplierID.setText(spID);
+            displaySupplierItemList(spID);
+        }
+    }//GEN-LAST:event_cmbAddPRSupplierNameItemStateChanged
+
+    private void cmbEditPRIDItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbEditPRIDItemStateChanged
+        int selected = cmbEditPRID.getSelectedIndex();
+        if(selected != 1){
+            
+        }
+    }//GEN-LAST:event_cmbEditPRIDItemStateChanged
     
     private static void getFrame(JPanel parent, JPanel targetPage){
         CardLayout card = (CardLayout)parent.getLayout();
@@ -1577,13 +1911,13 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         itemList = Item.toList();
         itemListTableModel.setRowCount(0);
         for(Item item : itemList){
-            if (item.getStatus() != Item.Status.REMOVED)
-            {
+            if(item.getStatus() != Item.Status.REMOVED){
                 String[] row = {
                     item.getItemID(),
                     item.getItemName(),
                     item.getItemCategory(),
                     item.getItemType(),
+                    item.getSupplierID(),
                     String.format("%.2f", item.getSellPrice()),
                     String.valueOf(item.getStock()),
                     item.getStatus().name()
@@ -1597,8 +1931,7 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         itemList = Item.toList();
         editItemListTableModel.setRowCount(0);
         for(Item item : itemList){
-            if (item.getStatus() != Item.Status.REMOVED)
-            {
+            if(item.getStatus() != Item.Status.REMOVED){
                 String[] row = {
                     item.getItemID(),
                     item.getItemName(),
@@ -1614,38 +1947,97 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         supplierList = Supplier.toList();
         supplierListTableModel.setRowCount(0);
         for(Supplier sp : supplierList){
-            if (sp.isDeleted()!= true)
-            {
+            if(!sp.isDeleted()){
                 String[] row = {
                     sp.getSupplierID(),
                     sp.getSupplierName(),
-                    sp.getAddedTime().toString()
+                    sp.getAddedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                 };
                 supplierListTableModel.addRow(row);
             }
         }
     }
     
-    private void initNewItemFormComboBox(){
+    private void displayPurchaseRequisitionList(){
+        purchaseReqList = PurchaseRequisition.toList();
+        purchaseReqListTableModel.setRowCount(0);
+        for(PurchaseRequisition pr : purchaseReqList){
+            if(pr.getStatus() != PurchaseRequisition.Status.DELETED){
+                String[] row = {
+                    pr.getPRID(),
+                    pr.getSupplierID(),
+                    pr.getRequestDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                    pr.getRequiredDeliveryDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                    pr.getCreateBy(),
+                    pr.getPerformedBy(),
+                    pr.getStatus().name()
+                };
+                purchaseReqListTableModel.addRow(row);
+            }
+        }
+    }
+    
+    private void displaySupplierItemList(String supplierID){
+        itemList = Item.toList();
+        supplierItemList = itemList.stream()
+                .filter(item -> item.getSupplierID().equals(supplierID) && item.getStatus() != Item.Status.REMOVED)
+                .collect(Collectors.toList());
+        
+        supplierItemListTableModel.setRowCount(0);
+        for(Item item : supplierItemList){
+            String[] row = {
+                item.getItemID(),
+                item.getItemCategory(),
+                item.getItemType(),
+                item.getItemName(),
+            };
+            supplierItemListTableModel.addRow(row);
+        }
+    }
+    
+    private void displayPRItemList(String prID){
+        purchaseReqList = PurchaseRequisition.toList();
+        createdPRList = purchaseReqList.stream()
+                .filter(p -> p.getPRID().equals(prID))
+                .findFirst()
+                .orElse(null);
+        
+    }
+    
+    private void initComboBox(){
         cmbItemCategory.removeAllItems();
         cmbItemCategory.addItem("Select Category");
-
         for(String category : Item.getAllCategories()) {
             cmbItemCategory.addItem(category);
         }
         
         cmbItemSupplier.removeAllItems();
         cmbItemSupplier.addItem("Select Supplier");
-
-        for(String supplier : Supplier.getAllSuppliers()) {
-            cmbItemSupplier.addItem(supplier);
+        for(String sp : Supplier.getAllSuppliers()) {
+            cmbItemSupplier.addItem(sp);
         }
         
         cmbEditSupplierName.removeAllItems();
-        cmbEditSupplierName.addItem("Select Supplier");
-
-        for(String supplier : Supplier.getAllSuppliers()) {
-            cmbEditSupplierName.addItem(supplier);
+        for(String sp : Supplier.getAllSuppliers()) {
+            cmbEditSupplierName.addItem(sp);
+        }
+    }
+    
+    private void initAddPRComboBox(){
+        cmbAddPRSupplierName.removeAllItems();
+        for(String sp : Supplier.getAllSuppliers()){
+            cmbAddPRSupplierName.addItem(sp);
+        }
+        DateResolver.connect(cmbAddPRYear, cmbAddPRMonth, cmbAddPRDay, false);
+    }
+    
+    private void initEditPRComboBox(String userID){
+        cmbEditPRID.removeAllItems();
+        createdPRList = purchaseReqList.stream()
+            .filter(pr -> pr.getCreateBy().equals(userID) && pr.getStatus() == PurchaseRequisition.Status.NEW)
+            .collect(Collectors.toList());
+        for(PurchaseRequisition pr : createdPRList){
+            cmbEditPRID.addItem(pr.getPRID());
         }
     }
     
@@ -1686,46 +2078,56 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel background;
+    private javax.swing.JButton btnAddPRConfirm;
+    private javax.swing.JButton btnAddPRReturn;
     private javax.swing.JButton btnDailyItemSales;
     private javax.swing.JButton btnEditItemApply;
     private javax.swing.JButton btnEditItemCancel;
     private javax.swing.JButton btnEditItemDelete;
     private javax.swing.JButton btnEditItemSave;
+    private javax.swing.JButton btnEditPRConfirm;
+    private javax.swing.JButton btnEditPRReturn;
     private javax.swing.JButton btnItemAdd;
     private javax.swing.JButton btnItemEdit;
     private javax.swing.JButton btnItemList;
     private javax.swing.JButton btnItemReturn;
-    private javax.swing.JButton btnManagePRReturn;
     private javax.swing.JButton btnNewItemCancel;
     private javax.swing.JButton btnNewItemConfirm;
-    private javax.swing.JButton btnNewPRConfirm;
     private javax.swing.JButton btnPurchaseReq;
-    private javax.swing.JButton btnPurchaseReqDetails;
+    private javax.swing.JButton btnPurchaseReqAdd;
+    private javax.swing.JButton btnPurchaseReqEdit;
     private javax.swing.JButton btnPurchaseReqReturn;
     private javax.swing.JButton btnSaleEntryCancel;
     private javax.swing.JButton btnSaleEntryConfirm;
     private javax.swing.JButton btnSaleEntryDelete;
     private javax.swing.JButton btnSalesReturn;
     private javax.swing.JButton btnSalesUpdate;
-    private javax.swing.JButton btnSentPRDelete;
     private javax.swing.JButton btnSupplierAdd;
     private javax.swing.JButton btnSupplierDelete;
     private javax.swing.JButton btnSupplierList;
     private javax.swing.JButton btnSupplierReturn;
+    private javax.swing.JComboBox<String> cmbAddPRDay;
+    private javax.swing.JComboBox<String> cmbAddPRMonth;
+    private javax.swing.JComboBox<String> cmbAddPRSupplierName;
+    private javax.swing.JComboBox<String> cmbAddPRYear;
+    private javax.swing.JComboBox<String> cmbEditPRDay;
+    private javax.swing.JComboBox<String> cmbEditPRID;
+    private javax.swing.JComboBox<String> cmbEditPRMonth;
+    private javax.swing.JComboBox<String> cmbEditPRYear;
     private javax.swing.JComboBox<String> cmbEditSupplierName;
     private javax.swing.JComboBox<String> cmbItemCategory;
     private javax.swing.JComboBox<String> cmbItemSupplier;
     private javax.swing.JComboBox<String> cmbItemType;
-    private javax.swing.JComboBox<String> cmbNewPRItemID;
-    private javax.swing.JComboBox<String> cmbNewPRSupplierID;
     private javax.swing.JComboBox<String> cmbSaleEntryCategory;
     private javax.swing.JComboBox<String> cmbSaleEntryID;
     private javax.swing.JComboBox<String> cmbSaleEntryType;
+    private javax.swing.JComboBox<String> cmbSalesDate;
+    private javax.swing.JPanel frmAddPurchaseReq;
     private javax.swing.JPanel frmDailyItemSales;
     private javax.swing.JPanel frmDashboard;
     private javax.swing.JPanel frmEditItem;
+    private javax.swing.JPanel frmEditPurchaseReq;
     private javax.swing.JPanel frmItemList;
-    private javax.swing.JPanel frmManagePurchaseReq;
     private javax.swing.JPanel frmNewItem;
     private javax.swing.JPanel frmPurchaseReq;
     private javax.swing.JPanel frmSupplierList;
@@ -1747,19 +2149,21 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
-    private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
-    private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel30;
-    private javax.swing.JLabel jLabel31;
-    private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel35;
+    private javax.swing.JLabel jLabel37;
+    private javax.swing.JLabel jLabel38;
+    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel40;
+    private javax.swing.JLabel jLabel41;
+    private javax.swing.JLabel jLabel42;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -1768,23 +2172,28 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JLabel lblAddPRSupplierID;
+    private javax.swing.JLabel lblEditPRSupplierID;
     private javax.swing.JLabel lblEditSupplierID;
     private javax.swing.JLabel lblItemSupplierID;
     private javax.swing.JPanel mainFrame;
     private javax.swing.JRadioButton radItemCategory;
     private javax.swing.JRadioButton radItemType;
+    private javax.swing.JTable tblAddPR;
     private javax.swing.JTable tblDailyItemSales;
     private javax.swing.JTable tblEditItem;
+    private javax.swing.JTable tblEditPR;
     private javax.swing.JTable tblItemList;
-    private javax.swing.JTable tblManagePurchaseReq;
     private javax.swing.JTable tblPurchaseReq;
     private javax.swing.JTable tblSupplierList;
     private javax.swing.JPanel temp;
@@ -1794,7 +2203,6 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JTextField txtItemName;
     private javax.swing.JTextField txtItemPrice;
     private javax.swing.JTextField txtItemType;
-    private javax.swing.JTextField txtNewPRQuantity;
     private javax.swing.JTextField txtSaleEntryName;
     private javax.swing.JTextField txtSaleEntryPrice;
     private javax.swing.JTextField txtSaleEntryQuantity;
