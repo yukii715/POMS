@@ -9,22 +9,28 @@ import java.util.UUID;
 
 public class Transaction implements hasFile<Transaction>, hasId{
     private String transactionID;
+    private String bankFrom;
+    private long bankFromAccountNumber;
     private String bankReceived;
-    private long bankAccountNumber;
+    private long bankReceivedAccountNumber;
     private LocalDateTime dateTime;
     private double amount;
+    private String details;
     
     private static final String filePath = "data/Transaction/transaction_record.txt";
 
     public Transaction() {
     }
 
-    public Transaction(String transactionID, String bankReceived, long bankAccountNumber, LocalDateTime dateTime, double amount) {
+    public Transaction(String transactionID, String bankFrom, long bankFromAccountNumber, String bankReceived, long bankReceivedAccountNumber, LocalDateTime dateTime, double amount, String details) {
         this.transactionID = transactionID;
+        this.bankFrom = bankFrom;
+        this.bankFromAccountNumber = bankFromAccountNumber;
         this.bankReceived = bankReceived;
-        this.bankAccountNumber = bankAccountNumber;
+        this.bankReceivedAccountNumber = bankReceivedAccountNumber;
         this.dateTime = dateTime;
         this.amount = amount;
+        this.details = details;
     }
 
     public String getTransactionID() {
@@ -43,12 +49,12 @@ public class Transaction implements hasFile<Transaction>, hasId{
         this.bankReceived = bankReceived;
     }
 
-    public long getBankAccountNumber() {
-        return bankAccountNumber;
+    public long getBankReceivedAccountNumber() {
+        return bankReceivedAccountNumber;
     }
 
-    public void setBankAccountNumber(long bankAccountNumber) {
-        this.bankAccountNumber = bankAccountNumber;
+    public void setBankReceivedAccountNumber(long bankReceivedAccountNumber) {
+        this.bankReceivedAccountNumber = bankReceivedAccountNumber;
     }
 
     public LocalDateTime getDateTime() {
@@ -66,13 +72,40 @@ public class Transaction implements hasFile<Transaction>, hasId{
     public void setAmount(double amount) {
         this.amount = amount;
     }
+
+    public String getBankFrom() {
+        return bankFrom;
+    }
+
+    public void setBankFrom(String bankFrom) {
+        this.bankFrom = bankFrom;
+    }
+
+    public long getBankFromAccountNumber() {
+        return bankFromAccountNumber;
+    }
+
+    public void setBankFromAccountNumber(long bankFromAccountNumber) {
+        this.bankFromAccountNumber = bankFromAccountNumber;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
     
     public String toString() {
         return transactionID + "\t"
+             + bankFrom + "\t"
+             + bankFromAccountNumber + "\t"
              + bankReceived + "\t"
-             + bankAccountNumber + "\t"
+             + bankReceivedAccountNumber + "\t"
              + dateTime + "\t"
-             + amount;
+             + amount + "\t"
+             + details;
     }
     
     public static Transaction fromString(String line) {
@@ -80,10 +113,13 @@ public class Transaction implements hasFile<Transaction>, hasId{
 
         Transaction tr = new Transaction();
         tr.setTransactionID(parts[0]);
-        tr.setBankReceived(parts[1]);
-        tr.setBankAccountNumber(Long.parseLong(parts[2]));
-        tr.setDateTime(LocalDateTime.parse(parts[3]));
-        tr.setAmount(Double.parseDouble(parts[4]));
+        tr.setBankFrom(parts[1]);
+        tr.setBankFromAccountNumber(Long.parseLong(parts[2]));
+        tr.setBankReceived(parts[3]);
+        tr.setBankReceivedAccountNumber(Long.parseLong(parts[4]));
+        tr.setDateTime(LocalDateTime.parse(parts[5]));
+        tr.setAmount(Double.parseDouble(parts[6]));
+        tr.setDetails(parts[7]);
 
         return tr;
     }

@@ -219,7 +219,6 @@ public class PODetails extends javax.swing.JDialog {
         txtRemark = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(650, 820));
 
         pnlMain.setBackground(new java.awt.Color(255, 204, 204));
 
