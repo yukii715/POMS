@@ -5,6 +5,8 @@
 package com.owsb.poms.ui.im;
 
 import com.owsb.poms.system.model.*;
+import com.owsb.poms.ui.common.CommonMethod;
+import java.awt.Image;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -18,6 +20,8 @@ import javax.swing.table.DefaultTableModel;
 
 
 public class InventoryManagerDashboard extends javax.swing.JFrame { 
+    
+    private InventoryManager IM;
     
     private DefaultTableModel modelItems = new DefaultTableModel(){
         public boolean isCellEditable(int row, int column){
@@ -66,7 +70,6 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM uuuu");
     DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-
     
     /**
      * Creates new form InventoryManagerDashboard
@@ -77,6 +80,13 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         modelPO.setColumnIdentifiers(columnPO);
         modelPOItems.setColumnIdentifiers(columnPOItems);
         modelStockReport.setColumnIdentifiers(columnStockReport);
+        
+        new CommonMethod().setFrameIcon("/icons/logo.png", 330, 330, Image.SCALE_SMOOTH, this);
+        new CommonMethod().setLabelIcon("/icons/logo.png", 300, 300, Image.SCALE_SMOOTH, lblLogo);
+        
+        lblUsername.setText(IM.getUsername());
+        lblUserID.setText(IM.getUID());
+        
         ItemTab();
         POTab();
         StockTab();
@@ -97,6 +107,11 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         pnlHome = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         btnLogout = new javax.swing.JButton();
+        lblLogo = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        lblUserID = new javax.swing.JLabel();
+        lblUsername = new javax.swing.JLabel();
         pnlItems = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableItems = new javax.swing.JTable();
@@ -168,27 +183,70 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         btnLogout.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         btnLogout.setText("Log Out");
 
+        lblLogo.setBackground(new java.awt.Color(255, 153, 153));
+        lblLogo.setForeground(new java.awt.Color(0, 0, 0));
+
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel12.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel12.setText("User ID: ");
+
+        jLabel16.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel16.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel16.setText("Username: ");
+
+        lblUserID.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        lblUserID.setForeground(new java.awt.Color(0, 0, 0));
+        lblUserID.setText("[UserID]");
+
+        lblUsername.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        lblUsername.setForeground(new java.awt.Color(0, 0, 0));
+        lblUsername.setText("[Username]");
+
         javax.swing.GroupLayout pnlHomeLayout = new javax.swing.GroupLayout(pnlHome);
         pnlHome.setLayout(pnlHomeLayout);
         pnlHomeLayout.setHorizontalGroup(
             pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlHomeLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(16, 16, 16)
+                .addGroup(pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel16))
+                .addGap(26, 26, 26)
+                .addGroup(pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblUsername)
+                    .addComponent(lblUserID))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
+                .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(230, 230, 230)
                 .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(43, 43, 43))
             .addGroup(pnlHomeLayout.createSequentialGroup()
-                .addGap(271, 271, 271)
+                .addGap(283, 283, 283)
                 .addComponent(jLabel2)
-                .addContainerGap(297, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlHomeLayout.setVerticalGroup(
             pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlHomeLayout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(245, 245, 245)
+                .addGroup(pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlHomeLayout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlHomeLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlHomeLayout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addGroup(pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel12)
+                            .addComponent(lblUserID))
+                        .addGap(30, 30, 30)
+                        .addGroup(pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel16)
+                            .addComponent(lblUsername))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
-                .addContainerGap(369, Short.MAX_VALUE))
+                .addContainerGap(359, Short.MAX_VALUE))
         );
 
         tabPanel.addTab("Home", pnlHome);
@@ -550,15 +608,11 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
                             .addGroup(pnlPOLayout.createSequentialGroup()
                                 .addGap(18, 18, 18)
                                 .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(pnlPOLayout.createSequentialGroup()
-                                        .addGroup(pnlPOLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(lblSupplierID)
-                                            .addComponent(lblSupplierName)
-                                            .addComponent(lblDeliveryDate))
-                                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(pnlPOLayout.createSequentialGroup()
-                                        .addComponent(lblPOID)
-                                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                    .addComponent(lblSupplierID)
+                                    .addComponent(lblSupplierName)
+                                    .addComponent(lblDeliveryDate)
+                                    .addComponent(lblPOID))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPOLayout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
                                 .addComponent(btnInvalid, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -622,8 +676,6 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 17, Short.MAX_VALUE))
         );
-
-        jButton1.getAccessibleContext().setAccessibleName("Refresh");
 
         tabPanel.addTab("Purchase Order", pnlPO);
 
@@ -778,8 +830,12 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         txtStocks.setText("");
         cmbStatus.setSelectedIndex(-1);
       
-        tableItems.getColumnModel().getColumn(0).setPreferredWidth(10);
-        tableItems.getColumnModel().getColumn(1).setPreferredWidth(200);
+        tableItems.getColumnModel().getColumn(0).setPreferredWidth(50);
+        tableItems.getColumnModel().getColumn(1).setPreferredWidth(250);
+        tableItems.getColumnModel().getColumn(2).setPreferredWidth(80);
+        tableItems.getColumnModel().getColumn(3).setPreferredWidth(100);
+        tableItems.getColumnModel().getColumn(4).setPreferredWidth(30);
+        tableItems.getColumnModel().getColumn(4).setPreferredWidth(50);
 
        
         itemList = Item.toList();
@@ -805,9 +861,6 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         tableItems.clearSelection();
         selectedRowItem = -1;
     }
-    
-    
-    
 
     //Report
     //Report
@@ -868,7 +921,6 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
             ViewStockReport stockReport = new ViewStockReport(selectedReport);
             stockReport.setLocationRelativeTo(this);
             stockReport.setVisible(true);
-
         }
     }//GEN-LAST:event_tableStockReportListMouseClicked
 
@@ -924,7 +976,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
 
         selectedPO.setPOID(String.valueOf(modelPO.getValueAt(selectedRowPO, 0)));
         selectedPO.setSupplierID(String.valueOf(modelPO.getValueAt(selectedRowPO, 1)));
-        String supplierName = getSupplierNameByID(selectedPO.getSupplierID(), supplierList);
+        String supplierName = Supplier.getNameById(selectedPO.getSupplierID());
         selectedPO.setDeliveryDate(LocalDate.parse(String.valueOf(modelPO.getValueAt(selectedRowPO, 3))));
         
         String date = dateFormatter.format(selectedPO.getDeliveryDate());
@@ -942,9 +994,9 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         for (POItem item : items) {
             modelPOItems.addRow(new String[]{
                 item.getItemID(),
+                item.getItemName(),
                 item.getItemCategory(),
                 item.getItemType(),
-                item.getItemName(),
                 String.valueOf(item.getQuantity())
             });
         }
@@ -967,6 +1019,17 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_tablePOItemMouseReleased
 
     private void btnInvalidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInvalidActionPerformed
+        int response = JOptionPane.showConfirmDialog(
+            null, 
+            "Are you sure with the Selection?", 
+            "Confirm", 
+            JOptionPane.YES_NO_OPTION, 
+            JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (response == JOptionPane.NO_OPTION) {
+            return;
+        }
         PurchaseOrder.Status newStatus = PurchaseOrder.Status.INVALID;
          
         PurchaseOrder newPO = PurchaseOrder.getPoById(selectedPO.getPOID());
@@ -977,6 +1040,18 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnInvalidActionPerformed
 
     private void btnVerifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerifyActionPerformed
+        int response = JOptionPane.showConfirmDialog(
+            null, 
+            "Are you sure with the Selection?", 
+            "Confirm", 
+            JOptionPane.YES_NO_OPTION, 
+            JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (response == JOptionPane.NO_OPTION) {
+            return;
+        }
+        
         PurchaseOrder.Status newStatus = PurchaseOrder.Status.VERIFIED;
          
         PurchaseOrder newPO = PurchaseOrder.getPoById(selectedPO.getPOID());
@@ -1000,17 +1075,16 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         lblSupplierName.setText("-");
         lblDeliveryDate.setText("-");
       
-//        tablePO.getColumnModel().getColumn(1).setPreferredWidth(100);
-//        tablePO.getColumnModel().getColumn(2).setPreferredWidth(100);
-//        tablePO.getColumnModel().getColumn(3).setPreferredWidth(150);
-//        tablePO.getColumnModel().getColumn(6).setPreferredWidth(100);
+        tablePO.getColumnModel().getColumn(0).setPreferredWidth(120);
+        tablePO.getColumnModel().getColumn(1).setPreferredWidth(100);
+        tablePO.getColumnModel().getColumn(2).setPreferredWidth(350);
+        tablePO.getColumnModel().getColumn(3).setPreferredWidth(100);
        
         POList = PurchaseOrder.toList();
         Set<PurchaseOrder.Status> includedStatuses = EnumSet.of(
             PurchaseOrder.Status.PROCESSING,
             PurchaseOrder.Status.EXTENDED,
-            PurchaseOrder.Status.ARRIVED,
-            PurchaseOrder.Status.INVALID
+            PurchaseOrder.Status.ARRIVED
         );
         
         for (PurchaseOrder eachPO : POList) {
@@ -1025,7 +1099,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         }
         btnVerify.setEnabled(false);
         btnInvalid.setEnabled(false);
-        checkboxConfirmation.setSelected(false);
+        checkboxVerify.setSelected(false);
         checkboxVerify.setEnabled(false);
         tablePO.clearSelection();
         selectedRowPO = -1;
@@ -1040,10 +1114,10 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         lblItemType.setText("-");
         lblItemQuantity.setText("-");
         
-        //tablePOItem.getColumnModel().getColumn(1).setPreferredWidth(100);
-        //tablePOItem.getColumnModel().getColumn(2).setPreferredWidth(100);
-        //tablePOItem.getColumnModel().getColumn(3).setPreferredWidth(150);
-        //tablePOItem.getColumnModel().getColumn(6).setPreferredWidth(100);
+        tablePOItem.getColumnModel().getColumn(0).setPreferredWidth(50);
+        tablePOItem.getColumnModel().getColumn(1).setPreferredWidth(250);
+        tablePOItem.getColumnModel().getColumn(2).setPreferredWidth(80);
+        tablePOItem.getColumnModel().getColumn(3).setPreferredWidth(100);
         
 
         tablePOItem.clearSelection();
@@ -1127,9 +1201,11 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -1151,11 +1227,14 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel lblItemName;
     private javax.swing.JLabel lblItemQuantity;
     private javax.swing.JLabel lblItemType;
+    private javax.swing.JLabel lblLogo;
     private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblPOID;
     private javax.swing.JLabel lblSupplierID;
     private javax.swing.JLabel lblSupplierName;
     private javax.swing.JLabel lblType;
+    private javax.swing.JLabel lblUserID;
+    private javax.swing.JLabel lblUsername;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JPanel pnlHome;
     private javax.swing.JPanel pnlItems;
