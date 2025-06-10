@@ -1,6 +1,7 @@
 
 package com.owsb.poms.ui.fm;
 
+import com.owsb.poms.system.functions.IdGenerator;
 import com.owsb.poms.system.model.*;
 import java.awt.event.*;
 import java.io.BufferedReader;
@@ -12,6 +13,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 public class FinanceManagerDashboard extends javax.swing.JFrame {
@@ -28,7 +32,8 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         initPurchaseOrderView();
         initRequisitionView();
         initSupplierView();
-        initGenerateReportFunctionality();
+        initGenerateReportPanel();
+        initViewPurchaseReportPanel();
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -58,6 +63,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         ConfirmPOLabel = new javax.swing.JLabel();
         ConfirmPOScrollpane = new javax.swing.JScrollPane();
         ConfirmPOTable = new javax.swing.JTable();
+        AutoRefreshLabel = new javax.swing.JLabel();
         processPaymentPanel = new javax.swing.JPanel();
         selectPOOrderLabel = new javax.swing.JLabel();
         selectPOComboBox = new javax.swing.JComboBox<>();
@@ -70,6 +76,10 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         ProcessPaymentButton = new javax.swing.JButton();
         ClearFormButton = new javax.swing.JButton();
         ProcessingPaymentStatusLabel = new javax.swing.JLabel();
+        selectBankComboBox = new javax.swing.JComboBox<>();
+        fromBanklabel = new javax.swing.JLabel();
+        DetailsLabel = new javax.swing.JLabel();
+        Detailstextfield = new javax.swing.JTextField();
         TransactionsPanel = new javax.swing.JPanel();
         viewTransactionsRefreshButton = new javax.swing.JButton();
         viewTransactionsScrollPanel = new javax.swing.JScrollPane();
@@ -83,14 +93,22 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         supplierEntryScrollPanel = new javax.swing.JScrollPane();
         supplierEntryTable = new javax.swing.JTable();
         generateReportPanel = new javax.swing.JPanel();
-        generatePRSlabel = new javax.swing.JLabel();
-        generatePRlabel2 = new javax.swing.JLabel();
+        TransactionIDLabel = new javax.swing.JLabel();
         generatePRButton = new javax.swing.JButton();
         generatePRScrollpane = new javax.swing.JScrollPane();
         generatePRtable = new javax.swing.JTable();
-        generatePRexportButton = new javax.swing.JButton();
-        generatePRStartDateComboBox = new javax.swing.JComboBox<>();
-        generatePREndDateComboBox = new javax.swing.JComboBox<>();
+        TransactionIDComboBox = new javax.swing.JComboBox<>();
+        InvoiceIDLabel = new javax.swing.JLabel();
+        VerifiedByLabel = new javax.swing.JLabel();
+        InvoiceIdTextField = new javax.swing.JTextField();
+        ApprovedByTextField = new javax.swing.JTextField();
+        PRStatusLabel = new javax.swing.JLabel();
+        PRMessageLabel = new javax.swing.JLabel();
+        MessageTextField = new javax.swing.JTextField();
+        ViewPurchaseReportPanel = new javax.swing.JPanel();
+        viewReportScrollpane = new javax.swing.JScrollPane();
+        viewPurchaseReportTable = new javax.swing.JTable();
+        ViewPurchaseReportButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -327,35 +345,43 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         ));
         ConfirmPOScrollpane.setViewportView(ConfirmPOTable);
 
+        AutoRefreshLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 20)); // NOI18N
+        AutoRefreshLabel.setText("!!! This Form Auto-Refresh Every 5s !!!");
+
         javax.swing.GroupLayout ConfirmPurchaseOrderLayout = new javax.swing.GroupLayout(ConfirmPurchaseOrder);
         ConfirmPurchaseOrder.setLayout(ConfirmPurchaseOrderLayout);
         ConfirmPurchaseOrderLayout.setHorizontalGroup(
             ConfirmPurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ConfirmPurchaseOrderLayout.createSequentialGroup()
-                .addContainerGap(167, Short.MAX_VALUE)
-                .addComponent(ConfirmPOButton)
-                .addGap(296, 296, 296)
-                .addComponent(InvalidPOButton)
-                .addGap(223, 223, 223))
-            .addGroup(ConfirmPurchaseOrderLayout.createSequentialGroup()
-                .addGap(22, 22, 22)
                 .addGroup(ConfirmPurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ConfirmPOLabel)
-                    .addComponent(ConfirmPOScrollpane, javax.swing.GroupLayout.PREFERRED_SIZE, 1020, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(ConfirmPurchaseOrderLayout.createSequentialGroup()
+                        .addGap(170, 170, 170)
+                        .addComponent(ConfirmPOButton)
+                        .addGap(296, 296, 296)
+                        .addComponent(InvalidPOButton))
+                    .addGroup(ConfirmPurchaseOrderLayout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(ConfirmPurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(AutoRefreshLabel)
+                            .addGroup(ConfirmPurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(ConfirmPOLabel)
+                                .addComponent(ConfirmPOScrollpane, javax.swing.GroupLayout.PREFERRED_SIZE, 1020, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(0, 19, Short.MAX_VALUE))
         );
         ConfirmPurchaseOrderLayout.setVerticalGroup(
             ConfirmPurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ConfirmPurchaseOrderLayout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addComponent(ConfirmPOLabel)
-                .addGap(18, 18, 18)
-                .addComponent(ConfirmPOScrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 631, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                .addComponent(AutoRefreshLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ConfirmPOScrollpane, javax.swing.GroupLayout.PREFERRED_SIZE, 586, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(ConfirmPurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(InvalidPOButton)
                     .addComponent(ConfirmPOButton))
-                .addGap(45, 45, 45))
+                .addGap(17, 17, 17))
         );
 
         FrameTab.addTab("Confirm Order", ConfirmPurchaseOrder);
@@ -412,6 +438,22 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         ProcessingPaymentStatusLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 35)); // NOI18N
         ProcessingPaymentStatusLabel.setText("Status");
 
+        selectBankComboBox.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
+        selectBankComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        selectBankComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectBankComboBoxActionPerformed(evt);
+            }
+        });
+
+        fromBanklabel.setFont(new java.awt.Font("Comic Sans MS", 0, 35)); // NOI18N
+        fromBanklabel.setText("From Bank :");
+
+        DetailsLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 35)); // NOI18N
+        DetailsLabel.setText("Details :");
+
+        Detailstextfield.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
+
         javax.swing.GroupLayout processPaymentPanelLayout = new javax.swing.GroupLayout(processPaymentPanel);
         processPaymentPanel.setLayout(processPaymentPanelLayout);
         processPaymentPanelLayout.setHorizontalGroup(
@@ -419,33 +461,46 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             .addGroup(processPaymentPanelLayout.createSequentialGroup()
                 .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(processPaymentPanelLayout.createSequentialGroup()
-                        .addGap(89, 89, 89)
+                        .addGap(45, 45, 45)
+                        .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(DetailsLabel)
+                            .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(bankAccNumberLabel)
+                                    .addComponent(selectPOOrderLabel))
+                                .addComponent(AmountLabel, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(bankNamelabel, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addComponent(fromBanklabel))
+                        .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(processPaymentPanelLayout.createSequentialGroup()
+                                .addGap(44, 44, 44)
+                                .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(bankNameTextfield, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(BankAccNumberTextfield, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(selectPOComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(AmountTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(selectBankComboBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(processPaymentPanelLayout.createSequentialGroup()
+                                .addGap(35, 35, 35)
+                                .addComponent(Detailstextfield, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(processPaymentPanelLayout.createSequentialGroup()
+                        .addGap(99, 99, 99)
                         .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(ProcessingPaymentStatusLabel)
                             .addGroup(processPaymentPanelLayout.createSequentialGroup()
                                 .addComponent(ProcessPaymentButton)
                                 .addGap(161, 161, 161)
-                                .addComponent(ClearFormButton, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(processPaymentPanelLayout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(bankAccNumberLabel)
-                                .addComponent(selectPOOrderLabel))
-                            .addComponent(AmountLabel, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(bankNamelabel, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addGap(44, 44, 44)
-                        .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(bankNameTextfield, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(BankAccNumberTextfield, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(selectPOComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(AmountTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(122, Short.MAX_VALUE))
+                                .addComponent(ClearFormButton, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(110, Short.MAX_VALUE))
         );
         processPaymentPanelLayout.setVerticalGroup(
             processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(processPaymentPanelLayout.createSequentialGroup()
-                .addGap(139, 139, 139)
+                .addContainerGap()
+                .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(selectBankComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fromBanklabel, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(selectPOOrderLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectPOComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -461,13 +516,17 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(AmountLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(AmountTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(56, 56, 56)
+                .addGap(18, 18, 18)
+                .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(DetailsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Detailstextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(60, 60, 60)
                 .addComponent(ProcessingPaymentStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(37, 37, 37)
                 .addGroup(processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ProcessPaymentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ClearFormButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(108, 108, 108))
+                .addContainerGap())
         );
 
         FrameTab.addTab("Processing Payment", processPaymentPanel);
@@ -613,11 +672,8 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
 
         generateReportPanel.setBackground(new java.awt.Color(255, 245, 247));
 
-        generatePRSlabel.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
-        generatePRSlabel.setText("Start Date :");
-
-        generatePRlabel2.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
-        generatePRlabel2.setText("End Date :");
+        TransactionIDLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
+        TransactionIDLabel.setText("Transaction ID :");
 
         generatePRButton.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
         generatePRButton.setText("Generate Report");
@@ -640,61 +696,151 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         ));
         generatePRScrollpane.setViewportView(generatePRtable);
 
-        generatePRexportButton.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
-        generatePRexportButton.setText("Export");
-        generatePRexportButton.addActionListener(new java.awt.event.ActionListener() {
+        TransactionIDComboBox.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
+        TransactionIDComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        TransactionIDComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                generatePRexportButtonActionPerformed(evt);
+                TransactionIDComboBoxActionPerformed(evt);
             }
         });
 
-        generatePRStartDateComboBox.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
-        generatePRStartDateComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        InvoiceIDLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
+        InvoiceIDLabel.setText("Invoice ID :");
 
-        generatePREndDateComboBox.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
-        generatePREndDateComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        VerifiedByLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
+        VerifiedByLabel.setText(" Verified By :");
+
+        InvoiceIdTextField.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
+        InvoiceIdTextField.setText("jTextField1");
+
+        ApprovedByTextField.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
+        ApprovedByTextField.setText("jTextField1");
+
+        PRStatusLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
+        PRStatusLabel.setText("Status");
+
+        PRMessageLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
+        PRMessageLabel.setText(" Message :");
+
+        MessageTextField.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
+        MessageTextField.setText("jTextField1");
 
         javax.swing.GroupLayout generateReportPanelLayout = new javax.swing.GroupLayout(generateReportPanel);
         generateReportPanel.setLayout(generateReportPanelLayout);
         generateReportPanelLayout.setHorizontalGroup(
             generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(generateReportPanelLayout.createSequentialGroup()
-                .addGap(42, 42, 42)
+                .addContainerGap()
                 .addGroup(generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(generateReportPanelLayout.createSequentialGroup()
-                        .addGroup(generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(generatePRSlabel)
-                            .addComponent(generatePRlabel2))
-                        .addGap(43, 43, 43)
+                        .addGap(37, 37, 37)
+                        .addComponent(generatePRScrollpane, javax.swing.GroupLayout.PREFERRED_SIZE, 986, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32))
+                    .addGroup(generateReportPanelLayout.createSequentialGroup()
+                        .addGroup(generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(MessageTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, generateReportPanelLayout.createSequentialGroup()
+                                    .addGap(259, 259, 259)
+                                    .addGroup(generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(InvoiceIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(ApprovedByTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, generateReportPanelLayout.createSequentialGroup()
+                                .addGroup(generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(InvoiceIDLabel)
+                                    .addComponent(TransactionIDLabel)
+                                    .addComponent(VerifiedByLabel)
+                                    .addComponent(PRMessageLabel))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(TransactionIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(generatePREndDateComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(generatePRStartDateComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(146, 146, 146)
-                        .addGroup(generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(generatePRButton)
-                            .addComponent(generatePRexportButton)))
-                    .addComponent(generatePRScrollpane, javax.swing.GroupLayout.PREFERRED_SIZE, 986, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(33, Short.MAX_VALUE))
+                            .addGroup(generateReportPanelLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(generatePRButton)
+                                .addGap(111, 111, 111))
+                            .addGroup(generateReportPanelLayout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(PRStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
         );
         generateReportPanelLayout.setVerticalGroup(
             generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(generateReportPanelLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(generatePRSlabel)
-                    .addComponent(generatePRButton)
-                    .addComponent(generatePREndDateComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(34, 34, 34)
-                .addGroup(generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(generatePRlabel2)
-                    .addComponent(generatePRexportButton)
-                    .addComponent(generatePRStartDateComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(generatePRScrollpane, javax.swing.GroupLayout.PREFERRED_SIZE, 608, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(generateReportPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(TransactionIDLabel)
+                            .addComponent(TransactionIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(InvoiceIDLabel)
+                            .addComponent(InvoiceIdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(PRStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(ApprovedByTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(VerifiedByLabel))
+                        .addGap(18, 18, 18)
+                        .addGroup(generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(MessageTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(PRMessageLabel))
+                        .addGap(18, 18, 18))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, generateReportPanelLayout.createSequentialGroup()
+                        .addGap(79, 79, 79)
+                        .addComponent(generatePRButton)
+                        .addGap(44, 44, 44)))
+                .addComponent(generatePRScrollpane, javax.swing.GroupLayout.PREFERRED_SIZE, 521, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         FrameTab.addTab("Purchase Report ", generateReportPanel);
+
+        ViewPurchaseReportPanel.setBackground(new java.awt.Color(255, 245, 247));
+
+        viewPurchaseReportTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        viewReportScrollpane.setViewportView(viewPurchaseReportTable);
+
+        ViewPurchaseReportButton.setFont(new java.awt.Font("Comic Sans MS", 0, 40)); // NOI18N
+        ViewPurchaseReportButton.setText("Refresh");
+        ViewPurchaseReportButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ViewPurchaseReportButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout ViewPurchaseReportPanelLayout = new javax.swing.GroupLayout(ViewPurchaseReportPanel);
+        ViewPurchaseReportPanel.setLayout(ViewPurchaseReportPanelLayout);
+        ViewPurchaseReportPanelLayout.setHorizontalGroup(
+            ViewPurchaseReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ViewPurchaseReportPanelLayout.createSequentialGroup()
+                .addGap(45, 45, 45)
+                .addGroup(ViewPurchaseReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ViewPurchaseReportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(viewReportScrollpane, javax.swing.GroupLayout.PREFERRED_SIZE, 945, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(71, Short.MAX_VALUE))
+        );
+        ViewPurchaseReportPanelLayout.setVerticalGroup(
+            ViewPurchaseReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ViewPurchaseReportPanelLayout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addComponent(ViewPurchaseReportButton)
+                .addGap(18, 18, 18)
+                .addComponent(viewReportScrollpane, javax.swing.GroupLayout.PREFERRED_SIZE, 675, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        FrameTab.addTab("View Report", ViewPurchaseReportPanel);
 
         jPanel1.add(FrameTab, java.awt.BorderLayout.CENTER);
         FrameTab.getAccessibleContext().setAccessibleName("FrameTabPane");
@@ -710,7 +856,68 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_ClearFormButtonActionPerformed
 
     private void generatePRButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generatePRButtonActionPerformed
-        generateReport();
+        String txID = (String)TransactionIDComboBox.getSelectedItem();
+        String invoiceID = InvoiceIdTextField.getText().trim();
+        String approvedBy = ApprovedByTextField.getText().trim();
+        String message = MessageTextField.getText().trim();
+
+        if (txID == null || invoiceID.isEmpty() || approvedBy.isEmpty()) {
+            PRStatusLabel.setText("Please fill in all fields.");
+            return;
+        }
+        
+        Transaction tx = Transaction.toList().stream().filter(t -> t.getTransactionID().equals(txID)).findFirst().orElse(null);
+        if (tx == null) {
+            PRStatusLabel.setText("Invalid Transaction ID.");
+            return;
+        }
+        
+        String poid = null;
+        Pattern pattern = Pattern.compile("POID=(PO\\d+)");
+        Matcher matcher = pattern.matcher(tx.getDetails());
+        if (matcher.find()) {
+            poid = matcher.group(1);
+        }
+        
+        if (poid == null || poid.length() < 5) {
+            PRStatusLabel.setText("PO ID not found in transaction details.");
+            return;
+        }
+        List<PurchaseReport> allReports = PurchaseReport.toList();
+        int nextIndex = allReports.size();
+        String newID = IdGenerator.generateID("PUR", 5, nextIndex);
+        PurchaseReport report = new PurchaseReport();
+        report.setReportID(newID);
+        report.setPOID(poid);
+        report.setInvoiceID(invoiceID);
+        report.setTransactionID(txID);
+        report.setDateTime(LocalDateTime.now());
+        report.setVerifiedBy(approvedBy);
+        report.setPaymentProcessBy("FM001");
+        report.setMessage(message);
+
+        report.add();
+        
+        PurchaseOrder po = com.owsb.poms.system.model.PurchaseOrder.getPoById(poid);
+        if (po != null) {
+            po.setStatus(com.owsb.poms.system.model.PurchaseOrder.Status.REPORTED);
+            po.setPerformedBy("FM001");
+            po.updateStatus();
+        }
+        TransactionIDComboBox.setSelectedIndex(-1);
+        InvoiceIdTextField.setText("");
+        ApprovedByTextField.setText("");
+        MessageTextField.setText("");
+        ((DefaultTableModel) generatePRtable.getModel()).setRowCount(0);
+
+        populateTransactionIDComboBox();
+        if(TransactionIDComboBox.getItemCount()==0){
+            generatePRButton.setEnabled(false);
+            PRStatusLabel.setText("All available transaction have been reported. ");
+        }else{
+        PRStatusLabel.setText("Report generated successfully for " + poid);
+        }
+        loadAllPurchaseReports();
     }//GEN-LAST:event_generatePRButtonActionPerformed
 
     private void BankAccNumberTextfieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BankAccNumberTextfieldActionPerformed
@@ -730,18 +937,19 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_viewTransactionsRefreshButtonActionPerformed
 
     private void selectPOComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectPOComboBoxActionPerformed
-        String selected = (String) selectPOComboBox.getSelectedItem();
-            if (selected == null || !approvedPOMap.containsKey(selected)) {
-                disablePaymentFields();
-                return;
+        String poid = (String) selectPOComboBox.getSelectedItem();
+            if(poid!=null && !poid.trim().isEmpty()){
+                PurchaseOrder po = com.owsb.poms.system.model.PurchaseOrder.getPoById(poid);
+                if(po != null){
+                    AmountTextfield.setText(String.valueOf(po.getTotalPrice()));
+                    String supplierName = Supplier.getNameById(po.getSupplierID());
+                    bankNameTextfield.setText(supplierName);
+                    enablePaymentFields();
+                }
+            }else{
+             clearProcessingPaymentForm();
+             disablePaymentFields();
             }
-            Object[] po = approvedPOMap.get(selected);
-            int quantity = (int) po[2];
-            double price = (double) po[3];
-            double total = quantity * price;
-
-            AmountTextfield.setText(String.valueOf(total));
-            enablePaymentFields();
     }//GEN-LAST:event_selectPOComboBoxActionPerformed
 
     private void approvePOButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_approvePOButtonActionPerformed
@@ -773,10 +981,6 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
          loadActiveSuppliers();
     }//GEN-LAST:event_supplierEntryButtonActionPerformed
 
-    private void generatePRexportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generatePRexportButtonActionPerformed
-        exportReportToFile();
-    }//GEN-LAST:event_generatePRexportButtonActionPerformed
-
     private void approvePOEditButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_approvePOEditButtonActionPerformed
         updatePOStatus("REJECTED");
     }//GEN-LAST:event_approvePOEditButtonActionPerformed
@@ -797,12 +1001,46 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     if (selectedRow == -1) {
         ConfirmPOLabel.setText("Please select a purchase order.");
         return;
-    }
-
+    }  
+    
     String poid = confirmPOTableModel.getValueAt(selectedRow, 0).toString();
     updatePOStatusTo(poid, com.owsb.poms.system.model.PurchaseOrder.Status.CONFIRMED);
-
+    initProcessPaymentFunctionality();
     }//GEN-LAST:event_ConfirmPOButtonActionPerformed
+
+    private void selectBankComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectBankComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_selectBankComboBoxActionPerformed
+
+    private void TransactionIDComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TransactionIDComboBoxActionPerformed
+        String selectedID = (String) TransactionIDComboBox.getSelectedItem();
+        if (selectedID == null)return;
+        
+        List<Transaction> transactions = Transaction.toList();
+        DefaultTableModel model = (DefaultTableModel) generatePRtable.getModel();
+        model.setRowCount(0);
+        
+        for (Transaction tx : transactions) {
+            if (tx.getTransactionID().equals(selectedID)) {
+                model.addRow(new Object[]{
+                    tx.getTransactionID(),
+                    tx.getBankFrom(),
+                    tx.getBankFromAccountNumber(),
+                    tx.getBankReceived(),
+                    tx.getBankReceivedAccountNumber(),
+                    tx.getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                    tx.getAmount(),
+                    tx.getDetails()
+                });
+                generatePRButton.setEnabled(true);
+                break;
+            }
+        }
+    }//GEN-LAST:event_TransactionIDComboBoxActionPerformed
+
+    private void ViewPurchaseReportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewPurchaseReportButtonActionPerformed
+        loadAllPurchaseReports();
+    }//GEN-LAST:event_ViewPurchaseReportButtonActionPerformed
 
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -907,7 +1145,8 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
            }
        };
        ConfirmPOTable.setModel(confirmPOTableModel);
-       loadVerifiedPOs(); 
+       loadVerifiedPOs();
+       new javax.swing.Timer(5000,e -> loadVerifiedPOs()).start();
    }
    
    private void loadVerifiedPOs() {
@@ -968,6 +1207,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         
         if (!hasConfirmPO) {
             disablePaymentFields();
+            selectPOComboBox.setEnabled(false);
             ProcessingPaymentStatusLabel.setText("Status: No confirmed purchase orders available for payment.");
         } else {
             enablePaymentFields();
@@ -979,7 +1219,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         private boolean isPOAlreadyPaid(String poID) {
             List <Transaction> transanctions = Transaction.toList();
             for (Transaction tx : transanctions) {
-                if (tx.getTransactionID().contains(poID)) {
+                if (tx.getDetails() != null && tx.getDetails().contains(poID)) {
                     return true;
                 }
             }
@@ -991,7 +1231,8 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             bankNameTextfield.setText("");
             BankAccNumberTextfield.setText("");
             AmountTextfield.setText("");
-            ProcessingPaymentStatusLabel.setText("Status: Please select another PO to continue payment.");
+            Detailstextfield.setText("");
+            ProcessingPaymentStatusLabel.setText("Status: Cleared");
         }
         private void disablePaymentFields() {
             bankNameTextfield.setEnabled(false);
@@ -1011,20 +1252,23 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         
         
     private void processPayment() {
-        int index = selectPOComboBox.getSelectedIndex();
         String poID = (String) selectPOComboBox.getSelectedItem();
-        String bank = bankNameTextfield.getText().trim();
-        String accountnumber = BankAccNumberTextfield.getText().trim();
-        String amountText = AmountTextfield.getText().trim();
+        String yourbank = (String)selectBankComboBox.getSelectedItem();
+        String supplierBank = bankNameTextfield.getText().trim();
+        String supplierAccNumber = BankAccNumberTextfield.getText().trim();
+        String amountStr = AmountTextfield.getText().trim();
+        String userDetails = Detailstextfield.getText().trim();
 
-        if (index == -1 || bank.isEmpty() || accountnumber.isEmpty() || amountText.isEmpty()) {
+        if (poID == null || yourbank == null || supplierBank.isEmpty() || supplierAccNumber.isEmpty() || amountStr.isEmpty()) {
             ProcessingPaymentStatusLabel.setText("Status: Please fill in all fields.");
             return;
         }
         
+        long supplierAcc;
         double amount;
         try{
-            amount = Double.parseDouble(amountText);
+            supplierAcc = Long.parseLong(supplierAccNumber);
+            amount = Double.parseDouble(amountStr);
         }catch(NumberFormatException e){
             ProcessingPaymentStatusLabel.setText("Status : Invalid Amount");
             return;
@@ -1032,10 +1276,12 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         
         Transaction tx = new Transaction();
         tx.setTransactionID(tx.generateID());
-        tx.setBankReceived(bank);
-        tx.setBankAccountNumber(Long.parseLong(accountnumber));
+        tx.setBankFrom(yourbank);
+        tx.setBankReceived(supplierBank);
+        tx.setBankReceivedAccountNumber(supplierAcc);
         tx.setDateTime(LocalDateTime.now());
         tx.setAmount(amount);
+        tx.setDetails("POID=" + poID + " | " + userDetails);
         tx.add();
         
         PurchaseOrder po = com.owsb.poms.system.model.PurchaseOrder.getPoById(poID);
@@ -1044,17 +1290,39 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             po.setPerformedBy("FM001");
             po.updateStatus();
         }
-                
-      
         
+        clearProcessingPaymentForm();
         refreshTransactionTable();
         initProcessPaymentFunctionality();
+        populateTransactionIDComboBox();
         refreshPurchaseOrderTable(viewPOComboBox.getSelectedItem().toString());
         ProcessingPaymentStatusLabel.setText("Status : Payment Successful For "+ poID);
     }
+    
+    private void populateTransactionIDComboBox() {
+        TransactionIDComboBox.removeAllItems();
+        List<String> usedTransactions = PurchaseReport.toList().stream().map(PurchaseReport :: getTransactionID).collect(Collectors.toList());
+        List<Transaction> transactions = Transaction.toList();
+        
+        for (Transaction tx : transactions) {
+            if (tx.getDetails() != null && tx.getDetails().contains("POID=")&& !usedTransactions.contains(tx.getTransactionID())) {
+                TransactionIDComboBox.addItem(tx.getTransactionID());
+            }
+        }
+        
+        if (TransactionIDComboBox.getItemCount() == 0) {
+            generatePRButton.setEnabled(false);
+            PRStatusLabel.setText("All transactions have been reported.");
+        } else {
+            TransactionIDComboBox.setEnabled(true);
+            generatePRButton.setEnabled(true);
+            PRStatusLabel.setText("Select a transactions to generate report.");
+            TransactionIDComboBox.setSelectedIndex(-1);
+        }
+    }
 
     private void initTransactionTable(){
-        String[] columns = {"Transaction ID","Bank Name","Bank Account","Date Time","Amount"};
+        String[] columns = {"Transaction ID","Bank From","From Acc","Bank to","To Account","Date Time","Amount","Details"};
         transactionTableModel = new DefaultTableModel(columns,0){
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -1069,10 +1337,13 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         for (Transaction tx : transactions) {
             transactionTableModel.addRow(new Object[]{
                 tx.getTransactionID(),
+                tx.getBankFrom(),
+                tx.getBankFromAccountNumber(),
                 tx.getBankReceived(),
-                tx.getBankAccountNumber(),
-                tx.getDateTime().toString().replace("T", " "),
-                tx.getAmount()
+                tx.getBankReceivedAccountNumber(),
+                tx.getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                tx.getAmount(),
+                tx.getDetails(),
             });
         }
     }
@@ -1237,134 +1508,80 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     
     DefaultTableModel reportTableModel;
     ArrayList<Object[]> purchasereportList = new ArrayList<>();
-
-    private void initGenerateReportFunctionality() {
-        String[] cols = {"POID", "InvoiceID", "TransactionID", "Supplier", "ItemID", "Qty", "UnitPrice", "Total", "Date", "FM", "IM"};
-        reportTableModel = new DefaultTableModel(cols, 0) {
-            public boolean isCellEditable(int row, int col) {
+    
+    private void initGenerateReportPanel() {
+        TransactionIDComboBox.setSelectedIndex(-1);
+        InvoiceIdTextField.setText("");
+        ApprovedByTextField.setText("");
+        MessageTextField.setText("");
+        ((DefaultTableModel) generatePRtable.getModel()).setRowCount(0);
+        
+        
+        TransactionIDComboBox.removeAllItems();
+        List<Transaction> transactions = Transaction.toList();
+        for (Transaction tx : transactions) {
+            if (tx.getDetails() != null && tx.getDetails().contains("POID=")) {
+            TransactionIDComboBox.addItem(tx.getTransactionID());
+            }
+        }
+        generatePRButton.setEnabled(false);
+        generatePRtable.setModel(new DefaultTableModel(
+                new String[]{"Transaction ID", "Bank From", "From Acc", "Bank To", "To Acc", "Date Time", "Amount", "Details"}, 0
+        ){
+            public boolean isCellEditable(int row , int column){
+                return false;
+            }
+        });
+        PRStatusLabel.setText("Select a transaction to generate report.");
+    }
+    
+    
+    
+    DefaultTableModel viewPurchaseReportTableModel;
+    private void initViewPurchaseReportPanel() {
+        String[] columns = {"Report ID", "PO ID", "Invoice ID", "Transaction ID", "Date", "Verified By", "Processed By", "Message"};
+        viewPurchaseReportTableModel = new DefaultTableModel(columns, 0) {
+            public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        generatePRtable.setModel(reportTableModel);
-        populateReportDateComboboxes();
-    }
-    
-    private void updatePurchaseReportListFromTransactions() {
-        purchasereportList.clear();
-        
-        for (Object[] tx : transactionList) {
-        String transactionID = tx[0].toString();
-        String bank = tx[1].toString(); 
-        String account = tx[2].toString();
-        String date = tx[3].toString().substring(0, 10);
-        double amount = (double) tx[4];
-        
-        String poID = transactionID.substring(0, 5);
-        for (Item item : Item.toList()) {
-            if (item.getItemID().equals(poID)) {
-                String supplier = "-";
-                String itemID = item.getItemID();
-                String itemName = item.getItemName();
-                int qty = item.getStock();
-                double unitPrice = item.getSellPrice();
-                String invoiceID = "INV" + transactionID.substring(2);
-                String fm = "FM1";
-                String im = "IM1";
-
-                purchasereportList.add(new Object[]{
-                    poID, invoiceID, transactionID, supplier, itemID, qty,
-                    unitPrice, amount, date, fm, im
-                });
-                break;
+    viewPurchaseReportTable.setModel(viewPurchaseReportTableModel);
+    loadAllPurchaseReports();
+    viewPurchaseReportTable.addMouseListener(new MouseAdapter() {
+        public void mouseClicked(MouseEvent e) {
+            if (e.getClickCount() == 2 && viewPurchaseReportTable.getSelectedRow() != -1) {
+                String selectedReportID = viewPurchaseReportTable.getValueAt(viewPurchaseReportTable.getSelectedRow(), 0).toString();
+                new ViewReportFrame(selectedReportID).setVisible(true);
             }
         }
-        }
+    });
     }
     
-    private void populateReportDateComboboxes() {
-        updatePurchaseReportListFromTransactions();
+    private void loadAllPurchaseReports() {
+       viewPurchaseReportTableModel.setRowCount(0);
+        List<PurchaseReport> reports = PurchaseReport.toList();
         
-        Set<String> dateSet = new TreeSet<>();
-        for (Object[] row : purchasereportList) {
-            if (row.length >8){
-                String date = row[8].toString(); 
-                dateSet.add(date);
-            }
-        }
-
-        generatePRStartDateComboBox.removeAllItems();
-        generatePREndDateComboBox.removeAllItems();
-
-        for (String date : dateSet) {
-            generatePRStartDateComboBox.addItem(date);
-            generatePREndDateComboBox.addItem(date);
-        }
-
-        boolean hasDates = !dateSet.isEmpty();
-        generatePRButton.setEnabled(hasDates);
-        generatePRStartDateComboBox.setEnabled(hasDates);
-        generatePREndDateComboBox.setEnabled(hasDates);
-    }
-    
-    private void generateReport() {
-        if (transactionList.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No transactions found. Cannot generate report.");
-            return;
-        }
-        String startDate = (String) generatePRStartDateComboBox.getSelectedItem();
-        String endDate = (String) generatePREndDateComboBox.getSelectedItem();
-        
-        if (startDate == null || endDate == null) {
-            JOptionPane.showMessageDialog(this, "Please select both start and end dates.");
-            return;
-        }
-        try {
-            LocalDate start = LocalDate.parse(startDate);
-            LocalDate end = LocalDate.parse(endDate);
-
-            reportTableModel.setRowCount(0); 
-
-            for (Object[] row : purchasereportList) {
-                LocalDate reportDate = LocalDate.parse(row[8].toString());
-            if (!reportDate.isBefore(start) && !reportDate.isAfter(end)) {
-                    reportTableModel.addRow(row);
-                }
-            }
-        } catch (Exception e)
-        {
-            JOptionPane.showMessageDialog(this, "Invalid date format.");
+        for (PurchaseReport r : reports) {
+            String msg = (r.getMessage() == null) ? "(No message)" : r.getMessage();
+            viewPurchaseReportTableModel.addRow(new Object[]{
+                r.getReportID(),
+                r.getPOID(),
+                r.getInvoiceID(),
+                r.getTransactionID(),
+                r.getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                r.getVerifiedBy(),
+                r.getPaymentProcessBy(),
+                msg
+            });
         }
     }
     
     
-    private void exportReportToFile() {
-    if (reportTableModel.getRowCount() == 0) {
-        JOptionPane.showMessageDialog(this, "No data to export.");
-        return;
-    }
-
-    try {
-        File file = new File("purchase_report_output.txt");
-        PrintWriter writer = new PrintWriter(file);
-
-        for (int i = 0; i < reportTableModel.getRowCount(); i++) {
-            StringBuilder sb = new StringBuilder();
-            for (int j = 0; j < reportTableModel.getColumnCount(); j++) {
-                sb.append(reportTableModel.getValueAt(i, j)).append("\t");
-            }
-            writer.println(sb.toString().trim());
-        }
-
-        writer.close();
-        JOptionPane.showMessageDialog(this, "Report exported to: " + file.getAbsolutePath());
-        reportTableModel.setRowCount(0);
-    } catch (IOException e){
-        JOptionPane.showMessageDialog(this, "Error writing file.");
-        }
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel AmountLabel;
     private javax.swing.JTextField AmountTextfield;
+    private javax.swing.JTextField ApprovedByTextField;
+    private javax.swing.JLabel AutoRefreshLabel;
     private javax.swing.JTextField BankAccNumberTextfield;
     private javax.swing.JButton ClearFormButton;
     private javax.swing.JButton ConfirmPOButton;
@@ -1373,15 +1590,27 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JTable ConfirmPOTable;
     private javax.swing.JPanel ConfirmPurchaseOrder;
     private javax.swing.JPanel DashboardPanel;
+    private javax.swing.JLabel DetailsLabel;
+    private javax.swing.JTextField Detailstextfield;
     private javax.swing.JTabbedPane FrameTab;
     private javax.swing.JButton InvalidPOButton;
+    private javax.swing.JLabel InvoiceIDLabel;
+    private javax.swing.JTextField InvoiceIdTextField;
+    private javax.swing.JTextField MessageTextField;
+    private javax.swing.JLabel PRMessageLabel;
+    private javax.swing.JLabel PRStatusLabel;
     private javax.swing.JButton ProcessPaymentButton;
     private javax.swing.JLabel ProcessingPaymentStatusLabel;
     private javax.swing.JPanel PurchaseOrder;
     private javax.swing.JPanel PurchaseRequisitionPanel;
     private javax.swing.JPanel SupplierEntryPanel;
+    private javax.swing.JComboBox<String> TransactionIDComboBox;
+    private javax.swing.JLabel TransactionIDLabel;
     private javax.swing.JPanel TransactionsPanel;
+    private javax.swing.JLabel VerifiedByLabel;
     private javax.swing.JButton ViewPRRefreshButton;
+    private javax.swing.JButton ViewPurchaseReportButton;
+    private javax.swing.JPanel ViewPurchaseReportPanel;
     private javax.swing.JButton approvePOButton;
     private javax.swing.JButton approvePOEditButton;
     private javax.swing.JPanel approvePOPanel;
@@ -1394,19 +1623,16 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel bankNamelabel;
     private javax.swing.JLabel dashBoardLabel1;
     private javax.swing.JLabel dashBoardLabel2;
+    private javax.swing.JLabel fromBanklabel;
     private javax.swing.JButton generatePRButton;
-    private javax.swing.JComboBox<String> generatePREndDateComboBox;
     private javax.swing.JScrollPane generatePRScrollpane;
-    private javax.swing.JLabel generatePRSlabel;
-    private javax.swing.JComboBox<String> generatePRStartDateComboBox;
-    private javax.swing.JButton generatePRexportButton;
-    private javax.swing.JLabel generatePRlabel2;
     private javax.swing.JTable generatePRtable;
     private javax.swing.JPanel generateReportPanel;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JButton logOutButton;
     private javax.swing.JPanel processPaymentPanel;
+    private javax.swing.JComboBox<String> selectBankComboBox;
     private javax.swing.JComboBox<String> selectPOComboBox;
     private javax.swing.JLabel selectPOOrderLabel;
     private javax.swing.JButton supplierEntryButton;
@@ -1417,6 +1643,8 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JTable viewPOTable;
     private javax.swing.JTable viewPRTable;
     private javax.swing.JButton viewPurchaseOrderRefreshButton;
+    private javax.swing.JTable viewPurchaseReportTable;
+    private javax.swing.JScrollPane viewReportScrollpane;
     private javax.swing.JTable viewTransactionTable;
     private javax.swing.JButton viewTransactionsRefreshButton;
     private javax.swing.JScrollPane viewTransactionsScrollPanel;

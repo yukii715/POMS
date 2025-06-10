@@ -4,6 +4,7 @@ import com.owsb.poms.system.functions.*;
 import java.time.*;
 import java.util.List;
 import com.owsb.poms.system.functions.interfaces.*;
+import javax.print.attribute.standard.ReferenceUriSchemesSupported;
 
 public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
     private String POID;
@@ -31,7 +32,8 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         INVALID,    // extend or cancel
         CONFIRMED,  // process payment
         COMPLETED,  // ok
-        CANCELLED   // ok
+        CANCELLED,   // ok
+        REPORTED
     }
     
     public PurchaseOrder(){
