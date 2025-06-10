@@ -39,6 +39,8 @@ public class Suppliers extends javax.swing.JFrame {
     private String[] columnName = {"Supplier ID", "Supplier Name", "Added Date", "Status"};
 
     public Suppliers() {
+        setTitle("Suppliers");
+        setSize(400, 300); // Example size
         initComponents();
         suppliersTable.setColumnIdentifiers(columnName);
         Supplier();
@@ -155,7 +157,7 @@ public class Suppliers extends javax.swing.JFrame {
                 .addGap(30, 30, 30))
         );
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jTable3.setModel(suppliersTable);
         jScrollPane3.setViewportView(jTable3);

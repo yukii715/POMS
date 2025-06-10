@@ -4,6 +4,10 @@ import com.owsb.poms.system.functions.*;
 import java.time.*;
 import java.util.List;
 import com.owsb.poms.system.functions.interfaces.*;
+import static com.owsb.poms.system.model.StockReport.filePath;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
@@ -24,13 +28,13 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         NEW,        // approve, reject or delete
         APPROVED,   // processing or cancel
         REJECTED,   // set as new
-        DELETED,    // set as new
+        DELETED,    // ok
         PROCESSING, // arrived, extend or cancel
-        EXTENDED,   // arrived or cancel
+        EXTENDED,   // arrived, extend or cancel
         ARRIVED,    // verified, extend or cancel
         VERIFIED,   // invalid or confirm
         INVALID,    // extend or cancel
-        CONFIRMED,  // completed
+        CONFIRMED,  // process payment
         COMPLETED,  // ok
         CANCELLED   // ok
     }
@@ -38,7 +42,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
     public PurchaseOrder(){
     }
 
-    public PurchaseOrder(String PRID, double totalPrice, String supplierID, LocalDate deliveryDate, String createBy) {
+    public PurchaseOrder(String PRID, double totalPrice, String supplierID, LocalDate deliveryDate, String createBy, String remark) {
         this.POID = generateID();
         this.PRID = PRID;
         this.totalPrice = totalPrice;
@@ -48,7 +52,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
         this.status = status.NEW;
         this.createBy = createBy;
         this.performedBy = "None";
-        this.remark = "None";
+        this.remark = remark;
     }
 
     public String getPOID() {
@@ -196,6 +200,7 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
                 po -> {
                     po.setStatus(this.getStatus());
                     po.setPerformedBy(this.getPerformedBy());
+                    po.setTotalPrice(this.getTotalPrice());
                     po.setDeliveryDate(this.getDeliveryDate());
                     po.setRemark(this.getRemark());
                             },             
@@ -211,4 +216,5 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
     public static PurchaseOrder getPoById(String id){
         return DataHandler.getByKey(toList(), id, PurchaseOrder::getPOID);
     }
-}
+    
+    }

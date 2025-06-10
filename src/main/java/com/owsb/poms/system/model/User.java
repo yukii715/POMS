@@ -6,7 +6,7 @@ public class User {
     private String username;
     private String email;
     private String passwordHash;
-    private String role;
+    private Role role;
     private LocalDateTime creationDateTime;
     private int age;
     private LocalDate birthday;
@@ -23,7 +23,7 @@ public class User {
     public User() {
     }
 
-    public User(String UID, String username, String email, String passwordHash, String role, int age, LocalDate birthday, boolean isDeleted) {
+    public User(String UID, String username, String email, String passwordHash, Role role, int age, LocalDate birthday, boolean isDeleted) {
         this.UID = UID;
         this.username = username;
         this.email = email;
@@ -67,11 +67,11 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

@@ -58,6 +58,8 @@ public class PurchaseRequisitionPO extends javax.swing.JFrame {
     
    
     public PurchaseRequisitionPO() {
+        setTitle("Purchase Requisition");
+        setSize(400, 300); // Example size
         initComponents();
         PR();
         // Initialize and set the row sorter if not already set
@@ -75,7 +77,7 @@ public class PurchaseRequisitionPO extends javax.swing.JFrame {
                 String status = entry.getStringValue(5);
                 if (status == null) return true;
                 status = status.trim().toUpperCase();                
-                return !(status.equals("DELETED") || status.equals("REJECTED"));            
+                return !(status.equals("DELETED") || status.equals("REJECTED") || status.equals("POGENERATED"));            
             }
         };
         sorter.setRowFilter(filter);
@@ -105,7 +107,7 @@ public class PurchaseRequisitionPO extends javax.swing.JFrame {
         btnReject = new javax.swing.JButton();
         cBoxCancel = new javax.swing.JCheckBox();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel1.setText("Purchase Requisition");
@@ -210,7 +212,7 @@ public class PurchaseRequisitionPO extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        PurchaseOrderTabs tabs = new PurchaseOrderTabs();
+        PurchaseOrderCreationTest tabs = new PurchaseOrderCreationTest();
         tabs.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -342,7 +344,7 @@ public class PurchaseRequisitionPO extends javax.swing.JFrame {
                 String status = entry.getStringValue(5); // column 6 for status
                 if (status == null) return true;
                 status = status.trim().toUpperCase();
-                return !(status.equals("DELETED") || status.equals("REJECTED"));  
+                return !(status.equals("DELETED") || status.equals("REJECTED")|| status.equals("POGENERATED"));  
             }
         };
         sorter.setRowFilter(filter);

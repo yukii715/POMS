@@ -53,6 +53,8 @@ private List<PurchaseOrder> PoList;
     }
     
     public PurchaseManagerDashboard() {
+        setTitle("Dashboard");
+        setSize(400, 300); // Example size
         initComponents();
         loadPurchaseOrder();
         
@@ -254,14 +256,17 @@ private List<PurchaseOrder> PoList;
     }//GEN-LAST:event_closeButtonActionPerformed
 
     private void tblPOMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPOMouseClicked
-       if (evt.getClickCount() == 2) { // Double click
-        int selectedRow = tblPO.getSelectedRow();
-        if (selectedRow != -1) {
-            String poID = (String) poTable.getValueAt(selectedRow, 0); // Use tblPO here
-            POItemDialog dialog = new POItemDialog(this, poID);
-            dialog.setVisible(true);
+         if (evt.getClickCount() == 2 && tblPO.getSelectedRow() != -1) {
+            int row = tblPO.getSelectedRow();
+            
+            PurchaseOrder po = PurchaseOrder.getPoById(String.valueOf(tblPO.getValueAt(row, 0)));
+        PurchaseRequisition pr = PurchaseRequisition.getPrById(po.getPRID());
+        
+            POItemDetails pod = new POItemDetails(po, pr);
+            pod.setLocationRelativeTo(this);
+            pod.setVisible(true);
+            loadPurchaseOrder();
         }
-    }
     }//GEN-LAST:event_tblPOMouseClicked
 
     private void tblPOMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPOMouseReleased

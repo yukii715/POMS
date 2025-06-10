@@ -40,6 +40,8 @@ public class Items extends javax.swing.JFrame {
     private String[] columnName = {"Item ID", "Item Name", "Item Category", "Item Type", "Selling Price", "Stocks", "Status"};
     
     public Items() {
+        setTitle("Items");
+        setSize(400, 300); // Example size
         initComponents();
         Inventory();
         
@@ -60,7 +62,7 @@ public class Items extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jTable1.setModel(itemsModel);
         jScrollPane1.setViewportView(jTable1);
