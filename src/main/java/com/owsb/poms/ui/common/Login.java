@@ -219,6 +219,7 @@ public class Login extends javax.swing.JFrame {
         String password = txtPassword.getText();
         String domain = "@owsb.com.my";
         
+        
         var users = User.toList();
         for (User u : users){
             if (u.isIsDeleted() != true){
@@ -234,15 +235,15 @@ public class Login extends javax.swing.JFrame {
                     break;
                 }
                 
-                try {
-                        if ((identifier.substring(0, identifier.length() - domain.length()) + domain).equals(u.getEmail())){
-                        validUser = true;
-                        identifier = identifier.substring(0, identifier.length() - domain.length()) + domain;
-                        user = User.getUserByEmail(identifier);
-                        break;
-                    }
-                } catch (Exception e){
-                    JOptionPane.showMessageDialog(this, "Invalid User!", "Error", JOptionPane.ERROR_MESSAGE);
+                if(identifier.length() < domain.length() + 3){
+                    continue;
+                }
+                
+                if ((identifier.substring(0, identifier.length() - domain.length()) + domain).equals(u.getEmail())){
+                    validUser = true;
+                    identifier = identifier.substring(0, identifier.length() - domain.length()) + domain;
+                    user = User.getUserByEmail(identifier);
+                    break;
                 }
             }
         }
@@ -280,6 +281,9 @@ public class Login extends javax.swing.JFrame {
             }
             JOptionPane.showMessageDialog(this, "Invalid Password!", "Error", JOptionPane.ERROR_MESSAGE);
             txtPassword.setText("");
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Invalid User!", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
