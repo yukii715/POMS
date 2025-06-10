@@ -2,8 +2,7 @@
 package com.owsb.poms.ui.pm;
 
 import com.owsb.poms.system.model.POItem;
-import com.owsb.poms.system.model.PurchaseOrder;
-import com.owsb.poms.system.model.PurchaseRequisition;
+import com.owsb.poms.system.model.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import javax.swing.RowFilter;
@@ -16,10 +15,10 @@ import javax.swing.table.TableRowSorter;
  * @author Alvin Serene
  */
 
-public class PurchaseManagerDashboard extends javax.swing.JFrame {
-private List<PurchaseOrder> PoList;
+public class HomePage extends javax.swing.JFrame {
+    private PurchaseManager purchaseManager;
+    private List<PurchaseOrder> PoList;
     private List<PurchaseRequisition> prList;
-    
     
     private String[] columnName = {"Purchase Order ID","Purchase Requisition ID", "Total Price","Supplier ID", "Date & Time of generated","Delivery Date", "status", "Created By", "Approved By"};
     private DefaultTableModel poTable = new DefaultTableModel(){
@@ -52,12 +51,13 @@ private List<PurchaseOrder> PoList;
         }
     }
     
-    public PurchaseManagerDashboard() {
+    public HomePage() {
         setTitle("Purchase Manager Home Page");
         setSize(400, 300); 
         initComponents();
         loadPurchaseOrder();
-        
+        this.purchaseManager = purchaseManager;
+
         if (tblPO.getRowSorter() == null) {
             TableRowSorter<TableModel> sorter = new TableRowSorter<>(tblPO.getModel());
             tblPO.setRowSorter(sorter);
@@ -79,7 +79,6 @@ private List<PurchaseOrder> PoList;
         ((TableRowSorter<TableModel>) tblPO.getRowSorter()).setRowFilter(null);
     }
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -256,12 +255,12 @@ private List<PurchaseOrder> PoList;
     }//GEN-LAST:event_closeButtonActionPerformed
 
     private void tblPOMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPOMouseClicked
-         if (evt.getClickCount() == 2 && tblPO.getSelectedRow() != -1) {
+        if (evt.getClickCount() == 2 && tblPO.getSelectedRow() != -1) {
             int row = tblPO.getSelectedRow();
-            
+
             PurchaseOrder po = PurchaseOrder.getPoById(String.valueOf(tblPO.getValueAt(row, 0)));
             PurchaseRequisition pr = PurchaseRequisition.getPrById(po.getPRID());
-        
+
             POItemDetails pod = new POItemDetails(po, pr);
             pod.setLocationRelativeTo(this);
             pod.setVisible(true);
@@ -279,27 +278,27 @@ private List<PurchaseOrder> PoList;
 
     private void checkAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkAllActionPerformed
         TableRowSorter<TableModel> sorter = (TableRowSorter<TableModel>) tblPO.getRowSorter();
-    if (sorter == null) {
-        sorter = new TableRowSorter<>(tblPO.getModel());
-        tblPO.setRowSorter(sorter);
-    }
+        if (sorter == null) {
+            sorter = new TableRowSorter<>(tblPO.getModel());
+            tblPO.setRowSorter(sorter);
+        }
 
-    if (checkAll.isSelected()) {
-        // Show all rows
-        sorter.setRowFilter(null);
-    } else {
-        // Filter out rows with status "DELETED" in column 6
-        RowFilter<TableModel, Integer> filter = new RowFilter<TableModel, Integer>() {
-            @Override
-            public boolean include(RowFilter.Entry<? extends TableModel, ? extends Integer> entry) {
-                String status = entry.getStringValue(6); // column 6 for status
-                if (status == null) return true;
-                status = status.trim().toUpperCase();
-                return !(status.equals("DELETED") || status.equals("REJECTED")||status.equals("CANCELLED") || status.equals("INVALID"));  
-            }
-        };
-        sorter.setRowFilter(filter);
-    }
+        if (checkAll.isSelected()) {
+            // Show all rows
+            sorter.setRowFilter(null);
+        } else {
+            // Filter out rows with status "DELETED" in column 6
+            RowFilter<TableModel, Integer> filter = new RowFilter<TableModel, Integer>() {
+                @Override
+                public boolean include(RowFilter.Entry<? extends TableModel, ? extends Integer> entry) {
+                    String status = entry.getStringValue(6); // column 6 for status
+                    if (status == null) return true;
+                    status = status.trim().toUpperCase();
+                    return !(status.equals("DELETED") || status.equals("REJECTED")||status.equals("CANCELLED") || status.equals("INVALID"));
+                }
+            };
+            sorter.setRowFilter(filter);
+        }
     }//GEN-LAST:event_checkAllActionPerformed
 
     /**
@@ -319,20 +318,20 @@ private List<PurchaseOrder> PoList;
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PurchaseManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PurchaseManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PurchaseManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PurchaseManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(HomePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PurchaseManagerDashboard().setVisible(true);
+                new HomePage().setVisible(true);
             }
         });
     }
