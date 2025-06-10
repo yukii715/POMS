@@ -6,9 +6,7 @@ package com.owsb.poms.ui.im;
 
 import com.owsb.poms.system.model.*;
 import com.owsb.poms.system.model.User.InventoryManager;
-import com.owsb.poms.system.model.User.User;
-import com.owsb.poms.ui.common.CommonMethod;
-import com.owsb.poms.ui.common.Login;
+import com.owsb.poms.ui.common.*;
 import java.awt.Image;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -1031,9 +1029,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnProfileActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
-        Login login = new Login();
-        login.setVisible(true);
-        this.dispose();
+        IM.logout(this);
     }//GEN-LAST:event_btnLogoutActionPerformed
         
     private void ItemTab(){
