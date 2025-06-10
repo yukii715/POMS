@@ -1,8 +1,12 @@
 package com.owsb.poms.ui.admin;
 
+import com.owsb.poms.system.functions.SecurePassword;
+import com.owsb.poms.system.model.User.*;
 import com.owsb.poms.ui.admin.Inventory.*;
 import com.owsb.poms.system.model.*;
+import com.owsb.poms.ui.admin.Dashboard.BankSetting;
 import com.owsb.poms.ui.admin.Orders.*;
+import com.owsb.poms.ui.admin.Users.UserCreation;
 import com.owsb.poms.ui.common.*;
 import java.awt.*;
 import java.time.LocalDateTime;
@@ -23,6 +27,15 @@ public class AdminDashboard extends javax.swing.JFrame {
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     
     // Users
+    private int selectedUserRow;
+    private User selectedUser = new User();
+    private List<User> userList;
+    private DefaultTableModel usersModel = new DefaultTableModel(){
+       public boolean isCellEditable(int row, int column){
+           return false;
+       } 
+    } ;
+    private String[] usersColumnName = {"UID", "Name", "Email", "Role", "Join On", "Age", "Birthday"};
     
     // Sales
     
@@ -57,7 +70,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     } ;
     private String[] suppliersColumnName = {"ID", "Name", "Added Time"};
 
-    public AdminDashboard(){
+    public AdminDashboard(Admin admin){
         initComponents();
         this.setLocationRelativeTo(null);
         
@@ -88,12 +101,12 @@ public class AdminDashboard extends javax.swing.JFrame {
             divider.repaint();
         });
         
-        admin = new Admin();
-        admin.setUID("AD001");
-        admin.setUsername("admin");
+        this.admin = admin;
         lblUsername.setText(admin.getUsername());
         lblUserID.setText(admin.getUID());
+        lblEmail.setText(admin.getEmail());
         
+        Users();
         Orders();
         Inventory();
         Suppliers();
@@ -129,6 +142,52 @@ public class AdminDashboard extends javax.swing.JFrame {
             CardLayout card = (CardLayout) pnlMainContent.getLayout();
             card.show(pnlMainContent, currentTab);
         }
+    }
+    
+    // Users Tab
+    private void Users(){
+        selectedUserRow = -1;
+        usersModel.setRowCount(0);
+        
+        lblUID.setText("None");
+        lblName.setText("None");
+        lblRole.setText("None");
+        lblCreationDateTime.setText("");
+        
+        usersModel.setColumnIdentifiers(usersColumnName);
+        JTableHeader header = tblUser.getTableHeader();
+        header.setBackground(new java.awt.Color(255, 255, 204));
+        
+        srlUser.getViewport().setBackground(new java.awt.Color(255, 255, 204));
+        
+        tblUser.getColumnModel().getColumn(1).setPreferredWidth(150);
+        tblUser.getColumnModel().getColumn(2).setPreferredWidth(200);
+        tblUser.getColumnModel().getColumn(4).setPreferredWidth(100);
+        tblUser.getColumnModel().getColumn(6).setPreferredWidth(120);
+        
+        userList = User.toList();
+        
+        for (User user : userList) {
+            if (user.isIsDeleted()!= true)
+            {
+                usersModel.addRow(new String[]{
+                    user.getUID(),
+                    user.getUsername(),
+                    user.getEmail(),
+                    user.getRole().name(),
+                    user.getCreationDateTime().format(DateTimeFormatter.ofPattern("dd MMM yyyy")),
+                    String.valueOf(user.getAge()),
+                    user.getBirthday().format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
+                });
+            }
+        }
+        
+        // Create a single “center” renderer:
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Apply it as the default for any Object‐typed cell:
+        tblUser.setDefaultRenderer(Object.class, centerRenderer);
     }
     
     // Orders Tab
@@ -328,9 +387,10 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblSuppliers = new javax.swing.JLabel();
         pnlProfile = new javax.swing.JPanel();
         lblProfilePicture = new javax.swing.JLabel();
-        lblUserDetails = new javax.swing.JPanel();
-        lblUsername = new javax.swing.JLabel();
+        pnlUserDetails = new javax.swing.JPanel();
         lblUserID = new javax.swing.JLabel();
+        lblUsername = new javax.swing.JLabel();
+        lblEmail = new javax.swing.JLabel();
         lblLogout1 = new javax.swing.JLabel();
         lblProfileDivider = new javax.swing.JPanel();
         pnlContainer = new javax.swing.JPanel();
@@ -344,7 +404,22 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlMainContent = new javax.swing.JPanel();
         pnlDashboard = new javax.swing.JPanel();
         lbltest = new javax.swing.JLabel();
+        btnBankSetting = new javax.swing.JButton();
         pnlUsers = new javax.swing.JPanel();
+        srlUser = new javax.swing.JScrollPane();
+        tblUser = new javax.swing.JTable();
+        jLabel12 = new javax.swing.JLabel();
+        lblUID = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        lblName = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        lblCreationDateTime = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        lblRole = new javax.swing.JLabel();
+        btnCreateUser = new javax.swing.JButton();
+        btnChangeUsername = new javax.swing.JButton();
+        btnEditEmail = new javax.swing.JButton();
+        btnResetPassoward = new javax.swing.JButton();
         pnlSales = new javax.swing.JPanel();
         pnlOrders = new javax.swing.JPanel();
         srlOrder = new javax.swing.JScrollPane();
@@ -567,6 +642,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlNavigator.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         pnlNavigator.setMaximumSize(new java.awt.Dimension(200, 32767));
         pnlNavigator.setMinimumSize(new java.awt.Dimension(50, 0));
+        pnlNavigator.setPreferredSize(new java.awt.Dimension(250, 803));
 
         pnlLogo.setBackground(new java.awt.Color(255, 180, 180));
         pnlLogo.setLayout(new java.awt.BorderLayout());
@@ -891,12 +967,25 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblProfilePicture.setPreferredSize(new java.awt.Dimension(60, 0));
         pnlProfile.add(lblProfilePicture, java.awt.BorderLayout.WEST);
 
-        lblUserDetails.setBackground(new java.awt.Color(255, 180, 180));
-        lblUserDetails.setLayout(new java.awt.GridLayout(2, 0));
-        lblUserDetails.add(lblUsername);
-        lblUserDetails.add(lblUserID);
+        pnlUserDetails.setBackground(new java.awt.Color(255, 180, 180));
+        pnlUserDetails.setLayout(new java.awt.GridLayout(3, 0));
 
-        pnlProfile.add(lblUserDetails, java.awt.BorderLayout.CENTER);
+        lblUserID.setFont(new java.awt.Font("Berlin Sans FB Demi", 0, 8)); // NOI18N
+        lblUserID.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblUserID.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        pnlUserDetails.add(lblUserID);
+
+        lblUsername.setFont(new java.awt.Font("Berlin Sans FB Demi", 0, 8)); // NOI18N
+        lblUsername.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblUsername.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        pnlUserDetails.add(lblUsername);
+
+        lblEmail.setFont(new java.awt.Font("Berlin Sans FB Demi", 0, 8)); // NOI18N
+        lblEmail.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblEmail.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        pnlUserDetails.add(lblEmail);
+
+        pnlProfile.add(pnlUserDetails, java.awt.BorderLayout.CENTER);
 
         lblLogout1.setMaximumSize(new java.awt.Dimension(60, 0));
         lblLogout1.setMinimumSize(new java.awt.Dimension(30, 0));
@@ -933,7 +1022,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                 .addComponent(pnlLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlTabs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 328, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 331, Short.MAX_VALUE)
                 .addComponent(pnlProfile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -1056,40 +1145,192 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlMainContent.setBackground(new java.awt.Color(255, 204, 204));
         pnlMainContent.setLayout(new java.awt.CardLayout());
 
-        pnlDashboard.setBackground(new java.awt.Color(153, 255, 153));
+        pnlDashboard.setBackground(new java.awt.Color(250, 237, 186));
 
         lbltest.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        btnBankSetting.setBackground(new java.awt.Color(255, 204, 204));
+        btnBankSetting.setFont(new java.awt.Font("Berlin Sans FB", 0, 18)); // NOI18N
+        btnBankSetting.setForeground(new java.awt.Color(0, 0, 0));
+        btnBankSetting.setText("Bank Setting");
+        btnBankSetting.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBankSettingActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlDashboardLayout = new javax.swing.GroupLayout(pnlDashboard);
         pnlDashboard.setLayout(pnlDashboardLayout);
         pnlDashboardLayout.setHorizontalGroup(
             pnlDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlDashboardLayout.createSequentialGroup()
-                .addGap(257, 257, 257)
+                .addGap(273, 273, 273)
                 .addComponent(lbltest, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(316, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDashboardLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnBankSetting, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24))
         );
         pnlDashboardLayout.setVerticalGroup(
             pnlDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlDashboardLayout.createSequentialGroup()
-                .addGap(150, 150, 150)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDashboardLayout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addComponent(btnBankSetting, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 234, Short.MAX_VALUE)
                 .addComponent(lbltest, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(249, Short.MAX_VALUE))
+                .addGap(81, 81, 81))
         );
 
         pnlMainContent.add(pnlDashboard, "Dashboard");
 
-        pnlUsers.setBackground(new java.awt.Color(102, 255, 204));
+        pnlUsers.setBackground(new java.awt.Color(243, 184, 101));
+
+        tblUser.setBackground(new java.awt.Color(255, 255, 204));
+        tblUser.setForeground(new java.awt.Color(0, 0, 0));
+        tblUser.setModel(usersModel);
+        tblUser.setGridColor(java.awt.Color.gray);
+        tblUser.setSelectionBackground(new java.awt.Color(255, 153, 153));
+        tblUser.setShowGrid(true);
+        tblUser.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tblUserMouseReleased(evt);
+            }
+        });
+        srlUser.setViewportView(tblUser);
+
+        jLabel12.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel12.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel12.setText("UID:");
+
+        lblUID.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblUID.setForeground(new java.awt.Color(0, 0, 0));
+        lblUID.setText("[UID]");
+
+        jLabel13.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel13.setText("Name:");
+
+        lblName.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblName.setForeground(new java.awt.Color(0, 0, 0));
+        lblName.setText("[Name]");
+
+        jLabel14.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel14.setText("Creation Date Tme:");
+
+        lblCreationDateTime.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblCreationDateTime.setForeground(new java.awt.Color(0, 0, 0));
+        lblCreationDateTime.setText("[CreationDateTime]");
+
+        jLabel15.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel15.setText("Role:");
+        jLabel15.setToolTipText("");
+
+        lblRole.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblRole.setForeground(new java.awt.Color(0, 0, 0));
+        lblRole.setText("[Role]");
+
+        btnCreateUser.setBackground(new java.awt.Color(255, 204, 204));
+        btnCreateUser.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnCreateUser.setForeground(new java.awt.Color(0, 0, 0));
+        btnCreateUser.setText("Create User");
+        btnCreateUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreateUserActionPerformed(evt);
+            }
+        });
+
+        btnChangeUsername.setBackground(new java.awt.Color(255, 204, 204));
+        btnChangeUsername.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnChangeUsername.setForeground(new java.awt.Color(0, 0, 0));
+        btnChangeUsername.setText("Change Username");
+        btnChangeUsername.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChangeUsernameActionPerformed(evt);
+            }
+        });
+
+        btnEditEmail.setBackground(new java.awt.Color(255, 204, 204));
+        btnEditEmail.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnEditEmail.setForeground(new java.awt.Color(0, 0, 0));
+        btnEditEmail.setText("Edit Email");
+        btnEditEmail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditEmailActionPerformed(evt);
+            }
+        });
+
+        btnResetPassoward.setBackground(new java.awt.Color(255, 204, 204));
+        btnResetPassoward.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnResetPassoward.setForeground(new java.awt.Color(0, 0, 0));
+        btnResetPassoward.setText("Reset Password");
+        btnResetPassoward.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetPassowardActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlUsersLayout = new javax.swing.GroupLayout(pnlUsers);
         pnlUsers.setLayout(pnlUsersLayout);
         pnlUsersLayout.setHorizontalGroup(
             pnlUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 995, Short.MAX_VALUE)
+            .addGroup(pnlUsersLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(srlUser, javax.swing.GroupLayout.PREFERRED_SIZE, 737, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnlUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlUsersLayout.createSequentialGroup()
+                        .addGroup(pnlUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel12)
+                            .addComponent(jLabel15)
+                            .addComponent(jLabel13))
+                        .addGap(34, 34, 34)
+                        .addGroup(pnlUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblName)
+                            .addComponent(lblRole)
+                            .addComponent(lblUID)))
+                    .addComponent(jLabel14)
+                    .addComponent(lblCreationDateTime)
+                    .addComponent(btnCreateUser, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnChangeUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEditEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnResetPassoward, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
         pnlUsersLayout.setVerticalGroup(
             pnlUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 700, Short.MAX_VALUE)
+            .addGroup(pnlUsersLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlUsersLayout.createSequentialGroup()
+                        .addGroup(pnlUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel12)
+                            .addComponent(lblUID))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel13)
+                            .addComponent(lblName))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel15)
+                            .addComponent(lblRole))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel14)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblCreationDateTime)
+                        .addGap(34, 34, 34)
+                        .addComponent(btnCreateUser, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnChangeUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEditEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnResetPassoward, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(srlUser, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pnlMainContent.add(pnlUsers, "Users");
@@ -1829,14 +2070,8 @@ public class AdminDashboard extends javax.swing.JFrame {
 
     private void tblItemsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblItemsMouseReleased
         selectedItemRow = tblItems.getSelectedRow();
-        selectedItem.setItemID(String.valueOf(itemsModel.getValueAt(selectedItemRow, 0)));
-        selectedItem.setItemCategory(String.valueOf(itemsModel.getValueAt(selectedItemRow, 1)));
-        selectedItem.setItemType(String.valueOf(itemsModel.getValueAt(selectedItemRow, 2)));
-        selectedItem.setItemName(String.valueOf(itemsModel.getValueAt(selectedItemRow, 3)));
-        selectedItem.setSupplierID(String.valueOf(itemsModel.getValueAt(selectedItemRow, 4)));
-        selectedItem.setSellPrice(Double.parseDouble(String.valueOf(itemsModel.getValueAt(selectedItemRow, 5))));
-        selectedItem.setStock(Integer.parseInt(String.valueOf(itemsModel.getValueAt(selectedItemRow, 6))));
-        selectedItem.setStatus(Item.Status.valueOf(String.valueOf(itemsModel.getValueAt(selectedItemRow, 7))));
+        String itemID = String.valueOf(itemsModel.getValueAt(selectedItemRow, 0));
+        selectedItem = Item.getItemById(itemID);
         
         lblItemID.setText(selectedItem.getItemID());
         lblItemCategory.setText(selectedItem.getItemCategory());
@@ -2005,26 +2240,55 @@ public class AdminDashboard extends javax.swing.JFrame {
             Orders();
         }
     }//GEN-LAST:event_tblOrderMouseClicked
-        
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AdminDashboard().setVisible(true);
-            }
-        });
-    }
 
+    private void btnBankSettingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBankSettingActionPerformed
+        BankSetting bankSetting = new BankSetting(this, true);
+        bankSetting.setLocationRelativeTo(this);
+        bankSetting.setVisible(true);
+    }//GEN-LAST:event_btnBankSettingActionPerformed
+
+    private void tblUserMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblUserMouseReleased
+        selectedUserRow = tblUser.getSelectedRow();
+        String uid = String.valueOf(usersModel.getValueAt(selectedUserRow, 0));
+        selectedUser = User.getUserById(uid);
+        
+        lblUID.setText(selectedUser.getUID());
+        lblName.setText(selectedUser.getUsername());
+        lblRole.setText(selectedUser.getRole().name());
+        lblCreationDateTime.setText(selectedUser.getCreationDateTime().format(dateTimeFormatter));
+    }//GEN-LAST:event_tblUserMouseReleased
+
+    private void btnCreateUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateUserActionPerformed
+        UserCreation userCreation = new UserCreation(this, true, admin);
+        userCreation.setLocationRelativeTo(this);
+        userCreation.setVisible(true);
+        Users();
+    }//GEN-LAST:event_btnCreateUserActionPerformed
+
+    private void btnChangeUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeUsernameActionPerformed
+        
+    }//GEN-LAST:event_btnChangeUsernameActionPerformed
+
+    private void btnEditEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditEmailActionPerformed
+        
+    }//GEN-LAST:event_btnEditEmailActionPerformed
+
+    private void btnResetPassowardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetPassowardActionPerformed
+        
+    }//GEN-LAST:event_btnResetPassowardActionPerformed
+ 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBankSetting;
     private javax.swing.JButton btnChangeSupplierName;
+    private javax.swing.JButton btnChangeUsername;
+    private javax.swing.JButton btnCreateUser;
+    private javax.swing.JButton btnEditEmail;
     private javax.swing.JButton btnEditItem;
     private javax.swing.JButton btnNewItem;
     private javax.swing.JButton btnNewSupplier;
     private javax.swing.JButton btnRemoveItem;
     private javax.swing.JButton btnRemoveSupplier;
+    private javax.swing.JButton btnResetPassoward;
     private javax.swing.JButton btnUpdateStatus;
     private javax.swing.JButton btnUpdateStock;
     private javax.swing.JButton btnViewAllPO;
@@ -2032,6 +2296,10 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -2041,10 +2309,12 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel lblClose;
+    private javax.swing.JLabel lblCreationDateTime;
     private javax.swing.JLabel lblDashboard;
     private javax.swing.JLabel lblDashboardDivider1;
     private javax.swing.JLabel lblDashboardDivider2;
     private javax.swing.JLabel lblDashboardIcon;
+    private javax.swing.JLabel lblEmail;
     private javax.swing.JLabel lblInventory;
     private javax.swing.JLabel lblInventoryDivider1;
     private javax.swing.JLabel lblInventoryDivider2;
@@ -2060,12 +2330,14 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel lblLogout1;
     private javax.swing.JLabel lblMaximise;
     private javax.swing.JLabel lblMinimise;
+    private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblOrders;
     private javax.swing.JLabel lblOrdersDivider1;
     private javax.swing.JLabel lblOrdersDivider2;
     private javax.swing.JLabel lblOrdersIcon;
     private javax.swing.JPanel lblProfileDivider;
     private javax.swing.JLabel lblProfilePicture;
+    private javax.swing.JLabel lblRole;
     private javax.swing.JLabel lblSales;
     private javax.swing.JLabel lblSalesDivider1;
     private javax.swing.JLabel lblSalesDivider2;
@@ -2079,7 +2351,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel lblSuppliersDivider1;
     private javax.swing.JLabel lblSuppliersDivider2;
     private javax.swing.JLabel lblSuppliersIcon;
-    private javax.swing.JPanel lblUserDetails;
+    private javax.swing.JLabel lblUID;
     private javax.swing.JLabel lblUserID;
     private javax.swing.JLabel lblUsername;
     private javax.swing.JLabel lblUsers;
@@ -2122,6 +2394,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel pnlSuppliersTab;
     private javax.swing.JPanel pnlTabs;
     private javax.swing.JPanel pnlTools;
+    private javax.swing.JPanel pnlUserDetails;
     private javax.swing.JPanel pnlUsers;
     private javax.swing.JPanel pnlUsersIndicator;
     private javax.swing.JPanel pnlUsersTab;
@@ -2130,8 +2403,10 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JScrollPane srlItems;
     private javax.swing.JScrollPane srlOrder;
     private javax.swing.JScrollPane srlSuppliers;
+    private javax.swing.JScrollPane srlUser;
     private javax.swing.JTable tblItems;
     private javax.swing.JTable tblOrder;
     private javax.swing.JTable tblSuppliers;
+    private javax.swing.JTable tblUser;
     // End of variables declaration//GEN-END:variables
 }

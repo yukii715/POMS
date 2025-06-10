@@ -1,16 +1,24 @@
 package com.owsb.poms.ui.common;
 
-import java.awt.Color;
-import java.awt.Image;
-import java.awt.Point;
-import java.io.File;
-import com.owsb.poms.ui.common.CommonEvent;
+import com.owsb.poms.system.model.User.Admin;
+import com.owsb.poms.system.model.User.FinanceManager;
+import com.owsb.poms.system.model.User.InventoryManager;
+import com.owsb.poms.system.model.User.PurchaseManager;
+import com.owsb.poms.system.model.User.SalesManager;
+import com.owsb.poms.system.model.User.User;
+import java.awt.*;
+import java.time.LocalDate;
+import javax.swing.JOptionPane;
 
 public class Login extends javax.swing.JFrame {
     private Point initialClick;
+    private User user;
+    private boolean validUser = false;
     
     public Login() {
         initComponents();
+        
+        this.setLocationRelativeTo(null);
         
         new CommonMethod().setFrameIcon("/icons/logo.png", 330, 330, Image.SCALE_SMOOTH, this);
         new CommonMethod().setLabelIcon("/icons/logo.png", 330, 330, Image.SCALE_SMOOTH, lblLogo);
@@ -46,7 +54,6 @@ public class Login extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(800, 550));
         setName(""); // NOI18N
         setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(800, 550));
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -125,7 +132,6 @@ public class Login extends javax.swing.JFrame {
         lblLoginTitle.setBounds(70, 50, 270, 75);
 
         lblUserIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblUserIcon.setIcon(new javax.swing.ImageIcon("D:\\Downloads\\user.png")); // NOI18N
         lblUserIcon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         pnlInfo.add(lblUserIcon);
         lblUserIcon.setBounds(60, 170, 25, 25);
@@ -145,7 +151,6 @@ public class Login extends javax.swing.JFrame {
         txtUser.setBounds(64, 199, 270, 30);
 
         lblPwdIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblPwdIcon.setIcon(new javax.swing.ImageIcon("D:\\Downloads\\user.png")); // NOI18N
         lblPwdIcon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         pnlInfo.add(lblPwdIcon);
         lblPwdIcon.setBounds(60, 260, 25, 25);
@@ -166,6 +171,11 @@ public class Login extends javax.swing.JFrame {
         btnLogin.setForeground(new java.awt.Color(0, 0, 0));
         btnLogin.setText("Log in");
         btnLogin.setFocusPainted(false);
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
         pnlInfo.add(btnLogin);
         btnLogin.setBounds(145, 378, 108, 39);
 
@@ -203,6 +213,80 @@ public class Login extends javax.swing.JFrame {
     private void pnlInfoMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlInfoMouseDragged
         CommonEvent.mouseDragWindow(this, evt, initialClick);
     }//GEN-LAST:event_pnlInfoMouseDragged
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        String identifier = txtUser.getText().toUpperCase().trim();
+        String password = txtPassword.getText();
+        String domain = "@owsb.com.my";
+        
+        
+        var users = User.toList();
+        for (User u : users){
+            if (u.isIsDeleted() != true){
+                if(identifier.equals(u.getUID())){
+                    validUser = true;
+                    user = User.getUserById(identifier);
+                    break;
+                }
+                
+                if(identifier.equals(u.getUsername())){
+                    validUser = true;
+                    user = User.getUserByName(identifier);
+                    break;
+                }
+                
+                if(identifier.length() < domain.length() + 3){
+                    continue;
+                }
+                
+                if ((identifier.substring(0, identifier.length() - domain.length()) + domain).equals(u.getEmail())){
+                    validUser = true;
+                    identifier = identifier.substring(0, identifier.length() - domain.length()) + domain;
+                    user = User.getUserByEmail(identifier);
+                    break;
+                }
+            }
+        }
+        
+        if (validUser){
+            if (user.getHash(password).equals(user.getPasswordHash())){
+                User u = user.getActual();
+                switch (user.getRole()){
+                    case Root, Admin:
+                        Admin admin = (Admin) u;
+                        admin.login();
+                        dispose();
+                        return;
+                    case SalesManager:
+                        SalesManager sm = (SalesManager) u;
+                        sm.login();
+                        dispose();
+                        return;
+                    case PurchaseManager:
+                        PurchaseManager pm = (PurchaseManager) u;
+                        pm.login();
+                        dispose();
+                        return;
+                    case InventoryManager:
+                        InventoryManager im = (InventoryManager) u;
+                        im.login();
+                        dispose();
+                        return;
+                    case FinanceManager:
+                        FinanceManager fm = (FinanceManager) u;
+                        fm.login();
+                        dispose();
+                        return;
+                }
+            }
+            JOptionPane.showMessageDialog(this, "Invalid Password!", "Error", JOptionPane.ERROR_MESSAGE);
+            txtPassword.setText("");
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Invalid User!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+    }//GEN-LAST:event_btnLoginActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

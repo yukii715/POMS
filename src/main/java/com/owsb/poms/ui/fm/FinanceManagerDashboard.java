@@ -3,6 +3,9 @@ package com.owsb.poms.ui.fm;
 
 import com.owsb.poms.system.functions.IdGenerator;
 import com.owsb.poms.system.model.*;
+import com.owsb.poms.system.model.User.FinanceManager;
+import com.owsb.poms.system.model.User.User;
+import com.owsb.poms.system.model.company.Bank;
 import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,11 +23,14 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.*;
 public class FinanceManagerDashboard extends javax.swing.JFrame {
     private List<PurchaseOrder> orders;
-    public FinanceManagerDashboard() {
+    private FinanceManager financeManager ;
+    public FinanceManagerDashboard(FinanceManager fm) {
         initComponents();
+        financeManager = fm ;
         for (int i = 0; i < FrameTab.getTabCount(); i++) {
         FrameTab.setBackgroundAt(i, new java.awt.Color(255, 107, 149));
         }
+        initUserProfile();
         initApprovePOFunctionality();
         initProcessPaymentFunctionality();
         initTransactionTable();
@@ -42,9 +48,12 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         FrameTab = new javax.swing.JTabbedPane();
         DashboardPanel = new javax.swing.JPanel();
-        dashBoardLabel1 = new javax.swing.JLabel();
+        UserIdLabel = new javax.swing.JLabel();
         logOutButton = new javax.swing.JButton();
-        dashBoardLabel2 = new javax.swing.JLabel();
+        WelcomeLabel = new javax.swing.JLabel();
+        ChangePasswordButton = new javax.swing.JButton();
+        UsernameLabel = new javax.swing.JLabel();
+        EmailLabel = new javax.swing.JLabel();
         approvePOPanel = new javax.swing.JPanel();
         approvePOScrollpane = new javax.swing.JScrollPane();
         approvePOTable = new javax.swing.JTable();
@@ -125,8 +134,8 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
 
         DashboardPanel.setBackground(new java.awt.Color(255, 245, 247));
 
-        dashBoardLabel1.setFont(new java.awt.Font("Comic Sans MS", 0, 50)); // NOI18N
-        dashBoardLabel1.setText("User ID : FM001");
+        UserIdLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 50)); // NOI18N
+        UserIdLabel.setText("User ID : FM001");
 
         logOutButton.setFont(new java.awt.Font("Comic Sans MS", 0, 25)); // NOI18N
         logOutButton.setText("Log Out");
@@ -136,8 +145,22 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             }
         });
 
-        dashBoardLabel2.setFont(new java.awt.Font("Comic Sans MS", 0, 65)); // NOI18N
-        dashBoardLabel2.setText("Welcome Back, Finance Manager!");
+        WelcomeLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 65)); // NOI18N
+        WelcomeLabel.setText("Welcome Back, Finance Manager!");
+
+        ChangePasswordButton.setFont(new java.awt.Font("Comic Sans MS", 0, 60)); // NOI18N
+        ChangePasswordButton.setText("Change Password");
+        ChangePasswordButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChangePasswordButtonActionPerformed(evt);
+            }
+        });
+
+        UsernameLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 50)); // NOI18N
+        UsernameLabel.setText("User ID : FM001");
+
+        EmailLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 50)); // NOI18N
+        EmailLabel.setText("User ID : FM001");
 
         javax.swing.GroupLayout DashboardPanelLayout = new javax.swing.GroupLayout(DashboardPanel);
         DashboardPanel.setLayout(DashboardPanelLayout);
@@ -150,11 +173,18 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                         .addComponent(logOutButton))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DashboardPanelLayout.createSequentialGroup()
                         .addContainerGap(28, Short.MAX_VALUE)
-                        .addComponent(dashBoardLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 1027, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(WelcomeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 1027, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(DashboardPanelLayout.createSequentialGroup()
+                        .addGap(287, 287, 287)
+                        .addGroup(DashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(UsernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(UserIdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(EmailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(DashboardPanelLayout.createSequentialGroup()
-                .addGap(285, 285, 285)
-                .addComponent(dashBoardLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(244, 244, 244)
+                .addComponent(ChangePasswordButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         DashboardPanelLayout.setVerticalGroup(
@@ -162,11 +192,17 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             .addGroup(DashboardPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(logOutButton)
-                .addGap(36, 36, 36)
-                .addComponent(dashBoardLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(WelcomeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(dashBoardLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(308, Short.MAX_VALUE))
+                .addComponent(UserIdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(UsernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(EmailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40)
+                .addComponent(ChangePasswordButton)
+                .addContainerGap(80, Short.MAX_VALUE))
         );
 
         FrameTab.addTab("Dashboard", DashboardPanel);
@@ -1009,7 +1045,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_ConfirmPOButtonActionPerformed
 
     private void selectBankComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectBankComboBoxActionPerformed
-        // TODO add your handling code here:
+       
     }//GEN-LAST:event_selectBankComboBoxActionPerformed
 
     private void TransactionIDComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TransactionIDComboBoxActionPerformed
@@ -1042,13 +1078,33 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         loadAllPurchaseReports();
     }//GEN-LAST:event_ViewPurchaseReportButtonActionPerformed
 
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new FinanceManagerDashboard().setVisible(true);
-            }
-        });
+    private void ChangePasswordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangePasswordButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ChangePasswordButtonActionPerformed
+
+// public static void main(String args[]) {
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new FinanceManagerDashboard().setVisible(true);
+//            }
+//        });
+//    }
+    
+    private final String currentUserId = "FM001";
+    private void initUserProfile() {
+        User user = User.getUserById(currentUserId);
+    
+    if (user != null) {
+        UserIdLabel.setText(user.getUID());
+        UsernameLabel.setText(user.getUsername());
+        EmailLabel.setText(user.getEmail());
+    } else {
+        UserIdLabel.setText("Unknown");
+        UsernameLabel.setText("-");
+        EmailLabel.setText("-");
     }
+    }
+    
     
     DefaultTableModel approvePOTableModel;
     private void initApprovePOFunctionality(){
@@ -1195,6 +1251,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         
         List<PurchaseOrder> orders = com.owsb.poms.system.model.PurchaseOrder.toList();
         boolean hasConfirmPO = false;
+         populateBankComboBox();
         
         for (PurchaseOrder po : orders) {
             if (po.getStatus() == com.owsb.poms.system.model.PurchaseOrder.Status.CONFIRMED && !isPOAlreadyPaid(po.getPOID())) {
@@ -1207,16 +1264,29 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         
         if (!hasConfirmPO) {
             disablePaymentFields();
+            selectBankComboBox.setEnabled(false);
             selectPOComboBox.setEnabled(false);
             ProcessingPaymentStatusLabel.setText("Status: No confirmed purchase orders available for payment.");
         } else {
             enablePaymentFields();
             selectPOComboBox.setEnabled(true);
+            selectBankComboBox.setEnabled(true);
             ProcessingPaymentStatusLabel.setText("Status: Select a PO to proceed with payment.");
         }
     }
-        
-        private boolean isPOAlreadyPaid(String poID) {
+    
+    private void populateBankComboBox() {
+        selectBankComboBox.removeAllItems();
+        List<Bank> banks = Bank.toList();
+        for (Bank b : banks) {
+            if (!b.isIsDeleted()) {
+                selectBankComboBox.addItem(b.getBankName()); // 添加银行名称
+
+            }
+        }
+    }
+    
+    private boolean isPOAlreadyPaid(String poID) {
             List <Transaction> transanctions = Transaction.toList();
             for (Transaction tx : transanctions) {
                 if (tx.getDetails() != null && tx.getDetails().contains(poID)) {
@@ -1242,6 +1312,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             ClearFormButton.setEnabled(false);
             selectPOComboBox.setEnabled(false);
         }
+        
         private void enablePaymentFields() {
             bankNameTextfield.setEnabled(true);
             BankAccNumberTextfield.setEnabled(true);
@@ -1253,12 +1324,18 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         
     private void processPayment() {
         String poID = (String) selectPOComboBox.getSelectedItem();
-        String yourbank = (String)selectBankComboBox.getSelectedItem();
+        String yourbankName = (String)selectBankComboBox.getSelectedItem();
+        Bank yourbank = Bank.getBankByName(yourbankName);
         String supplierBank = bankNameTextfield.getText().trim();
         String supplierAccNumber = BankAccNumberTextfield.getText().trim();
         String amountStr = AmountTextfield.getText().trim();
         String userDetails = Detailstextfield.getText().trim();
-
+        
+        if (yourbank == null){
+            ProcessingPaymentStatusLabel.setText("Status : Bank information not found.");
+            return;
+        }
+        
         if (poID == null || yourbank == null || supplierBank.isEmpty() || supplierAccNumber.isEmpty() || amountStr.isEmpty()) {
             ProcessingPaymentStatusLabel.setText("Status: Please fill in all fields.");
             return;
@@ -1276,7 +1353,8 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         
         Transaction tx = new Transaction();
         tx.setTransactionID(tx.generateID());
-        tx.setBankFrom(yourbank);
+        tx.setBankFrom(yourbank.getBankName());
+        tx.setBankFromAccountNumber(yourbank.getAccountNumber());
         tx.setBankReceived(supplierBank);
         tx.setBankReceivedAccountNumber(supplierAcc);
         tx.setDateTime(LocalDateTime.now());
@@ -1583,6 +1661,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JTextField ApprovedByTextField;
     private javax.swing.JLabel AutoRefreshLabel;
     private javax.swing.JTextField BankAccNumberTextfield;
+    private javax.swing.JButton ChangePasswordButton;
     private javax.swing.JButton ClearFormButton;
     private javax.swing.JButton ConfirmPOButton;
     private javax.swing.JLabel ConfirmPOLabel;
@@ -1592,6 +1671,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel DashboardPanel;
     private javax.swing.JLabel DetailsLabel;
     private javax.swing.JTextField Detailstextfield;
+    private javax.swing.JLabel EmailLabel;
     private javax.swing.JTabbedPane FrameTab;
     private javax.swing.JButton InvalidPOButton;
     private javax.swing.JLabel InvoiceIDLabel;
@@ -1607,10 +1687,13 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> TransactionIDComboBox;
     private javax.swing.JLabel TransactionIDLabel;
     private javax.swing.JPanel TransactionsPanel;
+    private javax.swing.JLabel UserIdLabel;
+    private javax.swing.JLabel UsernameLabel;
     private javax.swing.JLabel VerifiedByLabel;
     private javax.swing.JButton ViewPRRefreshButton;
     private javax.swing.JButton ViewPurchaseReportButton;
     private javax.swing.JPanel ViewPurchaseReportPanel;
+    private javax.swing.JLabel WelcomeLabel;
     private javax.swing.JButton approvePOButton;
     private javax.swing.JButton approvePOEditButton;
     private javax.swing.JPanel approvePOPanel;
@@ -1621,8 +1704,6 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel bankAccNumberLabel;
     private javax.swing.JTextField bankNameTextfield;
     private javax.swing.JLabel bankNamelabel;
-    private javax.swing.JLabel dashBoardLabel1;
-    private javax.swing.JLabel dashBoardLabel2;
     private javax.swing.JLabel fromBanklabel;
     private javax.swing.JButton generatePRButton;
     private javax.swing.JScrollPane generatePRScrollpane;

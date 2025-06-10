@@ -22,13 +22,13 @@ public class Transaction implements hasFile<Transaction>, hasId{
     public Transaction() {
     }
 
-    public Transaction(String transactionID, String bankFrom, long bankFromAccountNumber, String bankReceived, long bankReceivedAccountNumber, LocalDateTime dateTime, double amount, String details) {
-        this.transactionID = transactionID;
+    public Transaction(String bankFrom, long bankFromAccountNumber, String bankReceived, long bankReceivedAccountNumber, double amount, String details) {
+        this.transactionID = generateID();
         this.bankFrom = bankFrom;
         this.bankFromAccountNumber = bankFromAccountNumber;
         this.bankReceived = bankReceived;
         this.bankReceivedAccountNumber = bankReceivedAccountNumber;
-        this.dateTime = dateTime;
+        this.dateTime = LocalDateTime.now();
         this.amount = amount;
         this.details = details;
     }
