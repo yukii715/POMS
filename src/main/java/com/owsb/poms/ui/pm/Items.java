@@ -41,7 +41,7 @@ public class Items extends javax.swing.JFrame {
     
     public Items() {
         setTitle("Items");
-        setSize(400, 300); // Example size
+        setSize(400, 300); 
         initComponents();
         Inventory();
         

@@ -40,7 +40,7 @@ public class Suppliers extends javax.swing.JFrame {
 
     public Suppliers() {
         setTitle("Suppliers");
-        setSize(400, 300); // Example size
+        setSize(400, 300); 
         initComponents();
         suppliersTable.setColumnIdentifiers(columnName);
         Supplier();

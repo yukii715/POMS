@@ -54,7 +54,7 @@ private List<PurchaseOrder> PoList;
     
     public PurchaseManagerDashboard() {
         setTitle("Dashboard");
-        setSize(400, 300); // Example size
+        setSize(400, 300); 
         initComponents();
         loadPurchaseOrder();
         
@@ -260,7 +260,7 @@ private List<PurchaseOrder> PoList;
             int row = tblPO.getSelectedRow();
             
             PurchaseOrder po = PurchaseOrder.getPoById(String.valueOf(tblPO.getValueAt(row, 0)));
-        PurchaseRequisition pr = PurchaseRequisition.getPrById(po.getPRID());
+            PurchaseRequisition pr = PurchaseRequisition.getPrById(po.getPRID());
         
             POItemDetails pod = new POItemDetails(po, pr);
             pod.setLocationRelativeTo(this);
@@ -295,7 +295,7 @@ private List<PurchaseOrder> PoList;
                 String status = entry.getStringValue(6); // column 6 for status
                 if (status == null) return true;
                 status = status.trim().toUpperCase();
-                return !(status.equals("DELETED") || status.equals("REJECTED")||status.equals("CANCELLED"));  
+                return !(status.equals("DELETED") || status.equals("REJECTED")||status.equals("CANCELLED") || status.equals("INVALID"));  
             }
         };
         sorter.setRowFilter(filter);

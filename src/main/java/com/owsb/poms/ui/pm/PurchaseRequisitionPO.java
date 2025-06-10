@@ -59,7 +59,7 @@ public class PurchaseRequisitionPO extends javax.swing.JFrame {
    
     public PurchaseRequisitionPO() {
         setTitle("Purchase Requisition");
-        setSize(400, 300); // Example size
+        setSize(400, 300); 
         initComponents();
         PR();
         // Initialize and set the row sorter if not already set
