@@ -101,6 +101,4 @@ public class DailySales implements hasId, hasFile<DailySales>{
         dss.add(this);
         this.saveToFile(dss);
     }
-    
-    
 }

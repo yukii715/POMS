@@ -191,6 +191,10 @@ public class Item implements hasFile<Item>, hasId, hasStatus{
         );
     }
     
+    public static Item getItemById(String id){
+        return DataHandler.getByKey(toList(), id, Item::getItemID);
+    }
+    
     public static List<Item> getItemsFromSupplier(String supplierID){
         return DataHandler.getValuesByKey(toList(), Item::getSupplierID, supplierID);
     }
