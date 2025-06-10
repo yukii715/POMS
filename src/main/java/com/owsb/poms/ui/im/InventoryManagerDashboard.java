@@ -84,8 +84,8 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         new CommonMethod().setFrameIcon("/icons/logo.png", 330, 330, Image.SCALE_SMOOTH, this);
         new CommonMethod().setLabelIcon("/icons/logo.png", 300, 300, Image.SCALE_SMOOTH, lblLogo);
         
-        lblUsername.setText(IM.getUsername());
-        lblUserID.setText(IM.getUID());
+//        lblUsername.setText(IM.getUsername());
+//        lblUserID.setText(IM.getUID());
         
         ItemTab();
         POTab();
@@ -289,7 +289,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         lblID.setForeground(new java.awt.Color(0, 0, 0));
         lblID.setText("- ");
 
-        lblName.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblName.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         lblName.setForeground(new java.awt.Color(0, 0, 0));
         lblName.setText("- ");
 
@@ -304,7 +304,6 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         txtStocks.setEnabled(false);
         txtStocks.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
-        cmbStatus.setBackground(new java.awt.Color(255, 255, 255));
         cmbStatus.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         cmbStatus.setModel(modelStatus);
         cmbStatus.setEnabled(false);
@@ -549,7 +548,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         lblItemID.setForeground(new java.awt.Color(0, 0, 0));
         lblItemID.setText("[Item ID}");
 
-        lblItemName.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        lblItemName.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         lblItemName.setForeground(new java.awt.Color(0, 0, 0));
         lblItemName.setText("[Item Name]");
 
