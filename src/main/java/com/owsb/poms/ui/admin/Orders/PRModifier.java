@@ -1,5 +1,6 @@
 package com.owsb.poms.ui.admin.Orders;
 
+import com.owsb.poms.system.model.User.*;
 import com.owsb.poms.system.functions.DateResolver;
 import com.owsb.poms.system.model.*;
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ public class PRModifier extends javax.swing.JDialog {
     private String supplierID;
     private LocalDate requiredDate;
     private List<Item> items;
+    private List<Item> supplierItems;
     private List<PRItem> selectedItems = new ArrayList<>();
     private List<PRItem> previousItems = new ArrayList<>();
     private PurchaseRequisition pr;
@@ -71,14 +73,19 @@ public class PRModifier extends javax.swing.JDialog {
         
         previousItems = pr.getItems();
         selectedItems = pr.getItems();
+        supplierItems = Item.getItemsFromSupplier(pr.getSupplierID());
         
-        for (int i = 0; i < selectedItems.size(); i++){
-            PRItem item = selectedItems.get(i);
-            if (tblItems.getValueAt(i, 0).equals(item.getItemID()))
-            {
-                tblItems.setValueAt("✓", i, 6);
-                tblItems.setValueAt(item.getQuantity(), i, 7);
+        
+        for (int i = 0; i < supplierItems.size(); i++){
+            for (int j = 0; j < selectedItems.size(); j++){
+                PRItem item = selectedItems.get(j);
+                if (tblItems.getValueAt(i, 0).equals(item.getItemID()))
+                {
+                    tblItems.setValueAt("✓", i, 6);
+                    tblItems.setValueAt(item.getQuantity(), i, 7);
+                }
             }
+            
         }
     }
     
@@ -299,7 +306,7 @@ public class PRModifier extends javax.swing.JDialog {
                 .addComponent(jLabel6)
                 .addGap(18, 18, 18)
                 .addComponent(srlItems, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnPerform, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(19, 19, 19))
         );
