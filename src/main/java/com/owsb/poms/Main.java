@@ -8,7 +8,8 @@ public class Main {
     public static void main(String[] args) {
         
         SwingUtilities.invokeLater(() -> {
-            new InventoryManagerDashboard().setVisible(true);
+            //new InventoryManagerDashboard().setVisible(true);
+            new Login().setVisible(true);
         });
     }
 }

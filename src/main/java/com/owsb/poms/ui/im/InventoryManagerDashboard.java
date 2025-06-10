@@ -5,7 +5,10 @@
 package com.owsb.poms.ui.im;
 
 import com.owsb.poms.system.model.*;
+import com.owsb.poms.system.model.User.InventoryManager;
+import com.owsb.poms.system.model.User.User;
 import com.owsb.poms.ui.common.CommonMethod;
+import com.owsb.poms.ui.common.Login;
 import java.awt.Image;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -74,7 +77,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     /**
      * Creates new form InventoryManagerDashboard
      */
-    public InventoryManagerDashboard() {
+    public InventoryManagerDashboard(InventoryManager IM) {
         initComponents();
         modelItems.setColumnIdentifiers(columnItems);  
         modelPO.setColumnIdentifiers(columnPO);
@@ -84,9 +87,14 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         new CommonMethod().setFrameIcon("/icons/logo.png", 330, 330, Image.SCALE_SMOOTH, this);
         new CommonMethod().setLabelIcon("/icons/logo.png", 300, 300, Image.SCALE_SMOOTH, lblLogo);
         
-//        lblUsername.setText(IM.getUsername());
-//        lblUserID.setText(IM.getUID());
+        this.IM = IM;        
         
+        String uppercase = IM.getUsername();
+        String title = uppercase.substring(0, 1).toUpperCase() + uppercase.substring(1).toLowerCase();
+
+        lblUsername.setText(title);
+        lblUserID.setText(IM.getUID());
+
         ItemTab();
         POTab();
         StockTab();
@@ -112,6 +120,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         jLabel16 = new javax.swing.JLabel();
         lblUserID = new javax.swing.JLabel();
         lblUsername = new javax.swing.JLabel();
+        btnProfile = new javax.swing.JButton();
         pnlItems = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tableItems = new javax.swing.JTable();
@@ -182,40 +191,59 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
 
         btnLogout.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         btnLogout.setText("Log Out");
+        btnLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogoutActionPerformed(evt);
+            }
+        });
 
         lblLogo.setBackground(new java.awt.Color(255, 153, 153));
         lblLogo.setForeground(new java.awt.Color(0, 0, 0));
 
-        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(0, 0, 0));
         jLabel12.setText("User ID: ");
 
-        jLabel16.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel16.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel16.setForeground(new java.awt.Color(0, 0, 0));
         jLabel16.setText("Username: ");
 
-        lblUserID.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        lblUserID.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lblUserID.setForeground(new java.awt.Color(0, 0, 0));
         lblUserID.setText("[UserID]");
 
-        lblUsername.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        lblUsername.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lblUsername.setForeground(new java.awt.Color(0, 0, 0));
         lblUsername.setText("[Username]");
+
+        btnProfile.setBackground(new java.awt.Color(255, 102, 102));
+        btnProfile.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btnProfile.setText("View Profile");
+        btnProfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProfileActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlHomeLayout = new javax.swing.GroupLayout(pnlHome);
         pnlHome.setLayout(pnlHomeLayout);
         pnlHomeLayout.setHorizontalGroup(
             pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlHomeLayout.createSequentialGroup()
-                .addGap(16, 16, 16)
                 .addGroup(pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel12)
-                    .addComponent(jLabel16))
-                .addGap(26, 26, 26)
-                .addGroup(pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblUsername)
-                    .addComponent(lblUserID))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
+                    .addGroup(pnlHomeLayout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addGroup(pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel12)
+                            .addComponent(jLabel16))
+                        .addGap(26, 26, 26)
+                        .addGroup(pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblUsername)
+                            .addComponent(lblUserID)))
+                    .addGroup(pnlHomeLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnProfile)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 221, Short.MAX_VALUE)
                 .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(230, 230, 230)
                 .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -236,14 +264,16 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlHomeLayout.createSequentialGroup()
-                        .addGap(33, 33, 33)
+                        .addGap(21, 21, 21)
                         .addGroup(pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel12)
                             .addComponent(lblUserID))
                         .addGap(30, 30, 30)
                         .addGroup(pnlHomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel16)
-                            .addComponent(lblUsername))))
+                            .addComponent(lblUsername))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnProfile)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addContainerGap(359, Short.MAX_VALUE))
@@ -740,40 +770,216 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    //Items
-    //Items
-    //Items
-    //Items
-    //Items
-    private void tableItemsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableItemsMouseReleased
+    private void btnRefreshStockReportListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshStockReportListActionPerformed
+        StockTab();
+    }//GEN-LAST:event_btnRefreshStockReportListActionPerformed
 
-        cmbStatus.setSelectedIndex(-1);
-        checkboxConfirmation.setSelected(false);
-        btnEdit.setEnabled(false);
-        
-        selectedRowItem = tableItems.getSelectedRow();
-        
-        selectedItem.setItemID(String.valueOf(modelItems.getValueAt(selectedRowItem, 0)));
-        selectedItem.setItemName(String.valueOf(modelItems.getValueAt(selectedRowItem, 1)));
-        selectedItem.setItemCategory(String.valueOf(modelItems.getValueAt(selectedRowItem, 2)));
-        selectedItem.setItemType(String.valueOf(modelItems.getValueAt(selectedRowItem, 3)));
-        selectedItem.setStock(Integer.parseInt(String.valueOf(modelItems.getValueAt(selectedRowItem, 4))));
-        selectedItem.setStatus(Item.Status.valueOf(String.valueOf(modelItems.getValueAt(selectedRowItem, 5))));
-        
-        String uppercase = selectedItem.getStatus().name();
-        String status = uppercase.substring(0, 1).toUpperCase() + uppercase.substring(1).toLowerCase();
-        
-        lblID.setText(selectedItem.getItemID());
-        lblName.setText(selectedItem.getItemName());
-        lblCategory.setText(selectedItem.getItemCategory());
-        lblType.setText(selectedItem.getItemType());
-        txtStocks.setText(String.valueOf(selectedItem.getStock()));       
-        cmbStatus.setSelectedItem(status);
-        
-        txtStocks.enable(true);
-        cmbStatus.enable(true);
-        checkboxConfirmation.setEnabled(true);
-    }//GEN-LAST:event_tableItemsMouseReleased
+    private void tableStockReportListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStockReportListMouseClicked
+        if (evt.getClickCount() == 2 && tableStockReportList.getSelectedRow() != -1) {
+            int selectedRow = tableStockReportList.getSelectedRow();
+
+            // Extract data from the selected row
+            // Parse separately
+            String date = String.valueOf(tableStockReportList.getValueAt(selectedRow, 1));
+            String time = String.valueOf(tableStockReportList.getValueAt(selectedRow, 2));
+            LocalDate datePart = LocalDate.parse(date, dateFormatter);
+            LocalTime timePart = LocalTime.parse(time, timeFormatter);
+
+            // Combine into LocalDateTime
+            LocalDateTime dateTime = LocalDateTime.of(datePart, timePart);
+
+            selectedReport.setReportID(String.valueOf(tableStockReportList.getValueAt(selectedRow, 0)));
+            selectedReport.setDateTime(dateTime);
+            selectedReport.setMessage(String.valueOf(tableStockReportList.getValueAt(selectedRow, 3)));
+            ViewStockReport stockReport = new ViewStockReport(selectedReport);
+            stockReport.setLocationRelativeTo(this);
+            stockReport.setVisible(true);
+        }
+    }//GEN-LAST:event_tableStockReportListMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        POTab();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void btnVerifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerifyActionPerformed
+        int response = JOptionPane.showConfirmDialog(
+            null,
+            "Are you sure with the Selection?",
+            "Confirm",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (response == JOptionPane.NO_OPTION) {
+            return;
+        }
+
+        PurchaseOrder.Status newStatus = PurchaseOrder.Status.VERIFIED;
+
+        PurchaseOrder newPO = PurchaseOrder.getPoById(selectedPO.getPOID());
+        newPO.setStatus(newStatus);
+        newPO.updateStatus();
+
+        POTab();
+    }//GEN-LAST:event_btnVerifyActionPerformed
+
+    private void tablePOItemMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablePOItemMouseReleased
+        selectedRowPOItem = tablePOItem.getSelectedRow();
+
+        selectedPOItem.setItemID(String.valueOf(modelPOItems.getValueAt(selectedRowPOItem, 0)));
+        selectedPOItem.setItemName(String.valueOf(modelPOItems.getValueAt(selectedRowPOItem, 1)));
+        selectedPOItem.setItemCategory(String.valueOf(modelPOItems.getValueAt(selectedRowPOItem, 2)));
+        selectedPOItem.setItemType(String.valueOf(modelPOItems.getValueAt(selectedRowPOItem, 3)));
+        selectedPOItem.setQuantity(Integer.parseInt(String.valueOf(modelPOItems.getValueAt(selectedRowPOItem, 4))));
+
+        lblItemID.setText(selectedPOItem.getItemID());
+        lblItemName.setText(selectedPOItem.getItemName());
+        lblItemCategory.setText(selectedPOItem.getItemCategory());
+        lblItemType.setText(selectedPOItem.getItemType());
+        lblItemQuantity.setText(String.valueOf(selectedPOItem.getQuantity()));
+    }//GEN-LAST:event_tablePOItemMouseReleased
+
+    private void btnInvalidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInvalidActionPerformed
+        int response = JOptionPane.showConfirmDialog(
+            null,
+            "Are you sure with the Selection?",
+            "Confirm",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (response == JOptionPane.NO_OPTION) {
+            return;
+        }
+        PurchaseOrder.Status newStatus = PurchaseOrder.Status.INVALID;
+
+        PurchaseOrder newPO = PurchaseOrder.getPoById(selectedPO.getPOID());
+        newPO.setStatus(newStatus);
+        newPO.updateStatus();
+
+        POTab();
+    }//GEN-LAST:event_btnInvalidActionPerformed
+
+    private void checkboxVerifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkboxVerifyActionPerformed
+        if(checkboxVerify.isSelected()){
+            btnVerify.setEnabled(true);
+        }
+        else{
+            btnVerify.setEnabled(false);
+        }
+    }//GEN-LAST:event_checkboxVerifyActionPerformed
+
+    private void tablePOMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablePOMouseReleased
+
+        POItem();
+        supplierList = Supplier.toList();
+
+        checkboxVerify.setSelected(false);
+        btnVerify.setEnabled(false);
+
+        selectedRowPO = tablePO.getSelectedRow();
+
+        selectedPO.setPOID(String.valueOf(modelPO.getValueAt(selectedRowPO, 0)));
+        selectedPO.setSupplierID(String.valueOf(modelPO.getValueAt(selectedRowPO, 1)));
+        String supplierName = Supplier.getNameById(selectedPO.getSupplierID());
+        selectedPO.setDeliveryDate(LocalDate.parse(String.valueOf(modelPO.getValueAt(selectedRowPO, 3))));
+
+        String date = dateFormatter.format(selectedPO.getDeliveryDate());
+
+        lblPOID.setText(selectedPO.getPOID());
+        lblSupplierID.setText(selectedPO.getSupplierID());
+        lblSupplierName.setText(supplierName);
+        lblDeliveryDate.setText(date);
+
+        checkboxVerify.setEnabled(true);
+        btnInvalid.setEnabled(true);
+
+        List<POItem> items = selectedPO.getItems();
+
+        for (POItem item : items) {
+            modelPOItems.addRow(new String[]{
+                item.getItemID(),
+                item.getItemName(),
+                item.getItemCategory(),
+                item.getItemType(),
+                String.valueOf(item.getQuantity())
+            });
+        }
+    }//GEN-LAST:event_tablePOMouseReleased
+
+    //Report
+    //Report
+    //Report
+    //Report
+    //Report
+    private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed
+        String description = null;
+
+        do {
+            description = JOptionPane.showInputDialog(null,
+                "Report Description:",
+                "Report Description",
+                JOptionPane.INFORMATION_MESSAGE);
+
+            if (description == null) {
+                // Cancel clicked
+                return;
+            }
+
+            description = description.trim();
+
+            if (description.isEmpty()) {
+                JOptionPane.showMessageDialog(null,
+                    "Summary cannot be empty.",
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            }
+
+        } while (description.isEmpty());
+
+        itemList = Item.toList();
+
+        List<StockReport> reportList = StockReport.generateStockList(itemList);
+        new StockReport().save(reportList, description);
+        JOptionPane.showMessageDialog(this,"Stock report generated" );
+        StockTab();
+    }//GEN-LAST:event_btnGenerateActionPerformed
+
+    private void btnRefreshItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshItemsActionPerformed
+        ItemTab();
+    }//GEN-LAST:event_btnRefreshItemsActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+
+        int newQuantity;
+
+        String status = String.valueOf(cmbStatus.getSelectedItem());
+        Item.Status newStatus;
+
+        try {
+            newQuantity = Integer.parseInt(txtStocks.getText());
+            if (newQuantity < 0){
+                JOptionPane.showMessageDialog(this, "Please enter a valid Number");
+                return;
+            }
+        } catch (NumberFormatException e){
+            JOptionPane.showMessageDialog(this, "Please enter a valid number");
+            return;
+        }
+
+        newStatus = switch (status) {
+            case "Sufficient" -> Item.Status.SUFFICIENT;
+            case "Shortage" -> Item.Status.SHORTAGE;
+            default -> selectedItem.getStatus();
+        };
+
+        selectedItem.setStock(newQuantity);
+        selectedItem.updateStock();
+        selectedItem.setStatus(newStatus);
+        selectedItem.updateStatus();
+
+        ItemTab();
+    }//GEN-LAST:event_btnEditActionPerformed
 
     private void checkboxConfirmationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkboxConfirmationActionPerformed
         if(checkboxConfirmation.isSelected()){
@@ -784,42 +990,52 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_checkboxConfirmationActionPerformed
 
-    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        
-        int newQuantity;
-        
-        String status = String.valueOf(cmbStatus.getSelectedItem());
-        Item.Status newStatus;
-        
-        try {
-           newQuantity = Integer.parseInt(txtStocks.getText());
-            if (newQuantity < 0){
-                JOptionPane.showMessageDialog(this, "Please enter a valid Number");
-                return;
-            }
-        } catch (NumberFormatException e){
-            JOptionPane.showMessageDialog(this, "Please enter a valid number");
-            return;
-        }      
-        
-        newStatus = switch (status) {
-            case "Sufficient" -> Item.Status.SUFFICIENT;
-            case "Shortage" -> Item.Status.SHORTAGE;
-            default -> selectedItem.getStatus();
-        };
-        
-        selectedItem.setStock(newQuantity);
-        selectedItem.updateStock(); 
-        selectedItem.setStatus(newStatus);
-        selectedItem.updateStatus();
+    //Items
+    //Items
+    //Items
+    //Items
+    //Items
+    private void tableItemsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableItemsMouseReleased
 
-        ItemTab();
-    }//GEN-LAST:event_btnEditActionPerformed
-    
-    private void btnRefreshItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshItemsActionPerformed
-        ItemTab();
-    }//GEN-LAST:event_btnRefreshItemsActionPerformed
-    
+        cmbStatus.setSelectedIndex(-1);
+        checkboxConfirmation.setSelected(false);
+        btnEdit.setEnabled(false);
+
+        selectedRowItem = tableItems.getSelectedRow();
+
+        selectedItem.setItemID(String.valueOf(modelItems.getValueAt(selectedRowItem, 0)));
+        selectedItem.setItemName(String.valueOf(modelItems.getValueAt(selectedRowItem, 1)));
+        selectedItem.setItemCategory(String.valueOf(modelItems.getValueAt(selectedRowItem, 2)));
+        selectedItem.setItemType(String.valueOf(modelItems.getValueAt(selectedRowItem, 3)));
+        selectedItem.setStock(Integer.parseInt(String.valueOf(modelItems.getValueAt(selectedRowItem, 4))));
+        selectedItem.setStatus(Item.Status.valueOf(String.valueOf(modelItems.getValueAt(selectedRowItem, 5))));
+
+        String uppercase = selectedItem.getStatus().name();
+        String status = uppercase.substring(0, 1).toUpperCase() + uppercase.substring(1).toLowerCase();
+
+        lblID.setText(selectedItem.getItemID());
+        lblName.setText(selectedItem.getItemName());
+        lblCategory.setText(selectedItem.getItemCategory());
+        lblType.setText(selectedItem.getItemType());
+        txtStocks.setText(String.valueOf(selectedItem.getStock()));
+        cmbStatus.setSelectedItem(status);
+
+        txtStocks.enable(true);
+        cmbStatus.enable(true);
+        checkboxConfirmation.setEnabled(true);
+    }//GEN-LAST:event_tableItemsMouseReleased
+
+    private void btnProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProfileActionPerformed
+        ViewProfile vp = new ViewProfile(this,true,IM.getUID());
+        vp.setVisible(true);
+    }//GEN-LAST:event_btnProfileActionPerformed
+
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
+        Login login = new Login();
+        login.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnLogoutActionPerformed
+        
     private void ItemTab(){
         modelItems.setRowCount(0);
         
@@ -862,72 +1078,6 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         selectedRowItem = -1;
     }
 
-    //Report
-    //Report
-    //Report
-    //Report
-    //Report
-    private void btnGenerateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateActionPerformed
-        String description = null;
-        
-        do {
-            description = JOptionPane.showInputDialog(null, 
-                    "Report Description:", 
-                    "Report Description", 
-                    JOptionPane.INFORMATION_MESSAGE);
-
-            if (description == null) {
-                // Cancel clicked
-                return;
-            }
-
-            description = description.trim();
-
-            if (description.isEmpty()) {
-                JOptionPane.showMessageDialog(null, 
-                    "Summary cannot be empty.", 
-                    "Warning", 
-                    JOptionPane.WARNING_MESSAGE);
-            }
-            
-        } while (description.isEmpty());
-
-        
-        itemList = Item.toList();
-        
-        List<StockReport> reportList = StockReport.generateStockList(itemList);       
-        new StockReport().save(reportList, description);
-        JOptionPane.showMessageDialog(this,"Stock report generated" );
-        StockTab();
-    }//GEN-LAST:event_btnGenerateActionPerformed
-
-    private void tableStockReportListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableStockReportListMouseClicked
-        if (evt.getClickCount() == 2 && tableStockReportList.getSelectedRow() != -1) {
-            int selectedRow = tableStockReportList.getSelectedRow();
-
-            // Extract data from the selected row
-            // Parse separately
-            String date = String.valueOf(tableStockReportList.getValueAt(selectedRow, 1));
-            String time = String.valueOf(tableStockReportList.getValueAt(selectedRow, 2));
-            LocalDate datePart = LocalDate.parse(date, dateFormatter);
-            LocalTime timePart = LocalTime.parse(time, timeFormatter);
-
-            // Combine into LocalDateTime
-            LocalDateTime dateTime = LocalDateTime.of(datePart, timePart);
-            
-            selectedReport.setReportID(String.valueOf(tableStockReportList.getValueAt(selectedRow, 0)));
-            selectedReport.setDateTime(dateTime);
-            selectedReport.setMessage(String.valueOf(tableStockReportList.getValueAt(selectedRow, 3)));
-            ViewStockReport stockReport = new ViewStockReport(selectedReport);
-            stockReport.setLocationRelativeTo(this);
-            stockReport.setVisible(true);
-        }
-    }//GEN-LAST:event_tableStockReportListMouseClicked
-
-    private void btnRefreshStockReportListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshStockReportListActionPerformed
-        StockTab();
-    }//GEN-LAST:event_btnRefreshStockReportListActionPerformed
-
     private void StockTab(){
         modelStockReport.setRowCount(0);
         
@@ -954,117 +1104,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         }
         
     }
-    
-    private void checkboxVerifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkboxVerifyActionPerformed
-        if(checkboxVerify.isSelected()){
-            btnVerify.setEnabled(true);
-        }
-        else{
-            btnVerify.setEnabled(false);
-        }
-    }//GEN-LAST:event_checkboxVerifyActionPerformed
-
-    private void tablePOMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablePOMouseReleased
-
-        POItem();
-        supplierList = Supplier.toList();
-
-        checkboxVerify.setSelected(false);
-        btnVerify.setEnabled(false);
-
-        selectedRowPO = tablePO.getSelectedRow();
-
-        selectedPO.setPOID(String.valueOf(modelPO.getValueAt(selectedRowPO, 0)));
-        selectedPO.setSupplierID(String.valueOf(modelPO.getValueAt(selectedRowPO, 1)));
-        String supplierName = Supplier.getNameById(selectedPO.getSupplierID());
-        selectedPO.setDeliveryDate(LocalDate.parse(String.valueOf(modelPO.getValueAt(selectedRowPO, 3))));
-        
-        String date = dateFormatter.format(selectedPO.getDeliveryDate());
-        
-        lblPOID.setText(selectedPO.getPOID());
-        lblSupplierID.setText(selectedPO.getSupplierID());
-        lblSupplierName.setText(supplierName);
-        lblDeliveryDate.setText(date);
-
-        checkboxVerify.setEnabled(true);
-        btnInvalid.setEnabled(true);
-        
-        List<POItem> items = selectedPO.getItems();
-        
-        for (POItem item : items) {
-            modelPOItems.addRow(new String[]{
-                item.getItemID(),
-                item.getItemName(),
-                item.getItemCategory(),
-                item.getItemType(),
-                String.valueOf(item.getQuantity())
-            });
-        }
-    }//GEN-LAST:event_tablePOMouseReleased
-
-    private void tablePOItemMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablePOItemMouseReleased
-        selectedRowPOItem = tablePOItem.getSelectedRow();
-        
-        selectedPOItem.setItemID(String.valueOf(modelPOItems.getValueAt(selectedRowPOItem, 0)));
-        selectedPOItem.setItemName(String.valueOf(modelPOItems.getValueAt(selectedRowPOItem, 1)));
-        selectedPOItem.setItemCategory(String.valueOf(modelPOItems.getValueAt(selectedRowPOItem, 2)));
-        selectedPOItem.setItemType(String.valueOf(modelPOItems.getValueAt(selectedRowPOItem, 3)));
-        selectedPOItem.setQuantity(Integer.parseInt(String.valueOf(modelPOItems.getValueAt(selectedRowPOItem, 4))));
-        
-        lblItemID.setText(selectedPOItem.getItemID());
-        lblItemName.setText(selectedPOItem.getItemName());
-        lblItemCategory.setText(selectedPOItem.getItemCategory());
-        lblItemType.setText(selectedPOItem.getItemType());
-        lblItemQuantity.setText(String.valueOf(selectedPOItem.getQuantity()));
-    }//GEN-LAST:event_tablePOItemMouseReleased
-
-    private void btnInvalidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInvalidActionPerformed
-        int response = JOptionPane.showConfirmDialog(
-            null, 
-            "Are you sure with the Selection?", 
-            "Confirm", 
-            JOptionPane.YES_NO_OPTION, 
-            JOptionPane.QUESTION_MESSAGE
-        );
-
-        if (response == JOptionPane.NO_OPTION) {
-            return;
-        }
-        PurchaseOrder.Status newStatus = PurchaseOrder.Status.INVALID;
          
-        PurchaseOrder newPO = PurchaseOrder.getPoById(selectedPO.getPOID());
-        newPO.setStatus(newStatus);
-        newPO.updateStatus();
-
-        POTab();
-    }//GEN-LAST:event_btnInvalidActionPerformed
-
-    private void btnVerifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerifyActionPerformed
-        int response = JOptionPane.showConfirmDialog(
-            null, 
-            "Are you sure with the Selection?", 
-            "Confirm", 
-            JOptionPane.YES_NO_OPTION, 
-            JOptionPane.QUESTION_MESSAGE
-        );
-
-        if (response == JOptionPane.NO_OPTION) {
-            return;
-        }
-        
-        PurchaseOrder.Status newStatus = PurchaseOrder.Status.VERIFIED;
-         
-        PurchaseOrder newPO = PurchaseOrder.getPoById(selectedPO.getPOID());
-        newPO.setStatus(newStatus);
-        newPO.updateStatus();
-
-        POTab();
-    }//GEN-LAST:event_btnVerifyActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        POTab();
-    }//GEN-LAST:event_jButton1ActionPerformed
-     
     private void POTab(){
          
         POItem();
@@ -1149,39 +1189,39 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(InventoryManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(InventoryManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(InventoryManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(InventoryManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new InventoryManagerDashboard().setVisible(true);
-            }
-        });
-        
-  
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(InventoryManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(InventoryManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(InventoryManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(InventoryManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//        
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new InventoryManagerDashboard().setVisible(true);
+//            }
+//        });
+//        
+//  
+//    }
 
     
 
@@ -1190,6 +1230,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnGenerate;
     private javax.swing.JButton btnInvalid;
     private javax.swing.JButton btnLogout;
+    private javax.swing.JButton btnProfile;
     private javax.swing.JButton btnRefreshItems;
     private javax.swing.JButton btnRefreshStockReportList;
     private javax.swing.JButton btnVerify;
