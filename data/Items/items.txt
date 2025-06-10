@@ -8,7 +8,7 @@ ITM00007	LiteTech USB Keyboard	Electronics	Peripheral	SUP004	59.9	0	NEW
 ITM00008	GoodHealth Toothpaste 150g	Hygiene	Oral Care	SUP003	7.2	0	NEW
 ITM00009	GoodHealth Antibacterial Wipes 50s	Hygiene	Cleaning Supplies	SUP003	9.5	0	NEW
 ITM00010	GoodHealth Hand Sanitizer 100ml	Hygiene	Cleaning Supplies	SUP003	6.9	0	NEW
-ITM00011	SunGro Instant Noodles Chicken 5s	Grocery	Instant Food	SUP001	4.9	0	NEW
+ITM00011	SunGro Instant Noodles Chicken 5s	Grocery	Instant Food	SUP001	4.9	20	SHORTAGE
 ITM00012	SunGro Sardines in Tomato Sauce	Grocery	Canned Food	SUP001	3.8	0	NEW
 ITM00013	SunGro Evaporated Milk 400g	Grocery	Dairy Product	SUP001	3.3	0	NEW
 ITM00014	FreshFarm Apple Juice 1L	Beverage	Juice	SUP006	6.5	0	NEW

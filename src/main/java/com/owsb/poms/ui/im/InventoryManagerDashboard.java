@@ -305,6 +305,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         txtStocks.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         cmbStatus.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        cmbStatus.setForeground(new java.awt.Color(255, 255, 255));
         cmbStatus.setModel(modelStatus);
         cmbStatus.setEnabled(false);
 
