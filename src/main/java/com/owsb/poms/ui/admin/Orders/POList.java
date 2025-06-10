@@ -1,7 +1,7 @@
 package com.owsb.poms.ui.admin.Orders;
 
+import com.owsb.poms.system.model.User.*;
 import com.owsb.poms.system.model.*;
-import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.SwingConstants;
@@ -20,7 +20,7 @@ public class POList extends javax.swing.JDialog {
     } ;
     private String[] poColumnName = {"ID", "From", "Supplier", "Total Price", "Delivery Date", "Created By", "Status"};
 
-    public POList(java.awt.Frame parent, boolean modal, Admin admin) {
+    public POList(java.awt.Frame parent,boolean modal, Admin admin) {
         super(parent, modal);
         initComponents();
         

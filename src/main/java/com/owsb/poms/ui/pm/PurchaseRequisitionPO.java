@@ -3,6 +3,7 @@ package com.owsb.poms.ui.pm;
 
 import javax.swing.*;
 import com.owsb.poms.system.model.*;
+import com.owsb.poms.system.model.User.PurchaseManager;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -12,6 +13,7 @@ import javax.swing.table.*;
 public class PurchaseRequisitionPO extends javax.swing.JFrame {
 
     private int row = -1;
+    private PurchaseManager purchaseManager;
     private List<PurchaseRequisition> prList;
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -212,7 +214,7 @@ public class PurchaseRequisitionPO extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        PurchaseOrderCreationTest tabs = new PurchaseOrderCreationTest();
+        PurchaseOrderCreationTest tabs = new PurchaseOrderCreationTest(this, purchaseManager);
         tabs.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 

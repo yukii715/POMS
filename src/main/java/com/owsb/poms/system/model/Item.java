@@ -21,6 +21,7 @@ public class Item implements hasFile<Item>, hasId, hasStatus{
         NEW,
         SUFFICIENT,
         SHORTAGE,
+        REQUESTING,
         REMOVED
     }
 
@@ -188,6 +189,10 @@ public class Item implements hasFile<Item>, hasId, hasStatus{
                     },           
                 list -> this.saveToFile(list)
         );
+    }
+    
+    public static Item getItemById(String id){
+        return DataHandler.getByKey(toList(), id, Item::getItemID);
     }
     
     public static List<Item> getItemsFromSupplier(String supplierID){

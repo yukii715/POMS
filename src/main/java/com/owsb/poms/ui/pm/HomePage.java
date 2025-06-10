@@ -1,7 +1,7 @@
 
 package com.owsb.poms.ui.pm;
 
-import com.owsb.poms.system.model.POItem;
+import com.owsb.poms.system.model.User.PurchaseManager;
 import com.owsb.poms.system.model.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -56,6 +56,8 @@ public class HomePage extends javax.swing.JFrame {
         setSize(400, 300); 
         initComponents();
         loadPurchaseOrder();
+        new javax.swing.Timer(5000,e -> loadPurchaseOrder()).start();
+
         this.purchaseManager = purchaseManager;
 
         if (tblPO.getRowSorter() == null) {
@@ -246,7 +248,7 @@ public class HomePage extends javax.swing.JFrame {
     }//GEN-LAST:event_prButtonActionPerformed
 
     private void poButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_poButtonActionPerformed
-        PurchaseOrderCreationTest tabs = new PurchaseOrderCreationTest();
+        PurchaseOrderCreationTest tabs = new PurchaseOrderCreationTest(this, purchaseManager);
         tabs.setVisible(true);
     }//GEN-LAST:event_poButtonActionPerformed
 
