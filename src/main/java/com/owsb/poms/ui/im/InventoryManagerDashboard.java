@@ -548,7 +548,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         lblItemID.setForeground(new java.awt.Color(0, 0, 0));
         lblItemID.setText("[Item ID}");
 
-        lblItemName.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblItemName.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         lblItemName.setForeground(new java.awt.Color(0, 0, 0));
         lblItemName.setText("[Item Name]");
 
