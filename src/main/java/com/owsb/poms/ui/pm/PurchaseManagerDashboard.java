@@ -3,6 +3,7 @@ package com.owsb.poms.ui.pm;
 
 import com.owsb.poms.system.model.*;
 import com.owsb.poms.system.model.User.PurchaseManager;
+import com.owsb.poms.system.model.User.User;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import javax.swing.RowFilter;
@@ -19,7 +20,9 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
 private List<PurchaseOrder> PoList;
     private List<PurchaseRequisition> prList;
     private PurchaseManager purchaseManager;
-    
+    private User pm;
+    private String PmUID;
+
     
     private String[] columnName = {"Purchase Order ID","Purchase Requisition ID", "Total Price","Supplier ID", "Date & Time of generated","Delivery Date", "status", "Created By", "Approved By"};
     private DefaultTableModel poTable = new DefaultTableModel(){
@@ -58,6 +61,9 @@ private List<PurchaseOrder> PoList;
         initComponents();
         loadPurchaseOrder();
         this.purchaseManager = purchaseManager;
+        this.PmUID = purchaseManager.getUID();
+        pm = User.getUserById(PmUID);
+        
         jLabel2.setText("Welcome Purchase Manager "+ purchaseManager.getUID());
         new javax.swing.Timer(5000,e -> loadPurchaseOrder()).start();
 
@@ -153,6 +159,7 @@ private List<PurchaseOrder> PoList;
             }
         });
 
+        tblPO.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         tblPO.setModel(poTable);
         tblPO.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -179,7 +186,13 @@ private List<PurchaseOrder> PoList;
             }
         });
 
+        btnPassChange.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         btnPassChange.setText("Change Password");
+        btnPassChange.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPassChangeActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel2.setText("Purchase Manager ID");
@@ -243,7 +256,6 @@ private List<PurchaseOrder> PoList;
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(checkAll)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -282,7 +294,7 @@ private List<PurchaseOrder> PoList;
     }//GEN-LAST:event_poButtonActionPerformed
 
     private void btnLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutActionPerformed
-        this.dispose();
+        purchaseManager.logout(this);
     }//GEN-LAST:event_btnLogOutActionPerformed
 
     private void tblPOMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPOMouseClicked
@@ -331,6 +343,11 @@ private List<PurchaseOrder> PoList;
         sorter.setRowFilter(filter);
     }
     }//GEN-LAST:event_checkAllActionPerformed
+
+    private void btnPassChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPassChangeActionPerformed
+        PasswordChange passChange = new PasswordChange(this, PmUID);
+        passChange.setVisible(true);
+    }//GEN-LAST:event_btnPassChangeActionPerformed
 
     /**
      * @param args the command line arguments

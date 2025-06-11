@@ -21,7 +21,7 @@ public class Items extends javax.swing.JFrame {
         itemList = Item.toList();
         jTable1.getColumnModel().getColumn(1).setPreferredWidth(100);
         jTable1.getColumnModel().getColumn(2).setPreferredWidth(100);
-        jTable1.getColumnModel().getColumn(3).setPreferredWidth(150);
+        jTable1.getColumnModel().getColumn(3).setPreferredWidth(200);
         jTable1.getColumnModel().getColumn(6).setPreferredWidth(100);
 
         

@@ -159,6 +159,7 @@ public class Suppliers extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        jTable3.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         jTable3.setModel(suppliersTable);
         jScrollPane3.setViewportView(jTable3);
 
