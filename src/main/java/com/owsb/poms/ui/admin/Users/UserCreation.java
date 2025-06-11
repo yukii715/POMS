@@ -269,7 +269,7 @@ public class UserCreation extends javax.swing.JDialog {
                  + "*All employees must be 16 years of age or older", 
                    "Error", 
                    JOptionPane.ERROR_MESSAGE
-           );
+            );
                 return;
         }
         
