@@ -187,6 +187,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("OWSB Inventory Management");
 
+        btnLogout.setBackground(new java.awt.Color(255, 102, 102));
         btnLogout.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         btnLogout.setText("Log Out");
         btnLogout.addActionListener(new java.awt.event.ActionListener() {
