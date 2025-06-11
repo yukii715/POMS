@@ -14,6 +14,7 @@ public class UserValidation {
     }
     
     public static boolean validBirthday(String birthday){
+        if (birthday.length() != 8) return false;
         LocalDate birthDate;
         try{
             int year = Integer.parseInt(birthday.substring(0, 4));

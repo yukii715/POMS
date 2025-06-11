@@ -2,7 +2,7 @@ package com.owsb.poms.ui.sm;
 
 import com.owsb.poms.system.functions.*;
 import com.owsb.poms.system.model.*;
-import com.owsb.poms.system.model.User.*;
+import com.owsb.poms.system.model.User.SalesManager;
 import java.awt.CardLayout;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -129,13 +129,15 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         lblEmail = new javax.swing.JLabel();
         pnlChangePassword = new javax.swing.JPanel();
         jLabel31 = new javax.swing.JLabel();
+        jLabel41 = new javax.swing.JLabel();
         jLabel32 = new javax.swing.JLabel();
         jLabel36 = new javax.swing.JLabel();
-        txtPassword = new javax.swing.JTextField();
-        txtPasswordConf = new javax.swing.JTextField();
         btnChangePassword = new javax.swing.JButton();
         jScrollPane6 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        txtPassword = new javax.swing.JPasswordField();
+        txtPasswordNew = new javax.swing.JPasswordField();
+        txtPasswordConf = new javax.swing.JPasswordField();
         frmDailyItemSales = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         btnSalesUpdate = new javax.swing.JButton();
@@ -257,7 +259,6 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         cmbEditPRDay = new javax.swing.JComboBox<>();
         btnDeletePR = new javax.swing.JButton();
         btnEditPRReturn = new javax.swing.JButton();
-        temp = new javax.swing.JPanel();
         btnDailyItemSales = new javax.swing.JButton();
         btnItemList = new javax.swing.JButton();
         btnSupplierList = new javax.swing.JButton();
@@ -340,6 +341,11 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         jLabel31.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel31.setText("Change Password");
 
+        jLabel41.setFont(new java.awt.Font("High Tower Text", 0, 18)); // NOI18N
+        jLabel41.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel41.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        jLabel41.setText("Current Password:");
+
         jLabel32.setFont(new java.awt.Font("High Tower Text", 0, 18)); // NOI18N
         jLabel32.setForeground(new java.awt.Color(0, 0, 0));
         jLabel32.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
@@ -349,10 +355,6 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         jLabel36.setForeground(new java.awt.Color(0, 0, 0));
         jLabel36.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel36.setText("Confirm Password:");
-
-        txtPassword.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
-        txtPasswordConf.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         btnChangePassword.setText("Confirm");
         btnChangePassword.addActionListener(new java.awt.event.ActionListener() {
@@ -375,34 +377,45 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         jTextArea1.setFocusable(false);
         jScrollPane6.setViewportView(jTextArea1);
 
+        txtPassword.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        txtPasswordNew.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        txtPasswordConf.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
         javax.swing.GroupLayout pnlChangePasswordLayout = new javax.swing.GroupLayout(pnlChangePassword);
         pnlChangePassword.setLayout(pnlChangePasswordLayout);
         pnlChangePasswordLayout.setHorizontalGroup(
             pnlChangePasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlChangePasswordLayout.createSequentialGroup()
+                .addContainerGap(57, Short.MAX_VALUE)
+                .addGroup(pnlChangePasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlChangePasswordLayout.createSequentialGroup()
+                        .addGap(120, 120, 120)
+                        .addComponent(btnChangePassword, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(51, 51, 51))
             .addGroup(pnlChangePasswordLayout.createSequentialGroup()
                 .addGroup(pnlChangePasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlChangePasswordLayout.createSequentialGroup()
                         .addGap(95, 95, 95)
                         .addComponent(jLabel31, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlChangePasswordLayout.createSequentialGroup()
-                        .addGap(171, 171, 171)
-                        .addComponent(btnChangePassword, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(pnlChangePasswordLayout.createSequentialGroup()
-                .addGroup(pnlChangePasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlChangePasswordLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(pnlChangePasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel36, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addGroup(pnlChangePasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtPasswordConf, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(pnlChangePasswordLayout.createSequentialGroup()
-                        .addGap(51, 51, 51)
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 57, Short.MAX_VALUE))
+                        .addGroup(pnlChangePasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(pnlChangePasswordLayout.createSequentialGroup()
+                                .addComponent(jLabel41, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(pnlChangePasswordLayout.createSequentialGroup()
+                                .addGroup(pnlChangePasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel36, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel32, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(pnlChangePasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtPasswordNew, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtPasswordConf, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlChangePasswordLayout.setVerticalGroup(
             pnlChangePasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -411,17 +424,21 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
                 .addComponent(jLabel31)
                 .addGap(18, 18, 18)
                 .addGroup(pnlChangePasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel32)
+                    .addComponent(jLabel41)
                     .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlChangePasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlChangePasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel32)
+                    .addComponent(txtPasswordNew, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnlChangePasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel36)
                     .addComponent(txtPasswordConf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnChangePassword, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24))
+                .addGap(26, 26, 26))
         );
 
         javax.swing.GroupLayout frmDashboardLayout = new javax.swing.GroupLayout(frmDashboard);
@@ -481,7 +498,7 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
                     .addComponent(lblEmail))
                 .addGap(36, 36, 36)
                 .addComponent(pnlChangePassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(90, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         mainFrame.add(frmDashboard, "frmDashboard");
@@ -880,7 +897,6 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         });
 
         cmbItemCategory.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cmbItemCategory.setMaximumRowCount(100000);
         cmbItemCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Category" }));
         cmbItemCategory.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -905,7 +921,6 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         });
 
         cmbItemType.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cmbItemType.setMaximumRowCount(100000);
         cmbItemType.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Type" }));
         cmbItemType.setEnabled(false);
         cmbItemType.setFocusable(false);
@@ -928,7 +943,6 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         jLabel26.setText("Item Supplier:");
 
         cmbItemSupplier.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cmbItemSupplier.setMaximumRowCount(100000);
         cmbItemSupplier.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select Supplier" }));
         cmbItemSupplier.setEnabled(false);
         cmbItemSupplier.setFocusable(false);
@@ -1588,6 +1602,11 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         cmbEditPRDay.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         btnDeletePR.setText("Delete PR");
+        btnDeletePR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeletePRActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -1683,19 +1702,6 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
 
         mainFrame.add(frmEditPurchaseReq, "frmEditPurchaseReq");
 
-        javax.swing.GroupLayout tempLayout = new javax.swing.GroupLayout(temp);
-        temp.setLayout(tempLayout);
-        tempLayout.setHorizontalGroup(
-            tempLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1156, Short.MAX_VALUE)
-        );
-        tempLayout.setVerticalGroup(
-            tempLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 657, Short.MAX_VALUE)
-        );
-
-        mainFrame.add(temp, "card7");
-
         btnDailyItemSales.setFont(new java.awt.Font("MV Boli", 1, 12)); // NOI18N
         btnDailyItemSales.setText("Daily Item Sales");
         btnDailyItemSales.addActionListener(new java.awt.event.ActionListener() {
@@ -1740,14 +1746,14 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
                         .addComponent(mainFrame, javax.swing.GroupLayout.PREFERRED_SIZE, 1160, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(backgroundLayout.createSequentialGroup()
                         .addGap(120, 120, 120)
-                        .addComponent(btnDailyItemSales, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(120, 120, 120)
-                        .addComponent(btnItemList, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(120, 120, 120)
-                        .addComponent(btnSupplierList, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(120, 120, 120)
-                        .addComponent(btnPurchaseReq, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnDailyItemSales, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(89, 89, 89)
+                        .addComponent(btnItemList, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(98, 98, 98)
+                        .addComponent(btnSupplierList, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(89, 89, 89)
+                        .addComponent(btnPurchaseReq, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         backgroundLayout.setVerticalGroup(
             backgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2045,10 +2051,13 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
                 for(Item item : itemList){
                     if(item.getItemID().equals(itemID)){
                         item.setStatus(Item.Status.REMOVED);
+                        item.saveToFile(itemList);
                         break;
                     }
                 }
                 editItemListTableModel.removeRow(row);
+                getFrame(mainFrame, frmItemList);
+                displayItemList();
             }
         } else{
             JOptionPane.showMessageDialog(this, "Please select a row to be deleted", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -2057,28 +2066,21 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
 
     private void btnSupplierAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSupplierAddActionPerformed
         String newSupplier = txtSupplierName.getText().trim();
-        boolean exists = false;
         
         if(newSupplier.isEmpty()){
             JOptionPane.showMessageDialog(this, "Supplier name cannot be empty", "ERROR", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
         for(Supplier sp : supplierList){
             if(!sp.isDeleted() && sp.getSupplierName().equalsIgnoreCase(newSupplier)){
-                exists = true;
-                break;
+                JOptionPane.showMessageDialog(this, "Supplier record exists", "ERROR", JOptionPane.ERROR_MESSAGE);
+                return;
             }
         }
-        
-        if(!exists){
-            Supplier spNew = new Supplier(newSupplier);
-            spNew.add();
-            JOptionPane.showMessageDialog(this, "Supplier added successfully!");
-            displaySupplierList();
-        } else{
-            JOptionPane.showMessageDialog(this, "Supplier record exists", "ERROR", JOptionPane.ERROR_MESSAGE);
-        }
+        Supplier spNew = new Supplier(newSupplier);
+        spNew.add();
+        JOptionPane.showMessageDialog(this, "Supplier added successfully!");
+        displaySupplierList();
     }//GEN-LAST:event_btnSupplierAddActionPerformed
 
     private void btnSupplierDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSupplierDeleteActionPerformed
@@ -2090,6 +2092,7 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
                 for(Supplier sp : supplierList){
                     if(sp.getSupplierID().equals(supplierID)){
                         sp.setIsDeleted(true);
+                        sp.saveToFile(supplierList);
                         break;
                     }
                 }
@@ -2369,9 +2372,14 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPasswordActionPerformed
 
     private void btnChangePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangePasswordActionPerformed
-        String newPassword = txtPassword.getText().trim();
+        String currentPassword = txtPassword.getText().trim();
+        String newPassword = txtPasswordNew.getText().trim();
         String confirmPassword = txtPasswordConf.getText().trim();
         
+        if(!me.getHash(currentPassword).equals(me.getPasswordHash())){
+            JOptionPane.showMessageDialog(this, "Current password is incorrect", "ERROR", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         if(!newPassword.equals(confirmPassword)){
             JOptionPane.showMessageDialog(this, "Password does not match", "ERROR", JOptionPane.ERROR_MESSAGE);
             return;
@@ -2380,28 +2388,45 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Password cannot be empty", "ERROR", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        String pattern = "^(?=\\S{8,20}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?])$";
+        String pattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#&*_+=:;?,.]).{8,20}$";
         if(!newPassword.matches(pattern)){
             JOptionPane.showMessageDialog(this,
                 "Password must:\n"
               + "- Be 8–20 characters long\n"
-              + "- Include uppercase, lowercase, number, and special character\n"
-              + "- Must not contain spaces",
+              + "- Include uppercase, lowercase, number, and special character",
                 "ERROR", JOptionPane.ERROR_MESSAGE);
             return;
         }
         int choice = JOptionPane.showConfirmDialog(this, "Confirm to change password?", "Change Password", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if(choice == JOptionPane.YES_OPTION){
-            me.setPasswordHash(me.getHash(newPassword));
+            me.changePassword(newPassword);
             JOptionPane.showMessageDialog(this, "Successfully changed password");
         }
         txtPassword.setText("");
+        txtPasswordNew.setText("");
         txtPasswordConf.setText("");
     }//GEN-LAST:event_btnChangePasswordActionPerformed
 
     private void btnLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutActionPerformed
-        // TODO add your handling code here:
+        me.logout(this);
     }//GEN-LAST:event_btnLogOutActionPerformed
+
+    private void btnDeletePRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeletePRActionPerformed
+        int choice = JOptionPane.showConfirmDialog(this, "Confirm to delete purchase requisition?", "Delete Purchase Requisition", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if(choice == JOptionPane.YES_OPTION){
+            String prID = cmbEditPRID.getSelectedItem().toString();
+            purchaseReqList = PurchaseRequisition.toList();
+            for(PurchaseRequisition pr : purchaseReqList){
+                if(pr.getPRID().equals(prID)){
+                    pr.setStatus(PurchaseRequisition.Status.DELETED);
+                    pr.saveToFile(purchaseReqList);
+                    JOptionPane.showMessageDialog(this, "Purchase Requisition Deleted");
+                    getFrame(mainFrame, frmPurchaseReq);
+                    break;
+                }
+            }
+        }
+    }//GEN-LAST:event_btnDeletePRActionPerformed
     
     private final javax.swing.event.DocumentListener totalCalcListener = new javax.swing.event.DocumentListener() {
         public void insertUpdate(javax.swing.event.DocumentEvent e) {
@@ -2614,6 +2639,20 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         lblSaleEntryName.setText("-");
     }
     
+    private void initSaleDateComboBox(){
+        dailySalesList = DailySales.toList();
+        cmbSalesDate.removeAllItems();
+        if(!dailySalesList.isEmpty()){
+            for(int i = dailySalesList.size() - 1; i >= 0; i--){
+                DailySales date = dailySalesList.get(i);
+                cmbSalesDate.addItem(date.getDate().toString());
+            }
+            if(cmbSalesDate.getItemAt(0).equals(today.format(DateTimeFormatter.ofPattern("yyyyMMdd")))){
+                
+            }
+        }
+    }
+    
     private void initAddPRComboBox(){
         purchaseReqList = PurchaseRequisition.toList();
         cmbAddPRSupplierName.removeAllItems();
@@ -2764,6 +2803,7 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel40;
+    private javax.swing.JLabel jLabel41;
     private javax.swing.JLabel jLabel42;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -2804,15 +2844,15 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JTable tblItemList;
     private javax.swing.JTable tblPurchaseReq;
     private javax.swing.JTable tblSupplierList;
-    private javax.swing.JPanel temp;
     private javax.swing.JTextField txtEditItemName;
     private javax.swing.JTextField txtEditItemPrice;
     private javax.swing.JTextField txtItemCategory;
     private javax.swing.JTextField txtItemName;
     private javax.swing.JTextField txtItemPrice;
     private javax.swing.JTextField txtItemType;
-    private javax.swing.JTextField txtPassword;
-    private javax.swing.JTextField txtPasswordConf;
+    private javax.swing.JPasswordField txtPassword;
+    private javax.swing.JPasswordField txtPasswordConf;
+    private javax.swing.JPasswordField txtPasswordNew;
     private javax.swing.JTextField txtSaleEntryPrice;
     private javax.swing.JTextField txtSaleEntryQuantity;
     private javax.swing.JTextField txtSaleEntryTotal;
