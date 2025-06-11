@@ -1,6 +1,5 @@
 package com.owsb.poms.ui.admin;
 
-import com.owsb.poms.system.functions.SecurePassword;
 import com.owsb.poms.system.model.User.*;
 import com.owsb.poms.ui.admin.Inventory.*;
 import com.owsb.poms.system.model.*;
@@ -82,8 +81,9 @@ public class AdminDashboard extends javax.swing.JFrame {
         new CommonMethod().setLabelIcon("/icons/minimise.png", 15, 15, Image.SCALE_SMOOTH, lblMinimise);
         new CommonMethod().setLabelIcon("/icons/maximise.png", 15, 15, Image.SCALE_SMOOTH, lblMaximise);
         new CommonMethod().setLabelIcon("/icons/close.png", 15, 15, Image.SCALE_SMOOTH, lblClose);
-        new CommonMethod().setLabelIcon("/icons/summary.png", 23, 23, Image.SCALE_SMOOTH, lblSummary);
+        new CommonMethod().setLabelIcon("/icons/summary.png", 40, 40, Image.SCALE_SMOOTH, lblSummary);
         new CommonMethod().setLabelIcon("/icons/logout.png", 23, 23, Image.SCALE_SMOOTH, lblLogout1);
+        new CommonMethod().setLabelIcon("/icons/logout2.png", 30, 30, Image.SCALE_SMOOTH, lblLogout2);
         
         
         new CommonMethod().setLabelIcon("/icons/dashboard.png", 30, 30, Image.SCALE_SMOOTH, lblDashboardIcon);
@@ -400,6 +400,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblMaximise = new javax.swing.JLabel();
         lblClose = new javax.swing.JLabel();
         lblSummary = new javax.swing.JLabel();
+        lblLogout2 = new javax.swing.JLabel();
         pnlContent = new javax.swing.JPanel();
         pnlMainContent = new javax.swing.JPanel();
         pnlDashboard = new javax.swing.JPanel();
@@ -418,8 +419,9 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblRole = new javax.swing.JLabel();
         btnCreateUser = new javax.swing.JButton();
         btnChangeUsername = new javax.swing.JButton();
-        btnEditEmail = new javax.swing.JButton();
         btnResetPassoward = new javax.swing.JButton();
+        btnEditBirthday = new javax.swing.JButton();
+        btnDeleteAccount = new javax.swing.JButton();
         pnlSales = new javax.swing.JPanel();
         pnlOrders = new javax.swing.JPanel();
         srlOrder = new javax.swing.JScrollPane();
@@ -645,7 +647,24 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlNavigator.setPreferredSize(new java.awt.Dimension(250, 803));
 
         pnlLogo.setBackground(new java.awt.Color(255, 180, 180));
-        pnlLogo.setLayout(new java.awt.BorderLayout());
+
+        lblLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblLogo.setMaximumSize(new java.awt.Dimension(90, 90));
+        lblLogo.setPreferredSize(new java.awt.Dimension(90, 90));
+
+        javax.swing.GroupLayout pnlLogoLayout = new javax.swing.GroupLayout(pnlLogo);
+        pnlLogo.setLayout(pnlLogoLayout);
+        pnlLogoLayout.setHorizontalGroup(
+            pnlLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlLogoLayout.createSequentialGroup()
+                .addContainerGap(54, Short.MAX_VALUE)
+                .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(56, Short.MAX_VALUE))
+        );
+        pnlLogoLayout.setVerticalGroup(
+            pnlLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(lblLogo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
 
         pnlTabs.setLayout(new java.awt.GridLayout(6, 0));
 
@@ -965,6 +984,11 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblProfilePicture.setMaximumSize(new java.awt.Dimension(60, 0));
         lblProfilePicture.setMinimumSize(new java.awt.Dimension(60, 0));
         lblProfilePicture.setPreferredSize(new java.awt.Dimension(60, 0));
+        lblProfilePicture.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblProfilePictureMouseClicked(evt);
+            }
+        });
         pnlProfile.add(lblProfilePicture, java.awt.BorderLayout.WEST);
 
         pnlUserDetails.setBackground(new java.awt.Color(255, 180, 180));
@@ -990,6 +1014,11 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblLogout1.setMaximumSize(new java.awt.Dimension(60, 0));
         lblLogout1.setMinimumSize(new java.awt.Dimension(30, 0));
         lblLogout1.setPreferredSize(new java.awt.Dimension(30, 0));
+        lblLogout1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblLogout1MouseClicked(evt);
+            }
+        });
         pnlProfile.add(lblLogout1, java.awt.BorderLayout.EAST);
 
         lblProfileDivider.setBackground(new java.awt.Color(243, 220, 220));
@@ -1013,13 +1042,13 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlNavigatorLayout.setHorizontalGroup(
             pnlNavigatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(pnlTabs, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addComponent(pnlLogo, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+            .addComponent(pnlLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(pnlProfile, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         pnlNavigatorLayout.setVerticalGroup(
             pnlNavigatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlNavigatorLayout.createSequentialGroup()
-                .addComponent(pnlLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlLogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlTabs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 331, Short.MAX_VALUE)
@@ -1119,22 +1148,34 @@ public class AdminDashboard extends javax.swing.JFrame {
             }
         });
 
+        lblLogout2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblLogout2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblLogout2MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlToolsLayout = new javax.swing.GroupLayout(pnlTools);
         pnlTools.setLayout(pnlToolsLayout);
         pnlToolsLayout.setHorizontalGroup(
             pnlToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlToolsLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 897, Short.MAX_VALUE)
                 .addGroup(pnlToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlWindowControls, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblSummary, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlToolsLayout.createSequentialGroup()
+                        .addComponent(lblLogout2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblSummary, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         pnlToolsLayout.setVerticalGroup(
             pnlToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlToolsLayout.createSequentialGroup()
                 .addComponent(pnlWindowControls, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
-                .addComponent(lblSummary, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addGroup(pnlToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblSummary, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblLogout2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         pnlContainer.add(pnlTools, java.awt.BorderLayout.NORTH);
@@ -1252,16 +1293,6 @@ public class AdminDashboard extends javax.swing.JFrame {
             }
         });
 
-        btnEditEmail.setBackground(new java.awt.Color(255, 204, 204));
-        btnEditEmail.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnEditEmail.setForeground(new java.awt.Color(0, 0, 0));
-        btnEditEmail.setText("Edit Email");
-        btnEditEmail.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditEmailActionPerformed(evt);
-            }
-        });
-
         btnResetPassoward.setBackground(new java.awt.Color(255, 204, 204));
         btnResetPassoward.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
         btnResetPassoward.setForeground(new java.awt.Color(0, 0, 0));
@@ -1269,6 +1300,26 @@ public class AdminDashboard extends javax.swing.JFrame {
         btnResetPassoward.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnResetPassowardActionPerformed(evt);
+            }
+        });
+
+        btnEditBirthday.setBackground(new java.awt.Color(255, 204, 204));
+        btnEditBirthday.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnEditBirthday.setForeground(new java.awt.Color(0, 0, 0));
+        btnEditBirthday.setText("Edit Birthday");
+        btnEditBirthday.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditBirthdayActionPerformed(evt);
+            }
+        });
+
+        btnDeleteAccount.setBackground(new java.awt.Color(255, 204, 204));
+        btnDeleteAccount.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnDeleteAccount.setForeground(new java.awt.Color(0, 0, 0));
+        btnDeleteAccount.setText("Delete Account");
+        btnDeleteAccount.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteAccountActionPerformed(evt);
             }
         });
 
@@ -1295,8 +1346,9 @@ public class AdminDashboard extends javax.swing.JFrame {
                     .addComponent(lblCreationDateTime)
                     .addComponent(btnCreateUser, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnChangeUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnEditEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnResetPassoward, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnResetPassoward, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEditBirthday, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDeleteAccount, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(68, Short.MAX_VALUE))
         );
         pnlUsersLayout.setVerticalGroup(
@@ -1325,9 +1377,11 @@ public class AdminDashboard extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnChangeUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(btnEditEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
                         .addComponent(btnResetPassoward, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEditBirthday, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDeleteAccount, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(srlUser, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE))
                 .addContainerGap())
@@ -1966,27 +2020,27 @@ public class AdminDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_pnlSouthEastMarginMouseDragged
 
     private void lblSummaryMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSummaryMouseEntered
-        new CommonMethod().setLabelIcon("/icons/summary_select.png", 23, 23, Image.SCALE_SMOOTH, lblSummary);
+        new CommonMethod().setLabelIcon("/icons/summary_select.png", 40, 40, Image.SCALE_SMOOTH, lblSummary);
         lblSummary.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }//GEN-LAST:event_lblSummaryMouseEntered
 
     private void lblSummaryMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSummaryMouseExited
-        new CommonMethod().setLabelIcon("/icons/summary.png", 23, 23, Image.SCALE_SMOOTH, lblSummary);
+        new CommonMethod().setLabelIcon("/icons/summary.png", 40, 40, Image.SCALE_SMOOTH, lblSummary);
         if (summary){
-            new CommonMethod().setLabelIcon("/icons/summary_selected.png", 23, 23, Image.SCALE_SMOOTH, lblSummary);
+            new CommonMethod().setLabelIcon("/icons/summary_selected.png", 40, 40, Image.SCALE_SMOOTH, lblSummary);
         }
     }//GEN-LAST:event_lblSummaryMouseExited
 
     private void lblSummaryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSummaryMouseClicked
         if (!summary){
-            new CommonMethod().setLabelIcon("/icons/summary_selected.png", 23, 23, Image.SCALE_SMOOTH, lblSummary);
+            new CommonMethod().setLabelIcon("/icons/summary_selected.png", 40, 40, Image.SCALE_SMOOTH, lblSummary);
             pnlSummary.setPreferredSize(new Dimension(300, 0));
             pnlSummary.revalidate();
             pnlSummary.repaint();
             summary = true;
         }
         else{
-            new CommonMethod().setLabelIcon("/icons/summary.png", 23, 23, Image.SCALE_SMOOTH, lblSummary);
+            new CommonMethod().setLabelIcon("/icons/summary.png", 40, 40, Image.SCALE_SMOOTH, lblSummary);
             pnlSummary.setPreferredSize(new Dimension(0, 0));
             pnlSummary.revalidate();
             pnlSummary.repaint();
@@ -2269,20 +2323,39 @@ public class AdminDashboard extends javax.swing.JFrame {
         
     }//GEN-LAST:event_btnChangeUsernameActionPerformed
 
-    private void btnEditEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditEmailActionPerformed
-        
-    }//GEN-LAST:event_btnEditEmailActionPerformed
-
     private void btnResetPassowardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetPassowardActionPerformed
         
     }//GEN-LAST:event_btnResetPassowardActionPerformed
+
+    private void btnEditBirthdayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditBirthdayActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEditBirthdayActionPerformed
+
+    private void lblProfilePictureMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblProfilePictureMouseClicked
+        Profile profile = new Profile(this, true, admin);
+        profile.setLocationRelativeTo(this);
+        profile.setVisible(true);
+    }//GEN-LAST:event_lblProfilePictureMouseClicked
+
+    private void btnDeleteAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteAccountActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnDeleteAccountActionPerformed
+
+    private void lblLogout2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblLogout2MouseClicked
+        admin.logout(this);
+    }//GEN-LAST:event_lblLogout2MouseClicked
+
+    private void lblLogout1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblLogout1MouseClicked
+        admin.logout(this);
+    }//GEN-LAST:event_lblLogout1MouseClicked
  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBankSetting;
     private javax.swing.JButton btnChangeSupplierName;
     private javax.swing.JButton btnChangeUsername;
     private javax.swing.JButton btnCreateUser;
-    private javax.swing.JButton btnEditEmail;
+    private javax.swing.JButton btnDeleteAccount;
+    private javax.swing.JButton btnEditBirthday;
     private javax.swing.JButton btnEditItem;
     private javax.swing.JButton btnNewItem;
     private javax.swing.JButton btnNewSupplier;
@@ -2328,6 +2401,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel lblItemType;
     private javax.swing.JLabel lblLogo;
     private javax.swing.JLabel lblLogout1;
+    private javax.swing.JLabel lblLogout2;
     private javax.swing.JLabel lblMaximise;
     private javax.swing.JLabel lblMinimise;
     private javax.swing.JLabel lblName;

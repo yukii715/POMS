@@ -6,6 +6,7 @@ import com.owsb.poms.system.model.*;
 import com.owsb.poms.system.model.User.FinanceManager;
 import com.owsb.poms.system.model.User.User;
 import com.owsb.poms.system.model.company.Bank;
+import java.awt.Color;
 import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,6 +31,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         for (int i = 0; i < FrameTab.getTabCount(); i++) {
         FrameTab.setBackgroundAt(i, new java.awt.Color(255, 107, 149));
         }
+        startBlinkingLabel(WelcomeLabel);
         initUserProfile();
         initApprovePOFunctionality();
         initProcessPaymentFunctionality();
@@ -134,7 +136,8 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
 
         DashboardPanel.setBackground(new java.awt.Color(255, 245, 247));
 
-        UserIdLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 50)); // NOI18N
+        UserIdLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 40)); // NOI18N
+        UserIdLabel.setForeground(new java.awt.Color(255, 51, 51));
         UserIdLabel.setText("User ID : FM001");
 
         logOutButton.setFont(new java.awt.Font("Comic Sans MS", 0, 25)); // NOI18N
@@ -146,6 +149,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         });
 
         WelcomeLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 65)); // NOI18N
+        WelcomeLabel.setForeground(new java.awt.Color(0, 255, 204));
         WelcomeLabel.setText("Welcome Back, Finance Manager!");
 
         ChangePasswordButton.setFont(new java.awt.Font("Comic Sans MS", 0, 60)); // NOI18N
@@ -156,16 +160,22 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             }
         });
 
-        UsernameLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 50)); // NOI18N
-        UsernameLabel.setText("User ID : FM001");
+        UsernameLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 40)); // NOI18N
+        UsernameLabel.setForeground(new java.awt.Color(204, 204, 0));
+        UsernameLabel.setText("Username : FM001");
 
-        EmailLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 50)); // NOI18N
-        EmailLabel.setText("User ID : FM001");
+        EmailLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 40)); // NOI18N
+        EmailLabel.setForeground(new java.awt.Color(0, 204, 51));
+        EmailLabel.setText("Mail : FM001");
 
         javax.swing.GroupLayout DashboardPanelLayout = new javax.swing.GroupLayout(DashboardPanel);
         DashboardPanel.setLayout(DashboardPanelLayout);
         DashboardPanelLayout.setHorizontalGroup(
             DashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DashboardPanelLayout.createSequentialGroup()
+                .addGap(244, 244, 244)
+                .addComponent(ChangePasswordButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(DashboardPanelLayout.createSequentialGroup()
                 .addGroup(DashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(DashboardPanelLayout.createSequentialGroup()
@@ -173,19 +183,15 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                         .addComponent(logOutButton))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DashboardPanelLayout.createSequentialGroup()
                         .addContainerGap(28, Short.MAX_VALUE)
-                        .addComponent(WelcomeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 1027, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(DashboardPanelLayout.createSequentialGroup()
-                        .addGap(287, 287, 287)
-                        .addGroup(DashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(UsernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(UserIdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(EmailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 402, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(WelcomeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 1027, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
-            .addGroup(DashboardPanelLayout.createSequentialGroup()
-                .addGap(244, 244, 244)
-                .addComponent(ChangePasswordButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DashboardPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(DashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(UserIdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 871, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(UsernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 901, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(EmailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18))
         );
         DashboardPanelLayout.setVerticalGroup(
             DashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -961,7 +967,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_BankAccNumberTextfieldActionPerformed
 
     private void logOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logOutButtonActionPerformed
-        // TODO add your handling code here:
+        financeManager.logout(this);
     }//GEN-LAST:event_logOutButtonActionPerformed
 
     private void ProcessPaymentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ProcessPaymentButtonActionPerformed
@@ -1079,7 +1085,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_ViewPurchaseReportButtonActionPerformed
 
     private void ChangePasswordButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangePasswordButtonActionPerformed
-        // TODO add your handling code here:
+        ChangeUserPassword();
     }//GEN-LAST:event_ChangePasswordButtonActionPerformed
 
 // public static void main(String args[]) {
@@ -1090,19 +1096,40 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
 //        });
 //    }
     
-    private final String currentUserId = "FM001";
-    private void initUserProfile() {
-        User user = User.getUserById(currentUserId);
+    private void startBlinkingLabel(JLabel label){
+        Color[] colors = {Color.RED, Color.BLUE, Color.CYAN, Color.PINK, Color.ORANGE,Color.DARK_GRAY, Color.YELLOW, Color.MAGENTA, Color.GREEN, Color.LIGHT_GRAY};
+        
+        javax.swing.Timer timer = new javax.swing.Timer(250,new ActionListener(){
+            int index = 0;
+            public void actionPerformed(ActionEvent e){
+                label.setForeground(colors[index]);
+                index = (index + 1) % colors.length;
+            }
+        });
+        timer.start();
+    }   
     
-    if (user != null) {
-        UserIdLabel.setText(user.getUID());
-        UsernameLabel.setText(user.getUsername());
-        EmailLabel.setText(user.getEmail());
-    } else {
-        UserIdLabel.setText("Unknown");
-        UsernameLabel.setText("-");
-        EmailLabel.setText("-");
+    
+    private final String currentUserId = "FM001";
+    private User currentUser;
+    private void initUserProfile() {
+        currentUser = User.getUserById(currentUserId);
+    
+    if (currentUser != null) {
+        UserIdLabel.setText("User ID :" + currentUser.getUID());
+        UsernameLabel.setText("Username :" +currentUser.getUsername());
+        EmailLabel.setText("Mail :"+currentUser.getEmail());
     }
+    }
+    
+    private void ChangeUserPassword(){
+        String newPassword = JOptionPane.showInputDialog(this,"Please Insert New Password","Change Password!",JOptionPane.PLAIN_MESSAGE);
+        if(newPassword == null | newPassword.trim().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Unknown Password","Alert!",JOptionPane.PLAIN_MESSAGE);
+            return;
+        }
+        currentUser.changePassword(newPassword.trim());
+        JOptionPane.showMessageDialog(this, "Password Change Successfully !!!","Success",JOptionPane.PLAIN_MESSAGE);
     }
     
     
@@ -1184,13 +1211,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     }
     
     
-    private Object[] getRowData(DefaultTableModel model, int rowIndex) {
-        Object[] row = new Object[model.getColumnCount()];
-        for (int col = 0; col < model.getColumnCount(); col++) {
-            row[col] = model.getValueAt(rowIndex, col);
-        }
-        return row;
-    }
+    
     
    DefaultTableModel confirmPOTableModel;
    private void initConfirmPOFunctionality() {
@@ -1239,10 +1260,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
        loadVerifiedPOs();
    }
     
-    Map<String, Object[]> approvedPOMap = new HashMap<>();
-    ArrayList<Object[]> transactionList = new ArrayList<Object[]>();
-    int transactionCounter = 1;
-    
+    Map<String, Object[]> approvedPOMap = new HashMap<>();    
     DefaultTableModel transactionTableModel;
     
     private void initProcessPaymentFunctionality() {
@@ -1280,7 +1298,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         List<Bank> banks = Bank.toList();
         for (Bank b : banks) {
             if (!b.isIsDeleted()) {
-                selectBankComboBox.addItem(b.getBankName()); // 添加银行名称
+                selectBankComboBox.addItem(b.getBankName()); 
 
             }
         }
@@ -1432,7 +1450,6 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     ArrayList<Object[]> requisitionList = new ArrayList<>();
 
     DefaultTableModel supplierTableModel;
-    ArrayList<Object[]> supplierList = new ArrayList<>();
     
     
     

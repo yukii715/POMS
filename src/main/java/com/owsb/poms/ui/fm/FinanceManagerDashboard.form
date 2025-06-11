@@ -92,6 +92,11 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="244" max="-2" attributes="0"/>
+                          <Component id="ChangePasswordButton" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                      </Group>
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
@@ -102,22 +107,17 @@
                                   <EmptySpace pref="28" max="32767" attributes="0"/>
                                   <Component id="WelcomeLabel" min="-2" pref="1027" max="-2" attributes="0"/>
                               </Group>
-                              <Group type="102" attributes="0">
-                                  <EmptySpace min="-2" pref="287" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="UsernameLabel" min="-2" pref="402" max="-2" attributes="0"/>
-                                      <Component id="UserIdLabel" min="-2" pref="402" max="-2" attributes="0"/>
-                                      <Component id="EmailLabel" alignment="0" min="-2" pref="402" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="244" max="-2" attributes="0"/>
-                          <Component id="ChangePasswordButton" min="-2" max="-2" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="UserIdLabel" alignment="1" min="-2" pref="871" max="-2" attributes="0"/>
+                              <Component id="UsernameLabel" alignment="1" min="-2" pref="901" max="-2" attributes="0"/>
+                              <Component id="EmailLabel" alignment="1" min="-2" pref="800" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -145,7 +145,10 @@
                 <Component class="javax.swing.JLabel" name="UserIdLabel">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Comic Sans MS" size="50" style="0"/>
+                      <Font name="Comic Sans MS" size="40" style="0"/>
+                    </Property>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="33" green="33" red="ff" type="rgb"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="User ID : FM001"/>
                   </Properties>
@@ -166,6 +169,9 @@
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                       <Font name="Comic Sans MS" size="65" style="0"/>
                     </Property>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="cc" green="ff" red="0" type="rgb"/>
+                    </Property>
                     <Property name="text" type="java.lang.String" value="Welcome Back, Finance Manager!"/>
                   </Properties>
                 </Component>
@@ -183,17 +189,23 @@
                 <Component class="javax.swing.JLabel" name="UsernameLabel">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Comic Sans MS" size="50" style="0"/>
+                      <Font name="Comic Sans MS" size="40" style="0"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="User ID : FM001"/>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="0" green="cc" red="cc" type="rgb"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Username : FM001"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JLabel" name="EmailLabel">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Comic Sans MS" size="50" style="0"/>
+                      <Font name="Comic Sans MS" size="40" style="0"/>
                     </Property>
-                    <Property name="text" type="java.lang.String" value="User ID : FM001"/>
+                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="33" green="cc" red="0" type="rgb"/>
+                    </Property>
+                    <Property name="text" type="java.lang.String" value="Mail : FM001"/>
                   </Properties>
                 </Component>
               </SubComponents>

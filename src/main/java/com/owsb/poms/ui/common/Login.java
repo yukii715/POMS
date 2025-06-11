@@ -284,7 +284,6 @@ public class Login extends javax.swing.JFrame {
         }
         else{
             JOptionPane.showMessageDialog(this, "Invalid User!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 

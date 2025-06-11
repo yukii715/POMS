@@ -1,12 +1,13 @@
 package com.owsb.poms.system.model.User;
 
 import com.owsb.poms.system.functions.*;
+import static com.owsb.poms.system.functions.SecurePassword.newPassword;
 import com.owsb.poms.system.functions.interfaces.*;
 import com.owsb.poms.system.model.company.OWSB;
-import com.owsb.poms.ui.admin.AdminDashboard;
+import com.owsb.poms.ui.common.Login;
 import java.time.*;
 import java.util.List;
-import javax.swing.JFrame;
+import javax.swing.*;
 
 public class User implements hasFile<User>{
     private String UID;
@@ -222,6 +223,24 @@ public class User implements hasFile<User>{
                 return new FinanceManager(UID, username, email, passwordHash, role, creationDateTime, birthday, isDeleted);
             default:
                 return new User(UID, username, email, passwordHash, role, creationDateTime, birthday, isDeleted);
+        }
+    }
+    
+    public void changePassword(String password){
+        DataHandler.updateFieldAndSave(
+                toList(),
+                user -> user.getUID().equals(this.getUID()),              
+                user -> user.setPasswordHash(this.getHash(password)),           
+                list -> this.saveToFile(list)
+        );
+    }
+    
+    public void logout(JFrame parent){
+        int result = JOptionPane.showConfirmDialog(parent, "Are you sure to logout?", "Logout", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (result == JOptionPane.YES_OPTION) {
+            Login login = new Login();
+            login.setVisible(true);
+            parent.dispose();
         }
     }
 }
