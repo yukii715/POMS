@@ -1,4 +1,6 @@
 package com.owsb.poms.system.model;
+import com.owsb.poms.system.model.Item;
+import java.util.List;
 
 import com.owsb.poms.system.functions.*;
 import java.time.LocalDateTime;
@@ -10,7 +12,7 @@ public class Supplier implements hasFile<Supplier>, hasId{
     private String supplierID;
     private String supplierName;
     private LocalDateTime addedTime;
-    private boolean isDeleted;
+    public boolean isDeleted;
     
     private static final String filePath = "data/Suppliers/suppliers.txt";
     

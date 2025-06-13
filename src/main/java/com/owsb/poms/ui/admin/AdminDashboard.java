@@ -1371,6 +1371,13 @@ public class AdminDashboard extends javax.swing.JFrame {
             }
         });
 
+        lblLogout2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblLogout2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblLogout2MouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlToolsLayout = new javax.swing.GroupLayout(pnlTools);
         pnlTools.setLayout(pnlToolsLayout);
         pnlToolsLayout.setHorizontalGroup(

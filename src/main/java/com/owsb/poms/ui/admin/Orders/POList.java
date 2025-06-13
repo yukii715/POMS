@@ -20,7 +20,7 @@ public class POList extends javax.swing.JDialog {
     } ;
     private String[] poColumnName = {"ID", "From", "Supplier", "Total Price", "Delivery Date", "Created By", "Status"};
 
-    public POList(java.awt.Frame parent, boolean modal, Admin admin) {
+    public POList(java.awt.Frame parent,boolean modal, Admin admin) {
         super(parent, modal);
         initComponents();
         

@@ -1,20 +1,93 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package com.owsb.poms.ui.pm;
+
+import com.owsb.poms.system.model.*;
+import com.owsb.poms.system.model.User.PurchaseManager;
+import com.owsb.poms.system.model.User.User;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import javax.swing.RowFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
  * @author Alvin Serene
  */
-public class PurchaseManagerDashboard extends javax.swing.JFrame {
 
-    /**
-     * Creates new form PurchaseManagerDashboard
-     */
-    public PurchaseManagerDashboard() {
+public class PurchaseManagerDashboard extends javax.swing.JFrame {
+private List<PurchaseOrder> PoList;
+    private List<PurchaseRequisition> prList;
+    private PurchaseManager purchaseManager;
+    private User pm;
+    private String PmUID;
+
+    
+    private String[] columnName = {"Purchase Order ID","Purchase Requisition ID", "Total Price","Supplier ID", "Date & Time of generated","Delivery Date", "status", "Created By", "Approved By"};
+    private DefaultTableModel poTable = new DefaultTableModel(){
+       public boolean isCellEditable(int row, int column){
+           return false;
+       } 
+    } ;    
+    
+    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    
+    private void loadPurchaseOrder(){
+        poTable.setColumnIdentifiers(columnName);
+        poTable.setRowCount(0);
+
+    PoList = POItem.toList();
+
+        for (PurchaseOrder poItem : PoList) {
+            poTable.addRow(new String[]{
+                poItem.getPOID(),
+                poItem.getPRID(),
+                String.format("%.2f", poItem.getTotalPrice()),
+                poItem.getSupplierID(),
+                poItem.getGeneratedDateTime().format(dateTimeFormatter),
+                poItem.getDeliveryDate().format(dateFormatter),
+                poItem.getStatus().name(),
+                poItem.getCreateBy(),
+                poItem.getPerformedBy(),
+            });
+        }
+    }
+    
+    public PurchaseManagerDashboard(PurchaseManager purchaseManager) {
+        setTitle("Purchase Manager Home Page");
+        setSize(400, 300); 
         initComponents();
+        loadPurchaseOrder();
+        this.purchaseManager = purchaseManager;
+        this.PmUID = purchaseManager.getUID();
+        pm = User.getUserById(PmUID);
+        
+        jLabel2.setText("Welcome Purchase Manager "+ purchaseManager.getUID());
+        new javax.swing.Timer(5000,e -> loadPurchaseOrder()).start();
+
+        
+        if (tblPO.getRowSorter() == null) {
+            TableRowSorter<TableModel> sorter = new TableRowSorter<>(tblPO.getModel());
+            tblPO.setRowSorter(sorter);
+        }
+        if (!checkAll.isSelected()) {
+        TableRowSorter<TableModel> sorter = (TableRowSorter<TableModel>) tblPO.getRowSorter();
+        RowFilter<TableModel, Integer> filter = new RowFilter<TableModel, Integer>() {
+            @Override
+            public boolean include(RowFilter.Entry<? extends TableModel, ? extends Integer> entry) {
+                String status = entry.getStringValue(6);
+                if (status == null) return true;
+                status = status.trim().toUpperCase();                
+                return !(status.equals("DELETED") || status.equals("REJECTED")||status.equals("CANCELLED"));            
+            }
+        };
+        sorter.setRowFilter(filter);
+    } else {
+        // Show all rows if checkbox is selected on load
+        ((TableRowSorter<TableModel>) tblPO.getRowSorter()).setRowFilter(null);
+    }
     }
 
     /**
@@ -26,57 +99,303 @@ public class PurchaseManagerDashboard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        itemButton = new javax.swing.JButton();
+        supplierButton = new javax.swing.JButton();
+        prButton = new javax.swing.JButton();
+        poButton = new javax.swing.JButton();
+        btnLogOut = new javax.swing.JButton();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        tblPO = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
+        checkAll = new javax.swing.JCheckBox();
+        btnPassChange = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel1.setText("Purchase Manager");
+
+        itemButton.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        itemButton.setText("View Items");
+        itemButton.setPreferredSize(new java.awt.Dimension(168, 40));
+        itemButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemButtonActionPerformed(evt);
+            }
+        });
+
+        supplierButton.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        supplierButton.setText("View Supplier");
+        supplierButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                supplierButtonActionPerformed(evt);
+            }
+        });
+
+        prButton.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        prButton.setText("View Purchase Requisition");
+        prButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                prButtonActionPerformed(evt);
+            }
+        });
+
+        poButton.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        poButton.setText("Purchase Order");
+        poButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                poButtonActionPerformed(evt);
+            }
+        });
+
+        btnLogOut.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        btnLogOut.setText("Log Out");
+        btnLogOut.setMinimumSize(new java.awt.Dimension(75, 25));
+        btnLogOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogOutActionPerformed(evt);
+            }
+        });
+
+        tblPO.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        tblPO.setModel(poTable);
+        tblPO.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblPOMouseClicked(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tblPOMouseReleased(evt);
+            }
+        });
+        jScrollPane5.setViewportView(tblPO);
+
+        jButton1.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jButton1.setText("Refresh");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        checkAll.setText("Show All");
+        checkAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkAllActionPerformed(evt);
+            }
+        });
+
+        btnPassChange.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        btnPassChange.setText("Change Password");
+        btnPassChange.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPassChangeActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
+        jLabel2.setText("Purchase Manager ID");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(btnPassChange)
+                .addGap(364, 364, 364)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(50, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(237, 237, 237)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnLogOut, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(30, 30, 30))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(itemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(supplierButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(136, 136, 136)
+                            .addComponent(prButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(104, 104, 104)
+                            .addComponent(poButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(47, 47, 47))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 1100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(50, 50, 50)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(checkAll, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(32, 32, 32)
+                                .addComponent(btnPassChange, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addComponent(btnLogOut, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(checkAll)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(poButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(prButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(supplierButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(itemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(35, 35, 35))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void itemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemButtonActionPerformed
+        Items itemsFrame = new Items();  // Create instance of Items JFrame
+        itemsFrame.setVisible(true);
+    }//GEN-LAST:event_itemButtonActionPerformed
+
+    private void supplierButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierButtonActionPerformed
+        Suppliers suppliersFrame = new Suppliers();
+        suppliersFrame.setVisible(true);
+    }//GEN-LAST:event_supplierButtonActionPerformed
+
+    private void prButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_prButtonActionPerformed
+        PurchaseRequisitionPO requisition = new PurchaseRequisitionPO();
+        requisition.setVisible(true);
+    }//GEN-LAST:event_prButtonActionPerformed
+
+    private void poButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_poButtonActionPerformed
+        PurchaseOrderCreationTest tabs = new PurchaseOrderCreationTest(this, purchaseManager);
+        tabs.setVisible(true);
+    }//GEN-LAST:event_poButtonActionPerformed
+
+    private void btnLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutActionPerformed
+        purchaseManager.logout(this);
+    }//GEN-LAST:event_btnLogOutActionPerformed
+
+    private void tblPOMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPOMouseClicked
+         if (evt.getClickCount() == 2 && tblPO.getSelectedRow() != -1) {
+            int row = tblPO.getSelectedRow();
+            
+            PurchaseOrder po = PurchaseOrder.getPoById(String.valueOf(tblPO.getValueAt(row, 0)));
+            PurchaseRequisition pr = PurchaseRequisition.getPrById(po.getPRID());
+        
+            POItemDetails pod = new POItemDetails(po, pr);
+            pod.setLocationRelativeTo(this);
+            pod.setVisible(true);
+            loadPurchaseOrder();
+        }
+    }//GEN-LAST:event_tblPOMouseClicked
+
+    private void tblPOMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPOMouseReleased
+
+    }//GEN-LAST:event_tblPOMouseReleased
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        loadPurchaseOrder();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void checkAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkAllActionPerformed
+        TableRowSorter<TableModel> sorter = (TableRowSorter<TableModel>) tblPO.getRowSorter();
+    if (sorter == null) {
+        sorter = new TableRowSorter<>(tblPO.getModel());
+        tblPO.setRowSorter(sorter);
+    }
+
+    if (checkAll.isSelected()) {
+        // Show all rows
+        sorter.setRowFilter(null);
+    } else {
+        // Filter out rows with status "DELETED" in column 6
+        RowFilter<TableModel, Integer> filter = new RowFilter<TableModel, Integer>() {
+            @Override
+            public boolean include(RowFilter.Entry<? extends TableModel, ? extends Integer> entry) {
+                String status = entry.getStringValue(6); // column 6 for status
+                if (status == null) return true;
+                status = status.trim().toUpperCase();
+                return !(status.equals("DELETED") || status.equals("REJECTED")||status.equals("CANCELLED") || status.equals("INVALID"));  
+            }
+        };
+        sorter.setRowFilter(filter);
+    }
+    }//GEN-LAST:event_checkAllActionPerformed
+
+    private void btnPassChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPassChangeActionPerformed
+        PasswordChange passChange = new PasswordChange(this, PmUID);
+        passChange.setVisible(true);
+    }//GEN-LAST:event_btnPassChangeActionPerformed
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PurchaseManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PurchaseManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PurchaseManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PurchaseManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PurchaseManagerDashboard().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(PurchaseManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(PurchaseManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(PurchaseManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(PurchaseManagerDashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new PurchaseManagerDashboard().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLogOut;
+    private javax.swing.JButton btnPassChange;
+    private javax.swing.JCheckBox checkAll;
+    private javax.swing.JButton itemButton;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JButton poButton;
+    private javax.swing.JButton prButton;
+    private javax.swing.JButton supplierButton;
+    private javax.swing.JTable tblPO;
     // End of variables declaration//GEN-END:variables
 }

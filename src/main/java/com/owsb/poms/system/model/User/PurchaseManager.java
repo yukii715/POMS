@@ -1,7 +1,7 @@
 package com.owsb.poms.system.model.User;
 
 import com.owsb.poms.system.functions.interfaces.hasId;
-import com.owsb.poms.system.model.User.User;
+import com.owsb.poms.ui.pm.PurchaseManagerDashboard;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -20,6 +20,7 @@ public class PurchaseManager extends User implements hasId{
     }
     
     public void login(){
-        
-    }
+        PurchaseManagerDashboard pmDashboard = new PurchaseManagerDashboard(this);
+        pmDashboard.setVisible(true);
+    }  
 }
