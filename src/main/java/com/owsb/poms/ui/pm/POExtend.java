@@ -1,0 +1,404 @@
+
+package com.owsb.poms.ui.pm;
+
+import com.owsb.poms.system.functions.DateResolver;
+import com.owsb.poms.system.model.PurchaseOrder;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+public class POExtend extends javax.swing.JFrame {
+    
+    private LocalDate deliveryDate;
+    private List<PurchaseOrder> PoList;
+    private PurchaseOrder po;
+    private boolean edit = false;
+    private boolean isInitializing = false;
+    private boolean isFilling = false; // prevent action performed when add items
+
+    private String[] columnName = {"Purchase Order ID","Purchase Requisition ID", "Total Price","Supplier ID", "Date & Time of generated","Delivery Date", "status", "Created By", "Approved By"};
+    private DefaultTableModel poTable = new DefaultTableModel(){
+       public boolean isCellEditable(int row, int column){
+           return false;
+       } 
+    } ;  
+    public static List<String> getAllPOIDsFromFile() {
+    List<String> poids = new ArrayList<>();
+    Path poFilePath = Paths.get("data/PO/purchase_order.txt"); // adjust path as needed
+
+    try {
+        List<String> lines = Files.readAllLines(poFilePath);
+        for (String line : lines) {
+            String[] parts = line.split("\\t");
+            if (parts.length > 0) {
+                poids.add(parts[0].trim()); // assuming POID is the first field
+            }
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    return poids;
+}
+
+    private void initializeDateComboBoxes() {
+    // Initialize year combo box with current year and next few years
+    cmbYear.removeAllItems();
+    int currentYear = LocalDate.now().getYear();
+    for (int i = currentYear; i <= currentYear + 5; i++) {
+        cmbYear.addItem(String.valueOf(i));
+    }
+    
+    // Initialize month combo box
+    cmbMonth.removeAllItems();
+    for (int i = 1; i <= 12; i++) {
+        cmbMonth.addItem(String.format("%02d", i));
+    }
+    
+    // Initialize day combo box
+    cmbDay.removeAllItems();
+    updateDayComboBox();
+}
+
+private void updateDayComboBox() {
+    if (cmbYear.getSelectedItem() == null || cmbMonth.getSelectedItem() == null) {
+        return;
+    }
+    
+    cmbDay.removeAllItems();
+    int year = Integer.parseInt(cmbYear.getSelectedItem().toString());
+    int month = Integer.parseInt(cmbMonth.getSelectedItem().toString());
+    
+    YearMonth yearMonth = YearMonth.of(year, month);
+    int daysInMonth = yearMonth.lengthOfMonth();
+    
+    for (int i = 1; i <= daysInMonth; i++) {
+        cmbDay.addItem(String.format("%02d", i));
+    }
+}
+
+private boolean validateExtendedDate() {
+    if (po == null || cmbYear.getSelectedItem() == null || 
+        cmbMonth.getSelectedItem() == null || cmbDay.getSelectedItem() == null) {
+        return false;
+    }
+    
+    int year = Integer.parseInt(cmbYear.getSelectedItem().toString());
+    int month = Integer.parseInt(cmbMonth.getSelectedItem().toString());
+    int day = Integer.parseInt(cmbDay.getSelectedItem().toString());
+    
+    LocalDate selectedDate = LocalDate.of(year, month, day);
+    LocalDate originalDate = po.getDeliveryDate();
+    
+    if (selectedDate.isBefore(originalDate) || selectedDate.isEqual(originalDate)) {
+        JOptionPane.showMessageDialog(this, 
+            "You cannot choose a date earlier than or equal to the original delivery date (" + 
+            originalDate.toString() + ")", 
+            "Invalid Date", 
+            JOptionPane.ERROR_MESSAGE);
+        return false;
+    }
+    
+    return true;
+}
+
+// Example usage:
+private void initialSetting() {
+    isFilling = true;
+    cmbPOID.removeAllItems();
+
+    List<String> poids = getAllPOIDsFromFile(); // assign returned list to a variable
+
+    for (String poid : poids) {
+        PurchaseOrder po = PurchaseOrder.getPoById(poid);
+        if (po != null) {
+            cmbPOID.addItem(poid);
+        }
+    }
+
+    isFilling = false;
+}
+
+    
+    public POExtend() {
+        setTitle("Purchase Order Extension");
+        setSize(400, 300); 
+        initComponents();
+        poTable.setColumnIdentifiers(columnName);
+        cmbYear.removeAllItems();
+    cmbMonth.removeAllItems();
+    cmbDay.removeAllItems();
+    
+    // Add empty item as the first option
+    cmbYear.addItem("");
+    cmbMonth.addItem("");
+    cmbDay.addItem("");
+    
+    // Disable month and day combo boxes initially
+    cmbMonth.setEnabled(false);
+    cmbDay.setEnabled(false);
+        initialSetting();
+                cmbPOID.setSelectedIndex(-1);
+
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jLabel1 = new javax.swing.JLabel();
+        cmbPOID = new javax.swing.JComboBox<>();
+        cmbYear = new javax.swing.JComboBox<>();
+        cmbMonth = new javax.swing.JComboBox<>();
+        cmbDay = new javax.swing.JComboBox<>();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblPO = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jLabel1.setText("Extend Deliver Date to: ");
+
+        cmbPOID.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        cmbPOID.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbPOID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbPOIDActionPerformed(evt);
+            }
+        });
+
+        cmbYear.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        cmbYear.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        cmbMonth.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        cmbMonth.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        cmbDay.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        cmbDay.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        tblPO.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        tblPO.setModel(poTable);
+        jScrollPane1.setViewportView(tblPO);
+
+        jButton1.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jButton1.setText("Confirm");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        jButton2.setText("Cancel Changes");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cmbPOID, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(58, 58, 58)
+                                .addComponent(cmbYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(62, 62, 62)
+                                .addComponent(cmbMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(52, 52, 52)
+                                .addComponent(cmbDay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 623, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(31, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addGap(71, 71, 71))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(cmbPOID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(cmbYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbDay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(35, 35, 35)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void cmbPOIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbPOIDActionPerformed
+    if (isFilling) return;
+    if (cmbPOID.getSelectedIndex() >= 0) {
+        po = PurchaseOrder.getPoById(cmbPOID.getSelectedItem().toString());
+        
+        // Update the table with PO details
+        poTable.setRowCount(0); // Clear existing rows
+        Object[] rowData = {
+            po.getPOID(),
+            po.getPRID(),
+            po.getTotalPrice(),
+            po.getSupplierID(),
+            po.getGeneratedDateTime().toString(),
+            po.getDeliveryDate().toString(),
+            po.getStatus().name(),
+            po.getCreateBy(),
+            po.getPerformedBy()
+        };
+        poTable.addRow(rowData);
+        
+        // Enable and populate date combo boxes
+        isInitializing = true;
+        
+        // Clear and populate year combo box
+        cmbYear.removeAllItems();
+        int currentYear = LocalDate.now().getYear();
+        for (int i = currentYear; i <= currentYear + 5; i++) {
+            cmbYear.addItem(String.valueOf(i));
+        }
+        
+        // Clear and populate month combo box
+        cmbMonth.removeAllItems();
+        for (int i = 1; i <= 12; i++) {
+            cmbMonth.addItem(String.format("%02d", i));
+        }
+        
+        // Enable year combo box
+        cmbYear.setEnabled(true);
+        cmbMonth.setEnabled(true);
+        cmbDay.setEnabled(true);
+        
+        // Set the original delivery date
+        deliveryDate = po.getDeliveryDate();
+        cmbYear.setSelectedItem(String.valueOf(deliveryDate.getYear()));
+        cmbMonth.setSelectedItem(String.format("%02d", deliveryDate.getMonthValue()));
+        updateDayComboBox(); // Update day combo box based on year and month
+        cmbDay.setSelectedItem(String.format("%02d", deliveryDate.getDayOfMonth()));
+        
+        isInitializing = false;
+    } else {
+        // Clear and disable date combo boxes if no PO is selected
+        cmbYear.removeAllItems();
+        cmbYear.addItem("");
+        cmbYear.setEnabled(false);
+        
+        cmbMonth.removeAllItems();
+        cmbMonth.addItem("");
+        cmbMonth.setEnabled(false);
+        
+        cmbDay.removeAllItems();
+        cmbDay.addItem("");
+        cmbDay.setEnabled(false);
+    }
+    }//GEN-LAST:event_cmbPOIDActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        this.dispose();        
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (validateExtendedDate()) {
+        int confirm = JOptionPane.showConfirmDialog(this, 
+            "Are you sure you want to extend the delivery date?", 
+            "Confirm Extension", 
+            JOptionPane.YES_NO_OPTION);
+        
+        if (confirm == JOptionPane.YES_OPTION) {
+            // Update the PO with new delivery date
+            po.setDeliveryDate(LocalDate.of(
+                Integer.parseInt(cmbYear.getSelectedItem().toString()),
+                Integer.parseInt(cmbMonth.getSelectedItem().toString()),
+                Integer.parseInt(cmbDay.getSelectedItem().toString())
+            ));
+            po.setStatus(PurchaseOrder.Status.EXTENDED);
+            po.updateStatus();
+            JOptionPane.showMessageDialog(this, 
+                "Delivery date extended successfully!", 
+                "Success", 
+                JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
+        }
+    }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(POExtend.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(POExtend.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(POExtend.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(POExtend.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new POExtend().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> cmbDay;
+    private javax.swing.JComboBox<String> cmbMonth;
+    private javax.swing.JComboBox<String> cmbPOID;
+    private javax.swing.JComboBox<String> cmbYear;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tblPO;
+    // End of variables declaration//GEN-END:variables
+}
