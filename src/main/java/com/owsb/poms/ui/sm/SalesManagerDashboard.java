@@ -1776,7 +1776,7 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
 
     private void btnDailyItemSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDailyItemSalesActionPerformed
         getFrame(mainFrame, frmDailyItemSales);
-        initComboBox();
+        initSaleDateComboBox();
     }//GEN-LAST:event_btnDailyItemSalesActionPerformed
 
     private void btnItemListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnItemListActionPerformed
@@ -1827,6 +1827,7 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
 
     private void btnSalesUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalesUpdateActionPerformed
         getFrame(mainFrame, frmUpdateSaleEntry);
+        initComboBox();
         lblSaleEntryDate.setText(today.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
     }//GEN-LAST:event_btnSalesUpdateActionPerformed
 
@@ -2647,8 +2648,8 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
                 DailySales date = dailySalesList.get(i);
                 cmbSalesDate.addItem(date.getDate().toString());
             }
-            if(cmbSalesDate.getItemAt(0).equals(today.format(DateTimeFormatter.ofPattern("yyyyMMdd")))){
-                
+            if(!cmbSalesDate.getItemAt(0).equals("DS" + today.format(DateTimeFormatter.ofPattern("yyyyMMdd")))){
+                cmbSalesDate.insertItemAt("TODAY", 0);
             }
         }
     }
