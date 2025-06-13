@@ -4,3 +4,4 @@ SUP003	GoodHealth Products	2025-06-02T17:04:24.763225300	false
 SUP004	LiteTech Electronics	2025-06-02T17:04:33.397594600	false
 SUP005	Mega Tools Hardware	2025-06-02T21:25:17.359907900	false
 SUP006	FreshFarm Products	2025-06-08T16:08:28.046954100	false
+SUP007	Some Random Supplier Name	2025-06-13T22:09:49.066988100	true

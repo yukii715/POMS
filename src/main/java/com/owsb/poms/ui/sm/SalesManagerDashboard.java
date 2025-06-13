@@ -2349,6 +2349,7 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
 
     private void btnSaleEntryConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaleEntryConfirmActionPerformed
         boolean exists = true;
+        itemList = Item.toList();
         dailySalesList = DailySales.toList();
         String todayID = String.format("DS%s", today.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
         String itemID = (String) cmbSaleEntryID.getSelectedItem();
@@ -2356,15 +2357,23 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         String itemType = (String) cmbSaleEntryType.getSelectedItem();
         String itemName = lblSaleEntryName.getText();
         int quantity = Integer.parseInt(txtSaleEntryQuantity.getText());
+        int stock = 0;
         double sellPrice = Double.parseDouble(txtSaleEntryPrice.getText());
+        for(Item item : itemList){
+            if(item.getItemID().equals(itemID)){
+                stock = item.getStock() - quantity;
+                item.setStock(item.getStock() - quantity);
+            }
+        }
         
-        DSItem dsItem = new DSItem(itemID, itemCategory, itemType, itemName, quantity, sellPrice);
+        DSItem dsItem = new DSItem(itemID, itemCategory, itemType, itemName, quantity, stock, sellPrice);
         dsItem.setSalesID(todayID);
         
         String filePath = "data/Sales/" + todayID + ".txt";
         todayItems = DSItem.read(filePath);
         todayItems.add(dsItem);
         dsItem.save(todayItems);
+        itemList.get(0).saveToFile(itemList);
         
         JOptionPane.showMessageDialog(this, "Sale Entry Saved Successfully!");
         

@@ -1,5 +1,7 @@
 package com.owsb.poms.ui.common;
 
+import com.owsb.poms.system.functions.UserValidation;
+import com.owsb.poms.system.model.Notification;
 import com.owsb.poms.system.model.User.Admin;
 import com.owsb.poms.system.model.User.FinanceManager;
 import com.owsb.poms.system.model.User.InventoryManager;
@@ -120,6 +122,7 @@ public class Login extends javax.swing.JFrame {
         lblPassword = new javax.swing.JLabel();
         txtPassword = new javax.swing.JPasswordField();
         btnLogin = new javax.swing.JButton();
+        lblForgotPassword = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("POMS");
@@ -260,7 +263,18 @@ public class Login extends javax.swing.JFrame {
             }
         });
         pnlInfo.add(btnLogin);
-        btnLogin.setBounds(145, 378, 108, 39);
+        btnLogin.setBounds(150, 390, 108, 39);
+
+        lblForgotPassword.setFont(new java.awt.Font("Comic Sans MS", 0, 11)); // NOI18N
+        lblForgotPassword.setForeground(new java.awt.Color(51, 51, 255));
+        lblForgotPassword.setText("Forgot Password");
+        lblForgotPassword.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblForgotPasswordMouseClicked(evt);
+            }
+        });
+        pnlInfo.add(lblForgotPassword);
+        lblForgotPassword.setBounds(70, 320, 120, 15);
 
         getContentPane().add(pnlInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 0, 400, 550));
 
@@ -309,10 +323,29 @@ public class Login extends javax.swing.JFrame {
         login();
     }//GEN-LAST:event_txtUserActionPerformed
 
+    private void lblForgotPasswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblForgotPasswordMouseClicked
+        lblForgotPassword.setForeground(Color.MAGENTA);
+        String sendBy = JOptionPane.showInputDialog(this, "Your ID:", "Forgot Password", JOptionPane.INFORMATION_MESSAGE);
+        if (!UserValidation.exitedId(sendBy)){
+            JOptionPane.showMessageDialog(
+                    this, 
+                    "Invalid UID!", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+        
+        JOptionPane.showMessageDialog(this, "Password reset request has been sent!");
+        Notification notification = new Notification(sendBy);
+        notification.add();
+    }//GEN-LAST:event_lblForgotPasswordMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLogin;
     private javax.swing.JLabel lblClose;
+    private javax.swing.JLabel lblForgotPassword;
     private javax.swing.JLabel lblLoginTitle;
     private javax.swing.JLabel lblLogo;
     private javax.swing.JLabel lblPassword;
