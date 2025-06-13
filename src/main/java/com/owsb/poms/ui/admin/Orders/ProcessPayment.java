@@ -409,31 +409,31 @@ public class ProcessPayment extends javax.swing.JDialog {
             Transaction transaction = new Transaction(po.getPOID(), bank.getBankName(), bank.getAccountNumber(), bankTo, accountNumber, amount, details, processBy);
             transaction.add();
             
-                String message = po.isFullyPaid() ? 
-                        String.format(
-                                "Process Payment Successfully!%n"
-                              + "Order %s has been set as Completed!", 
-                                po.getPOID()
-                        ):
-                        String.format("Process Payment Successfully!%n"
-                              + "Total    : RM %.2f%n"
-                              + "Paid     : RM %.2f%n"
-                              + "Remaining: RM %.2f", 
-                                po.getTotalPrice(),
-                                paid,
-                                hasToPay
-                        );
+            String message = po.isFullyPaid() ? 
+                    String.format(
+                            "Process Payment Successfully!%n"
+                          + "Order %s has been set as Completed!", 
+                            po.getPOID()
+                    ):
+                    String.format("Process Payment Successfully!%n"
+                          + "Total    : RM %.2f%n"
+                          + "Paid     : RM %.2f%n"
+                          + "Remaining: RM %.2f", 
+                            po.getTotalPrice(),
+                            paid,
+                            hasToPay
+                    );
 
-                if (po.isFullyPaid()){
-                    po.setStatus(PurchaseOrder.Status.COMPLETED);
-                    po.updateStatus();
-                }
-
-                JOptionPane.showMessageDialog(this, message);
-
-                dispose();
-                parent.dispose();
+            if (po.isFullyPaid()){
+                po.setStatus(PurchaseOrder.Status.COMPLETED);
+                po.updateStatus();
             }
+
+            JOptionPane.showMessageDialog(this, message);
+
+            dispose();
+            parent.dispose();
+        }
         dispose();
     }//GEN-LAST:event_btnProcessPaymentActionPerformed
 

@@ -15,6 +15,7 @@ public class Report implements hasFile<Report>{
 
     public enum type{
         StockReport,
+        StockUpdateReport,
         PurchaseReport
     }
     
