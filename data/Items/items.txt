@@ -4,13 +4,13 @@ ITM00003	SunGro Brown Sugar 1kg	Grocery	Dry Ingredient	SUP001	4.7	0	NEW
 ITM00004	LiteTech Wireless Mouse	Electronics	Peripheral	SUP004	49.9	0	NEW
 ITM00005	Green Basket Green Tea 500ml	Beverage	Tea	SUP002	14.5	0	NEW
 ITM00006	MegaTools Hammer 16oz	Hardware	Hand Tool	SUP005	22.0	0	NEW
-ITM00007	LiteTech USB Keyboard	Electronics	Peripheral	SUP004	59.9	0	NEW
+ITM00007	LiteTech USB Keyboard	Electronics	Peripheral	SUP004	59.9	40	SUFFICIENT
 ITM00008	GoodHealth Toothpaste 150g	Hygiene	Oral Care	SUP003	7.2	0	NEW
 ITM00009	GoodHealth Antibacterial Wipes 50s	Hygiene	Cleaning Supplies	SUP003	9.5	0	NEW
 ITM00010	GoodHealth Hand Sanitizer 100ml	Hygiene	Cleaning Supplies	SUP003	6.9	0	NEW
 ITM00011	SunGro Instant Noodles Chicken 5s	Grocery	Instant Food	SUP001	4.9	0	NEW
 ITM00012	SunGro Sardines in Tomato Sauce	Grocery	Canned Food	SUP001	3.8	0	NEW
-ITM00013	SunGro Evaporated Milk 400g	Grocery	Dairy Product	SUP001	3.3	0	NEW
+ITM00013	SunGro Evaporated Milk 400g	Grocery	Dairy Product	SUP001	3.3	20	NEW
 ITM00014	FreshFarm Apple Juice 1L	Beverage	Juice	SUP006	6.5	0	NEW
 ITM00015	FreshFarm Fresh Eggs Grade A 10s	Grocery	Fresh Produce	SUP006	8.0	0	NEW
 ITM00016	FreshFarm Lettuce (per kg)	Grocery	Fresh Produce	SUP006	4.5	0	NEW
@@ -22,3 +22,4 @@ ITM00021	LiteTech LED Bulb 10W	Electronics	Home Appliance	SUP004	8.9	0	NEW
 ITM00022	Green Basket Organic Oats 500g	Grocery	Organic Food	SUP002	9.9	0	NEW
 ITM00023	Green Basket Herbal Tea 30s	Beverage	Organic Tea	SUP002	15.5	0	NEW
 ITM00024	Green Basket Organic Brown Rice 2kg	Grocery	Organic Food	SUP002	14.0	0	NEW
+ITM00025	bread	Grocery	Staple Food	SUP001	9.0	0	REMOVED
