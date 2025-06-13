@@ -1,1 +1,1 @@
-ITM00014	Beverage	Juice	FreshFarm Apple Juice 1L	30	4.0
+ITM00014	Beverage	Juice	FreshFarm Apple Juice 1L	40	4.0

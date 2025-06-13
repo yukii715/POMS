@@ -2,6 +2,7 @@ package com.owsb.poms.system.model.User;
 
 import com.owsb.poms.system.functions.interfaces.hasId;
 import com.owsb.poms.system.model.User.User;
+import com.owsb.poms.ui.fm.FinanceManagerDashboard;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -20,6 +21,7 @@ public class FinanceManager extends User implements hasId{
     }
     
     public void login(){
-        
+        FinanceManagerDashboard financeDashboard = new FinanceManagerDashboard(this);
+        financeDashboard.setVisible(true);
     }
 }

@@ -132,7 +132,6 @@ public class Transaction implements hasFile<Transaction>, hasId{
     
     public static Transaction fromString(String line) {
         String[] parts = line.split("\t");
-
         Transaction tr = new Transaction();
         tr.setTransactionID(parts[0]);
         tr.setPOID(parts[1]);
