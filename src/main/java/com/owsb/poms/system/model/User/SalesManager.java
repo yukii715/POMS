@@ -2,6 +2,7 @@ package com.owsb.poms.system.model.User;
 
 import com.owsb.poms.system.functions.interfaces.hasId;
 import com.owsb.poms.system.model.User.User;
+import com.owsb.poms.ui.sm.SalesManagerDashboard;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -20,6 +21,7 @@ public class SalesManager extends User implements hasId{
     }
     
     public void login(){
-        
+        SalesManagerDashboard main = new SalesManagerDashboard(this);
+        main.setVisible(true);
     }
 }
