@@ -333,12 +333,15 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         txtStocks.setEnabled(false);
         txtStocks.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
+        cmbStatus.setBackground(new java.awt.Color(204, 204, 255));
         cmbStatus.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        cmbStatus.setForeground(new java.awt.Color(255, 255, 255));
+        cmbStatus.setForeground(new java.awt.Color(0, 0, 0));
         cmbStatus.setModel(modelStatus);
         cmbStatus.setEnabled(false);
 
+        checkboxConfirmation.setBackground(new java.awt.Color(255, 204, 255));
         checkboxConfirmation.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        checkboxConfirmation.setForeground(new java.awt.Color(0, 0, 0));
         checkboxConfirmation.setText("Tick to confirm modification");
         checkboxConfirmation.setEnabled(false);
         checkboxConfirmation.addActionListener(new java.awt.event.ActionListener() {
@@ -486,6 +489,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         lblSupplierName.setForeground(new java.awt.Color(0, 0, 0));
         lblSupplierName.setText("-");
 
+        checkboxVerify.setBackground(new java.awt.Color(255, 204, 255));
         checkboxVerify.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         checkboxVerify.setForeground(new java.awt.Color(0, 0, 0));
         checkboxVerify.setText("Tick to Confirm");
