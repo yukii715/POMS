@@ -79,6 +79,15 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         lblUsername.setText(me.getUsername());
         lblEmail.setText(me.getEmail());
         
+//        DailySales dsLatest = dailySalesList.getLast();
+//        if(dsLatest.getDate() != today){
+//            DailySales ds = new DailySales();
+//            ds.setSalesID(ds.generateID());
+//            ds.setDate(today);
+//            ds.setTotalIncome(0);
+//            dailySalesList.add(ds);
+//        }
+        
         tblDailyItemSales.getTableHeader().setReorderingAllowed(false);
         tblDailyItemSales.getTableHeader().setResizingAllowed(false);
         
@@ -145,6 +154,8 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblDailyItemSales = new javax.swing.JTable();
         btnSalesReturn = new javax.swing.JButton();
+        jLabel43 = new javax.swing.JLabel();
+        lblSalesDateUpdated = new javax.swing.JLabel();
         frmUpdateSaleEntry = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
         btnSaleEntryCancel = new javax.swing.JButton();
@@ -538,6 +549,12 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
             }
         });
 
+        jLabel43.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel43.setText("Last Updated: ");
+
+        lblSalesDateUpdated.setForeground(new java.awt.Color(0, 0, 0));
+        lblSalesDateUpdated.setText("-");
+
         javax.swing.GroupLayout frmDailyItemSalesLayout = new javax.swing.GroupLayout(frmDailyItemSales);
         frmDailyItemSales.setLayout(frmDailyItemSalesLayout);
         frmDailyItemSalesLayout.setHorizontalGroup(
@@ -553,9 +570,15 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(64, 64, 64)
-                        .addComponent(cmbSalesDate, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnSalesUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(frmDailyItemSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(frmDailyItemSalesLayout.createSequentialGroup()
+                                .addComponent(cmbSalesDate, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnSalesUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(frmDailyItemSalesLayout.createSequentialGroup()
+                                .addComponent(jLabel43, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblSalesDateUpdated, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap(40, Short.MAX_VALUE))
         );
         frmDailyItemSalesLayout.setVerticalGroup(
@@ -567,7 +590,11 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
                     .addComponent(btnSalesUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSalesReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cmbSalesDate, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(frmDailyItemSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel43)
+                    .addComponent(lblSalesDateUpdated))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 505, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(40, Short.MAX_VALUE))
         );
@@ -1776,7 +1803,8 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
 
     private void btnDailyItemSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDailyItemSalesActionPerformed
         getFrame(mainFrame, frmDailyItemSales);
-        initSaleDateComboBox();
+//        initSaleDateComboBox();
+        displayDailySalesItemList(cmbSalesDate.getItemAt(0));
     }//GEN-LAST:event_btnDailyItemSalesActionPerformed
 
     private void btnItemListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnItemListActionPerformed
@@ -1935,11 +1963,7 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         boolean validPrice;
         try{
             price = Double.parseDouble(txtItemPrice.getText().trim());
-            if(price <= 0){
-                validPrice = false;
-            } else{
-                validPrice = true;
-            }
+            validPrice = price > 0;
         } catch(NumberFormatException e){
             validPrice = false;
         }
@@ -2143,7 +2167,6 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
             String prID = cmbEditPRID.getSelectedItem().toString();
             displayPRItemList(prID);
         }
-
     }//GEN-LAST:event_cmbEditPRIDItemStateChanged
 
     private void btnAddPRConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddPRConfirmActionPerformed
@@ -2476,14 +2499,13 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
 //        String 
     }
     
-    private void displayDailySalesItemList(String date){
+    private void displayDailySalesItemList(String dsID){
         dailySalesItemListTableModel.setRowCount(0);
-        LocalDate targetDate = LocalDate.parse(date);
         for(DailySales ds : DailySales.toList()){
-            if(ds.getDate().equals(targetDate)){
+            if(ds.getSalesID().equals(dsID)){
                 String filePath = "data/Sales/" + ds.getSalesID() + ".txt";
                 List<DSItem> dsi = DSItem.read(filePath);
-                for (DSItem item : dsi) {
+                for(DSItem item : dsi){
                 String[] row = {
                     item.getItemID(),
                     item.getItemCategory(),
@@ -2640,19 +2662,17 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         lblSaleEntryName.setText("-");
     }
     
-    private void initSaleDateComboBox(){
-        dailySalesList = DailySales.toList();
-        cmbSalesDate.removeAllItems();
-        if(!dailySalesList.isEmpty()){
-            for(int i = dailySalesList.size() - 1; i >= 0; i--){
-                DailySales date = dailySalesList.get(i);
-                cmbSalesDate.addItem(date.getDate().toString());
-            }
-            if(!cmbSalesDate.getItemAt(0).equals("DS" + today.format(DateTimeFormatter.ofPattern("yyyyMMdd")))){
-                cmbSalesDate.insertItemAt("TODAY", 0);
-            }
-        }
-    }
+//    private void initSaleDateComboBox(){
+//        dailySalesList = DailySales.toList();
+//        cmbSalesDate.removeAllItems();
+//        for(int i = dailySalesList.size() - 1; i >= 0; i--){
+//            DailySales date = dailySalesList.get(i);
+//            cmbSalesDate.addItem(date.getDate().toString());
+//        }
+//        cmbSalesDate.setSelectedItem(0);
+//        DailySales ds = dailySalesList.getFirst();
+//        lblSalesDateUpdated.setText(ds.getUpdatedDateTimeList().getLast().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+//    }
     
     private void initAddPRComboBox(){
         purchaseReqList = PurchaseRequisition.toList();
@@ -2806,6 +2826,7 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel41;
     private javax.swing.JLabel jLabel42;
+    private javax.swing.JLabel jLabel43;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -2832,6 +2853,7 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel lblItemSupplierID;
     private javax.swing.JLabel lblSaleEntryDate;
     private javax.swing.JLabel lblSaleEntryName;
+    private javax.swing.JLabel lblSalesDateUpdated;
     private javax.swing.JLabel lblUserID;
     private javax.swing.JLabel lblUsername;
     private javax.swing.JPanel mainFrame;

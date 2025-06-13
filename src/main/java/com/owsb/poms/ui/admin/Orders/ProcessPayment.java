@@ -12,6 +12,7 @@ public class ProcessPayment extends javax.swing.JDialog {
     private JDialog parent;
     private PurchaseOrder po;
     private Bank bank;
+    private String processBy;
 
     public ProcessPayment(javax.swing.JDialog parent, boolean modal, PurchaseOrder po, Admin admin) {
         super(parent, modal);
@@ -19,6 +20,7 @@ public class ProcessPayment extends javax.swing.JDialog {
         
         this.parent = parent;
         this.po = po;
+        this.processBy = admin.getUID();
         
         setTitle(String.format("Process Paymeny (%s)", po.getPOID()));
         lblPOID.setText(po.getPOID());
@@ -74,6 +76,9 @@ public class ProcessPayment extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtDetails = new javax.swing.JTextArea();
         btnCancel = new javax.swing.JButton();
+        jLabel17 = new javax.swing.JLabel();
+        txtAmount = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -208,56 +213,76 @@ public class ProcessPayment extends javax.swing.JDialog {
             }
         });
 
+        jLabel17.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel17.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel17.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel17.setText("Amount:");
+
+        jLabel18.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel18.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel18.setText("RM");
+
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
         pnlMainLayout.setHorizontalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
-                .addGap(102, 102, 102)
+                .addContainerGap(85, Short.MAX_VALUE)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel9)
-                            .addComponent(jLabel10)
-                            .addComponent(jLabel11)
-                            .addComponent(jLabel12)
-                            .addComponent(jLabel13)
-                            .addComponent(jLabel14)
-                            .addComponent(jLabel15)
-                            .addComponent(jLabel16))
-                        .addGap(73, 73, 73)
-                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(cmbBank, 0, 208, Short.MAX_VALUE)
-                                .addComponent(lblSupplierID)
-                                .addComponent(lblPOID)
-                                .addComponent(lblSupplierName)
-                                .addComponent(lblTotalPrice)
-                                .addComponent(lblDate)
-                                .addComponent(lblProcessBy)
-                                .addComponent(lblAccountNumber)
-                                .addComponent(txtAccountNumber)
-                                .addComponent(txtBankTo))))
                     .addGroup(pnlMainLayout.createSequentialGroup()
                         .addComponent(btnProcessPayment)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(102, Short.MAX_VALUE))
+                        .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlMainLayout.createSequentialGroup()
+                        .addComponent(jLabel17)
+                        .addGap(217, 217, 217))
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
+                                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel9)
+                                    .addComponent(jLabel10)
+                                    .addComponent(jLabel11)
+                                    .addComponent(jLabel12)
+                                    .addComponent(jLabel13)
+                                    .addComponent(jLabel14)
+                                    .addComponent(jLabel15))
+                                .addGap(73, 73, 73))
+                            .addGroup(pnlMainLayout.createSequentialGroup()
+                                .addComponent(jLabel16)
+                                .addGap(135, 135, 135)))
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1)
+                            .addComponent(cmbBank, 0, 223, Short.MAX_VALUE)
+                            .addComponent(lblSupplierID)
+                            .addComponent(lblPOID)
+                            .addComponent(lblSupplierName)
+                            .addComponent(lblTotalPrice)
+                            .addComponent(lblDate)
+                            .addComponent(lblProcessBy)
+                            .addComponent(lblAccountNumber)
+                            .addComponent(txtAccountNumber)
+                            .addComponent(txtBankTo)
+                            .addGroup(pnlMainLayout.createSequentialGroup()
+                                .addComponent(jLabel18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtAmount)))))
+                .addContainerGap(85, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel6)
-                .addGap(193, 193, 193))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addContainerGap()
                 .addComponent(jLabel6)
-                .addGap(27, 27, 27)
+                .addGap(38, 38, 38)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(lblPOID))
@@ -298,17 +323,22 @@ public class ProcessPayment extends javax.swing.JDialog {
                     .addComponent(jLabel15)
                     .addComponent(txtAccountNumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel17)
+                    .addComponent(txtAmount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel18))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 97, Short.MAX_VALUE))
                     .addGroup(pnlMainLayout.createSequentialGroup()
                         .addComponent(jLabel16)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnProcessPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(26, 26, 26))))
+                        .addGap(26, 26, 26))
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(103, Short.MAX_VALUE))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -340,6 +370,9 @@ public class ProcessPayment extends javax.swing.JDialog {
         
         String bankTo = txtBankTo.getText().trim();
         long accountNumber;
+        double amount;
+        double paid = po.getTransactions().isEmpty() ? 0 : po.getTransactions().stream().mapToDouble(Transaction::getAmount).sum();
+        double hasToPay = po.getTotalPrice() - paid;
         String details = txtDetails.getText().isBlank() ? "None" : txtDetails.getText().trim();
         
         if (bankTo.isBlank() || bankTo.length() < 5){
@@ -359,21 +392,48 @@ public class ProcessPayment extends javax.swing.JDialog {
             return;
         }
         
+        try{
+            amount = Double.parseDouble(txtAmount.getText().trim());
+        } catch (NumberFormatException e){
+            JOptionPane.showMessageDialog(this, "Invalid Amount", "Error", JOptionPane.ERROR_MESSAGE);
+            return; 
+        }
+        
+        if (amount > hasToPay || amount <= 0){
+            JOptionPane.showMessageDialog(this, "Invalid Amount", "Error", JOptionPane.ERROR_MESSAGE);
+            return; 
+        }
+        
         int result = JOptionPane.showConfirmDialog(this, "Are you sure to process payment?", "Process Payment", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (result == JOptionPane.YES_OPTION){
-            Transaction transaction = new Transaction(bank.getBankName(), bank.getAccountNumber(), bankTo, accountNumber, po.getTotalPrice(), details);
+            Transaction transaction = new Transaction(po.getPOID(), bank.getBankName(), bank.getAccountNumber(), bankTo, accountNumber, amount, details, processBy);
             transaction.add();
             
-            po.setStatus(PurchaseOrder.Status.COMPLETED);
-            po.updateStatus();
-            JOptionPane.showMessageDialog(this, String.format(
-                    "Process Payment Successfully!%n"
-                  + "Order %s has been set as Completed", 
-                    po.getPOID()));
-            
-            dispose();
-            parent.dispose();
-        }
+                String message = po.isFullyPaid() ? 
+                        String.format(
+                                "Process Payment Successfully!%n"
+                              + "Order %s has been set as Completed!", 
+                                po.getPOID()
+                        ):
+                        String.format("Process Payment Successfully!%n"
+                              + "Total    : RM %.2f%n"
+                              + "Paid     : RM %.2f%n"
+                              + "Remaining: RM %.2f", 
+                                po.getTotalPrice(),
+                                paid,
+                                hasToPay
+                        );
+
+                if (po.isFullyPaid()){
+                    po.setStatus(PurchaseOrder.Status.COMPLETED);
+                    po.updateStatus();
+                }
+
+                JOptionPane.showMessageDialog(this, message);
+
+                dispose();
+                parent.dispose();
+            }
         dispose();
     }//GEN-LAST:event_btnProcessPaymentActionPerformed
 
@@ -393,6 +453,8 @@ public class ProcessPayment extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
@@ -408,6 +470,7 @@ public class ProcessPayment extends javax.swing.JDialog {
     private javax.swing.JLabel lblTotalPrice;
     private javax.swing.JPanel pnlMain;
     private javax.swing.JTextField txtAccountNumber;
+    private javax.swing.JTextField txtAmount;
     private javax.swing.JTextField txtBankTo;
     private javax.swing.JTextArea txtDetails;
     // End of variables declaration//GEN-END:variables

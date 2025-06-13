@@ -209,6 +209,15 @@ public class User implements hasFile<User>{
         return DataHandler.getByKey(toList(), email, User::getEmail);
     }
     
+    public static User getUserBySimilarName(String name){
+        for (User user : toList()){
+            if (user.getUsername().replaceAll("\\s+", "").equalsIgnoreCase(name.replaceAll("\\s+", ""))){
+                return user;
+            }
+        }
+        return null;
+    }
+    
     public User getActual(){
         switch(getRole()){
             case Root, Admin:
@@ -231,6 +240,33 @@ public class User implements hasFile<User>{
                 toList(),
                 user -> user.getUID().equals(this.getUID()),              
                 user -> user.setPasswordHash(this.getHash(password)),           
+                list -> this.saveToFile(list)
+        );
+    }
+    
+    public void changeUsername(){
+        DataHandler.updateFieldAndSave(
+                toList(),
+                user -> user.getUID().equals(this.getUID()),              
+                user -> user.setUsername(this.getUsername()),           
+                list -> this.saveToFile(list)
+        );
+    }
+    
+    public void changeBirthday(){
+        DataHandler.updateFieldAndSave(
+                toList(),
+                user -> user.getUID().equals(this.getUID()),              
+                user -> user.setBirthday(this.getBirthday()),           
+                list -> this.saveToFile(list)
+        );
+    }
+    
+    public void delete(){
+        DataHandler.updateFieldAndSave(
+                toList(),
+                user -> user.getUID().equals(this.getUID()),              
+                user -> user.setIsDeleted(true),           
                 list -> this.saveToFile(list)
         );
     }

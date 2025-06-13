@@ -7,7 +7,7 @@ public class UserValidation {
     public static boolean validUsername(String username){
         var users = User.toList();
         if (users.stream().anyMatch(
-                user -> user.getUsername().equalsIgnoreCase(username.toUpperCase())) ||
+                user -> user.getUsername().replaceAll("\\s+", "").equalsIgnoreCase(username.replaceAll("\\s+", "")) && !user.isIsDeleted()) ||
                 username.length() < 4
                 ) return false;
         return username.matches("^[A-Z ]+$");
@@ -29,5 +29,11 @@ public class UserValidation {
     
     public static boolean validPassword(String password){
         return password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#&*_+=:;?,.]).{8,20}$");
+    }
+    
+    public static boolean exitedId (String UID){
+        var users = User.toList();
+        return users.stream().anyMatch(
+                user -> user.getUID().equals(UID) && !user.isIsDeleted());
     }
 }
