@@ -25,6 +25,79 @@ public class Login extends javax.swing.JFrame {
         new CommonMethod().setLabelIcon("/icons/user.png", 25, 25, Image.SCALE_SMOOTH, lblUserIcon);
         new CommonMethod().setLabelIcon("/icons/padlock.png", 25, 25, Image.SCALE_SMOOTH, lblPwdIcon);
     }
+    
+    private void login(){
+        String identifier = txtUser.getText().toUpperCase().trim();
+        String password = txtPassword.getText();
+        String domain = "@owsb.com.my";
+        
+        
+        var users = User.toList();
+        for (User u : users){
+            if (u.isIsDeleted() != true){
+                if(identifier.equals(u.getUID())){
+                    validUser = true;
+                    user = User.getUserById(identifier);
+                    break;
+                }
+                
+                if(identifier.equals(u.getUsername())){
+                    validUser = true;
+                    user = User.getUserByName(identifier);
+                    break;
+                }
+                
+                if(identifier.length() < domain.length() + 3){
+                    continue;
+                }
+                
+                if ((identifier.substring(0, identifier.length() - domain.length()) + domain).equals(u.getEmail())){
+                    validUser = true;
+                    identifier = identifier.substring(0, identifier.length() - domain.length()) + domain;
+                    user = User.getUserByEmail(identifier);
+                    break;
+                }
+            }
+        }
+        
+        if (validUser){
+            if (user.getHash(password).equals(user.getPasswordHash())){
+                User u = user.getActual();
+                switch (user.getRole()){
+                    case Root, Admin:
+                        Admin admin = (Admin) u;
+                        admin.login();
+                        dispose();
+                        return;
+                    case SalesManager:
+                        SalesManager sm = (SalesManager) u;
+                        sm.login();
+                        dispose();
+                        return;
+                    case PurchaseManager:
+                        PurchaseManager pm = (PurchaseManager) u;
+                        pm.login();
+                        dispose();
+                        return;
+                    case InventoryManager:
+                        InventoryManager im = (InventoryManager) u;
+                        im.login();
+                        dispose();
+                        return;
+                    case FinanceManager:
+                        FinanceManager fm = (FinanceManager) u;
+                        fm.login();
+                        dispose();
+                        return;
+                }
+            }
+            JOptionPane.showMessageDialog(this, "Invalid Password!", "Error", JOptionPane.ERROR_MESSAGE);
+            txtPassword.setText("");
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Invalid User!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -147,6 +220,11 @@ public class Login extends javax.swing.JFrame {
         txtUser.setForeground(new java.awt.Color(0, 0, 0));
         txtUser.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         txtUser.setCaretColor(new java.awt.Color(204, 204, 204));
+        txtUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtUserActionPerformed(evt);
+            }
+        });
         pnlInfo.add(txtUser);
         txtUser.setBounds(64, 199, 270, 30);
 
@@ -163,6 +241,11 @@ public class Login extends javax.swing.JFrame {
 
         txtPassword.setBackground(new java.awt.Color(250, 236, 236));
         txtPassword.setForeground(new java.awt.Color(0, 0, 0));
+        txtPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPasswordActionPerformed(evt);
+            }
+        });
         pnlInfo.add(txtPassword);
         txtPassword.setBounds(64, 288, 270, 30);
 
@@ -215,77 +298,16 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_pnlInfoMouseDragged
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        String identifier = txtUser.getText().toUpperCase().trim();
-        String password = txtPassword.getText();
-        String domain = "@owsb.com.my";
-        
-        
-        var users = User.toList();
-        for (User u : users){
-            if (u.isIsDeleted() != true){
-                if(identifier.equals(u.getUID())){
-                    validUser = true;
-                    user = User.getUserById(identifier);
-                    break;
-                }
-                
-                if(identifier.equals(u.getUsername())){
-                    validUser = true;
-                    user = User.getUserByName(identifier);
-                    break;
-                }
-                
-                if(identifier.length() < domain.length() + 3){
-                    continue;
-                }
-                
-                if ((identifier.substring(0, identifier.length() - domain.length()) + domain).equals(u.getEmail())){
-                    validUser = true;
-                    identifier = identifier.substring(0, identifier.length() - domain.length()) + domain;
-                    user = User.getUserByEmail(identifier);
-                    break;
-                }
-            }
-        }
-        
-        if (validUser){
-            if (user.getHash(password).equals(user.getPasswordHash())){
-                User u = user.getActual();
-                switch (user.getRole()){
-                    case Root, Admin:
-                        Admin admin = (Admin) u;
-                        admin.login();
-                        dispose();
-                        return;
-                    case SalesManager:
-                        SalesManager sm = (SalesManager) u;
-                        sm.login();
-                        dispose();
-                        return;
-                    case PurchaseManager:
-                        PurchaseManager pm = (PurchaseManager) u;
-                        pm.login();
-                        dispose();
-                        return;
-                    case InventoryManager:
-                        InventoryManager im = (InventoryManager) u;
-                        im.login();
-                        dispose();
-                        return;
-                    case FinanceManager:
-                        FinanceManager fm = (FinanceManager) u;
-                        fm.login();
-                        dispose();
-                        return;
-                }
-            }
-            JOptionPane.showMessageDialog(this, "Invalid Password!", "Error", JOptionPane.ERROR_MESSAGE);
-            txtPassword.setText("");
-        }
-        else{
-            JOptionPane.showMessageDialog(this, "Invalid User!", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        login();
     }//GEN-LAST:event_btnLoginActionPerformed
+
+    private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
+        login();
+    }//GEN-LAST:event_txtPasswordActionPerformed
+
+    private void txtUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUserActionPerformed
+        login();
+    }//GEN-LAST:event_txtUserActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

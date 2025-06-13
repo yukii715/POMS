@@ -104,18 +104,18 @@
                                   <Component id="logOutButton" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="1" attributes="0">
-                                  <EmptySpace pref="28" max="32767" attributes="0"/>
+                                  <EmptySpace pref="29" max="32767" attributes="0"/>
                                   <Component id="WelcomeLabel" min="-2" pref="1027" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="UserIdLabel" alignment="1" min="-2" pref="871" max="-2" attributes="0"/>
-                              <Component id="UsernameLabel" alignment="1" min="-2" pref="901" max="-2" attributes="0"/>
-                              <Component id="EmailLabel" alignment="1" min="-2" pref="800" max="-2" attributes="0"/>
+                          <EmptySpace pref="112" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="EmailLabel" alignment="1" max="32767" attributes="0"/>
+                              <Component id="UsernameLabel" alignment="1" pref="932" max="32767" attributes="0"/>
+                              <Component id="UserIdLabel" alignment="1" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                       </Group>
@@ -239,7 +239,7 @@
                               <Component id="approvePOButton" max="32767" attributes="0"/>
                               <Component id="approvePOEditButton" alignment="0" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="125" max="32767" attributes="0"/>
+                          <EmptySpace pref="124" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -353,7 +353,7 @@
                                   <Component id="viewPurchaseOrderRefreshButton" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace pref="74" max="32767" attributes="0"/>
+                          <EmptySpace pref="75" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -466,7 +466,7 @@
                                   </Group>
                               </Group>
                           </Group>
-                          <EmptySpace min="0" pref="19" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="20" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -612,7 +612,7 @@
                                   </Group>
                               </Group>
                           </Group>
-                          <EmptySpace pref="110" max="32767" attributes="0"/>
+                          <EmptySpace pref="120" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -838,7 +838,7 @@
                               <Component id="viewTransactionsRefreshButton" min="-2" pref="221" max="-2" attributes="0"/>
                               <Component id="viewTransactionsScrollPanel" min="-2" pref="963" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="48" max="32767" attributes="0"/>
+                          <EmptySpace pref="49" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -912,7 +912,7 @@
                               <Component id="ViewPRRefreshButton" min="-2" pref="225" max="-2" attributes="0"/>
                               <Component id="jScrollPane6" min="-2" pref="945" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="71" max="32767" attributes="0"/>
+                          <EmptySpace pref="72" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -983,7 +983,7 @@
                               <Component id="supplierEntryButton" min="-2" max="-2" attributes="0"/>
                               <Component id="supplierEntryScrollPanel" min="-2" pref="945" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="72" max="32767" attributes="0"/>
+                          <EmptySpace pref="73" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1085,10 +1085,10 @@
                                           <Component id="generatePRButton" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace min="-2" pref="111" max="-2" attributes="0"/>
                                       </Group>
-                                      <Group type="102" alignment="0" attributes="0">
+                                      <Group type="102" attributes="0">
                                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                                          <Component id="PRStatusLabel" min="-2" pref="444" max="-2" attributes="0"/>
-                                          <EmptySpace max="32767" attributes="0"/>
+                                          <Component id="PRStatusLabel" max="32767" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                               </Group>
@@ -1131,7 +1131,7 @@
                               </Group>
                           </Group>
                           <Component id="generatePRScrollpane" min="-2" pref="521" max="-2" attributes="0"/>
-                          <EmptySpace pref="15" max="32767" attributes="0"/>
+                          <EmptySpace pref="13" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -1233,7 +1233,7 @@
                 <Component class="javax.swing.JLabel" name="PRStatusLabel">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Comic Sans MS" size="30" style="0"/>
+                      <Font name="Comic Sans MS" size="20" style="0"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Status"/>
                   </Properties>
@@ -1279,7 +1279,7 @@
                               <Component id="ViewPurchaseReportButton" alignment="0" min="-2" pref="225" max="-2" attributes="0"/>
                               <Component id="viewReportScrollpane" alignment="0" min="-2" pref="945" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="71" max="32767" attributes="0"/>
+                          <EmptySpace pref="72" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>

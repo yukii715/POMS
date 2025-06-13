@@ -4,7 +4,7 @@ import com.owsb.poms.system.functions.*;
 import java.time.*;
 import java.util.List;
 import com.owsb.poms.system.functions.interfaces.*;
-import javax.print.attribute.standard.ReferenceUriSchemesSupported;
+import java.util.stream.Collectors;
 
 public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
     private String POID;
@@ -212,5 +212,20 @@ public class PurchaseOrder implements hasFile<PurchaseOrder>, hasId, hasStatus{
     
     public static PurchaseOrder getPoById(String id){
         return DataHandler.getByKey(toList(), id, PurchaseOrder::getPOID);
+    }
+    
+    public List<Transaction> getTransactions(){
+        return Transaction.toList().stream()
+                .filter(t -> t.getPOID().equals(this.getPOID()))
+                .collect(Collectors.toList());
+    }
+    
+    public boolean isFullyPaid(){
+        double sum = getTransactions().stream()
+        .mapToDouble(Transaction::getAmount)
+        .sum();
+
+        // prevent floating-point precision issues
+        return Math.abs(sum - getTotalPrice()) < 0.01;
     }
 }

@@ -9,10 +9,8 @@ public class PurchaseReport implements hasId, hasFile<PurchaseReport>{
     private String reportID;
     private String POID;
     private String invoiceID;
-    private String transactionID;
     private LocalDateTime dateTime;
     private String verifiedBy;
-    private String paymentProcessBy;
     private String message;
     
     public static final String filePath = "data/Reports/Purchase/purchase_report.txt";
@@ -20,14 +18,12 @@ public class PurchaseReport implements hasId, hasFile<PurchaseReport>{
     public PurchaseReport() {
     }
 
-    public PurchaseReport(String reportID, String POID, String invoiceID, String transactionID, String verifiedBy, String paymentProcessBy, String message) {
-        this.reportID = reportID;
+    public PurchaseReport(String POID, String invoiceID, String verifiedBy, String message) {
+        this.reportID = generateID();
         this.POID = POID;
         this.invoiceID = invoiceID;
-        this.transactionID = transactionID;
         this.dateTime = LocalDateTime.now();
         this.verifiedBy = verifiedBy;
-        this.paymentProcessBy = paymentProcessBy;
         this.message = message;
     }
 
@@ -55,14 +51,6 @@ public class PurchaseReport implements hasId, hasFile<PurchaseReport>{
         this.invoiceID = invoiceID;
     }
 
-    public String getTransactionID() {
-        return transactionID;
-    }
-
-    public void setTransactionID(String transactionID) {
-        this.transactionID = transactionID;
-    }
-
     public LocalDateTime getDateTime() {
         return dateTime;
     }
@@ -79,14 +67,6 @@ public class PurchaseReport implements hasId, hasFile<PurchaseReport>{
         this.verifiedBy = verifiedBy;
     }
 
-    public String getPaymentProcessBy() {
-        return paymentProcessBy;
-    }
-
-    public void setPaymentProcessBy(String paymentProcessBy) {
-        this.paymentProcessBy = paymentProcessBy;
-    }
-
     public String getMessage() {
         return message;
     }
@@ -99,10 +79,8 @@ public class PurchaseReport implements hasId, hasFile<PurchaseReport>{
         return reportID + "\t"
              + POID + "\t"
              + invoiceID + "\t"
-             + transactionID + "\t"
              + dateTime + "\t"
-             + verifiedBy + "\t"
-             + paymentProcessBy;
+             + verifiedBy;
     }
     
     public static PurchaseReport fromString(String line) {
@@ -112,10 +90,8 @@ public class PurchaseReport implements hasId, hasFile<PurchaseReport>{
         pur.setReportID(parts[0]);
         pur.setPOID(parts[1]);
         pur.setInvoiceID(parts[2]);
-        pur.setTransactionID(parts[3]);
-        pur.setDateTime(LocalDateTime.parse(parts[4]));
-        pur.setVerifiedBy(parts[5]);
-        pur.setPaymentProcessBy(parts[6]);
+        pur.setDateTime(LocalDateTime.parse(parts[3]));
+        pur.setVerifiedBy(parts[4]);
 
         return pur;
     }

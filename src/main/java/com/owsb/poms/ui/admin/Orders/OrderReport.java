@@ -1,10 +1,39 @@
 package com.owsb.poms.ui.admin.Orders;
 
-public class OrderReport extends javax.swing.JDialog {
+import com.owsb.poms.system.functions.UserValidation;
+import com.owsb.poms.system.model.*;
+import com.owsb.poms.system.model.User.*;
+import java.util.List;
+import java.util.stream.*;
+import javax.swing.*;
 
-    public OrderReport(java.awt.Frame parent, boolean modal) {
+public class OrderReport extends javax.swing.JDialog {
+    PurchaseOrder po;
+    JDialog parent;
+    List<Transaction> transactions;
+
+    public OrderReport(javax.swing.JDialog parent, boolean modal, PurchaseOrder po) {
         super(parent, modal);
         initComponents();
+        
+        this.parent = parent;
+        this.po = po;
+        this.transactions = po.getTransactions();
+        
+        lblPOID.setText(po.getPOID());
+        
+        String trs = IntStream.range(0, transactions.size())
+        .mapToObj(i -> String.format(
+            "%d.%s<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Amount: RM %.2f<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Processed By: %s %s",
+            i + 1,
+            transactions.get(i).getTransactionID(),
+            transactions.get(i).getAmount(),
+            transactions.get(i).getProcessBy(), 
+            User.getUserById(transactions.get(i).getProcessBy()).getUsername()
+            ))
+        .collect(Collectors.joining("<br><br>"));
+        
+        lblTransactions.setText("<html>" + trs + "</html>");
     }
 
     /**
@@ -21,18 +50,16 @@ public class OrderReport extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         lblPOID = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        lblTransactionID = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        lblPaymentProcessBy = new javax.swing.JLabel();
         txtInvoiceID = new javax.swing.JTextField();
-        btnProcessPayment = new javax.swing.JButton();
+        btnGenerateReport = new javax.swing.JButton();
         jLabel16 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        lblMessage = new javax.swing.JTextArea();
+        txtMessage = new javax.swing.JTextArea();
         btnCancel = new javax.swing.JButton();
-        lblVerifiedBy = new javax.swing.JTextField();
+        txtVerifiedBy = new javax.swing.JTextField();
+        lblTransactions = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -56,12 +83,7 @@ public class OrderReport extends javax.swing.JDialog {
         jLabel4.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel4.setText("Transaction ID:");
-
-        lblTransactionID.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblTransactionID.setForeground(new java.awt.Color(0, 0, 0));
-        lblTransactionID.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lblTransactionID.setText("[TransactionID]");
+        jLabel4.setText("Transactions:");
 
         jLabel7.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(0, 0, 0));
@@ -73,35 +95,25 @@ public class OrderReport extends javax.swing.JDialog {
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel9.setText("Verified By:");
 
-        jLabel10.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel10.setText("Payment Process By:");
-
-        lblPaymentProcessBy.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblPaymentProcessBy.setForeground(new java.awt.Color(0, 0, 0));
-        lblPaymentProcessBy.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lblPaymentProcessBy.setText("[Payment Process By]");
-        lblPaymentProcessBy.setToolTipText("");
-
-        btnProcessPayment.setBackground(new java.awt.Color(255, 153, 0));
-        btnProcessPayment.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnProcessPayment.setForeground(new java.awt.Color(252, 251, 249));
-        btnProcessPayment.setText("Process Payment");
-        btnProcessPayment.addActionListener(new java.awt.event.ActionListener() {
+        btnGenerateReport.setBackground(new java.awt.Color(255, 153, 0));
+        btnGenerateReport.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnGenerateReport.setForeground(new java.awt.Color(252, 251, 249));
+        btnGenerateReport.setText("Generate Report");
+        btnGenerateReport.setToolTipText("");
+        btnGenerateReport.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnProcessPaymentActionPerformed(evt);
+                btnGenerateReportActionPerformed(evt);
             }
         });
 
         jLabel16.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
         jLabel16.setForeground(new java.awt.Color(0, 0, 0));
         jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel16.setText("Message:");
+        jLabel16.setText("Report Message:");
 
-        lblMessage.setColumns(20);
-        lblMessage.setRows(5);
-        jScrollPane1.setViewportView(lblMessage);
+        txtMessage.setColumns(20);
+        txtMessage.setRows(5);
+        jScrollPane1.setViewportView(txtMessage);
 
         btnCancel.setBackground(new java.awt.Color(255, 153, 0));
         btnCancel.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
@@ -113,81 +125,79 @@ public class OrderReport extends javax.swing.JDialog {
             }
         });
 
+        lblTransactions.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblTransactions.setForeground(new java.awt.Color(0, 0, 0));
+        lblTransactions.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblTransactions.setText("[Transactions]");
+        lblTransactions.setToolTipText("");
+
         javax.swing.GroupLayout pnlMainLayout = new javax.swing.GroupLayout(pnlMain);
         pnlMain.setLayout(pnlMainLayout);
         pnlMainLayout.setHorizontalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
+                .addContainerGap(67, Short.MAX_VALUE)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel16)
                     .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGap(41, 41, 41)
                         .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(pnlMainLayout.createSequentialGroup()
-                                    .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addGroup(pnlMainLayout.createSequentialGroup()
-                                            .addComponent(jLabel2)
-                                            .addGap(196, 196, 196))
-                                        .addGroup(pnlMainLayout.createSequentialGroup()
-                                            .addComponent(jLabel7)
-                                            .addGap(153, 153, 153))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlMainLayout.createSequentialGroup()
-                                            .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING))
-                                            .addGap(23, 23, 23)))
-                                    .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblPOID)
-                                        .addComponent(lblTransactionID)
-                                        .addComponent(txtInvoiceID, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblVerifiedBy, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblPaymentProcessBy)))
-                                .addGroup(pnlMainLayout.createSequentialGroup()
-                                    .addComponent(btnProcessPayment)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addGroup(pnlMainLayout.createSequentialGroup()
-                        .addGap(170, 170, 170)
-                        .addComponent(jLabel6)))
-                .addContainerGap(45, Short.MAX_VALUE))
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel4))
+                        .addGap(86, 86, 86)
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(lblPOID)
+                                .addComponent(txtInvoiceID, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                                .addComponent(txtVerifiedBy, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE))
+                            .addComponent(lblTransactions, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(41, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnGenerateReport)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(pnlMainLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel6)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlMainLayout.setVerticalGroup(
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMainLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel6)
-                .addGap(29, 29, 29)
+                .addGap(26, 26, 26)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(lblPOID))
-                .addGap(18, 18, 18)
+                .addGap(18, 59, Short.MAX_VALUE)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(lblTransactionID, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(lblTransactions))
+                .addGap(18, 59, Short.MAX_VALUE)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtInvoiceID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7))
-                .addGap(18, 18, 18)
+                .addGap(18, 62, Short.MAX_VALUE)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblVerifiedBy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtVerifiedBy, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9))
-                .addGap(18, 18, 18)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblPaymentProcessBy)
-                    .addComponent(jLabel10))
-                .addGap(18, 18, 18)
+                .addGap(18, 62, Short.MAX_VALUE)
                 .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel16)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnProcessPayment, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(32, 32, 32))
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addComponent(jLabel16)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 174, Short.MAX_VALUE)
+                        .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnGenerateReport, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(32, 32, 32))
+                    .addGroup(pnlMainLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -204,9 +214,63 @@ public class OrderReport extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnProcessPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProcessPaymentActionPerformed
+    private void btnGenerateReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateReportActionPerformed
+        String invoiceID = txtInvoiceID.getText().trim();
+        String verifiedBy = txtVerifiedBy.getText().toUpperCase().trim();
+        String message = txtMessage.getText().trim();
         
-    }//GEN-LAST:event_btnProcessPaymentActionPerformed
+        if (invoiceID.isBlank()){
+            JOptionPane.showMessageDialog(this, "Invoice ID is required. Please enter it.", "Oops! Something's Missing", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (verifiedBy.isBlank()){
+            JOptionPane.showMessageDialog(this, "This order verified by who is required. Please enter it.", "Oops! Something's Missing", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (message.isBlank()){
+            JOptionPane.showMessageDialog(this, "Report message is required. Please enter it.", "Oops! Something's Missing", JOptionPane.ERROR_MESSAGE);
+            return; 
+        }
+        
+        if (!UserValidation.exitedId(verifiedBy)){
+            User u = User.getUserBySimilarName(verifiedBy);
+            if (u != null){
+                JOptionPane.showMessageDialog(
+                        this, 
+                        String.format(
+                                "Please type the UID of the user! You might mean %s (%s)", 
+                                u.getUID(),
+                                u.getUsername()
+                        ), 
+                        "UID Required",  
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return; 
+            }   
+            JOptionPane.showMessageDialog(
+                    this, 
+                    "Invalid UID. Please enter the UID of a person who verified this order.", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+        
+        int result = JOptionPane.showConfirmDialog(this, "Are you sure to generate a purchase report?", "Generate Purchase Report", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (result == JOptionPane.YES_OPTION){
+                PurchaseReport purchaseReport = new PurchaseReport(po.getPOID(), invoiceID, verifiedBy, message);
+                purchaseReport.add();
+                
+                po.setStatus(PurchaseOrder.Status.REPORTED);
+                po.updateStatus();
+                
+                JOptionPane.showMessageDialog(this, String.format("Report %s has generated!", purchaseReport.getReportID()));
+                dispose();
+                parent.dispose();
+            }
+    }//GEN-LAST:event_btnGenerateReportActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         dispose();
@@ -215,8 +279,7 @@ public class OrderReport extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
-    private javax.swing.JButton btnProcessPayment;
-    private javax.swing.JLabel jLabel10;
+    private javax.swing.JButton btnGenerateReport;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
@@ -224,12 +287,11 @@ public class OrderReport extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea lblMessage;
     private javax.swing.JLabel lblPOID;
-    private javax.swing.JLabel lblPaymentProcessBy;
-    private javax.swing.JLabel lblTransactionID;
-    private javax.swing.JTextField lblVerifiedBy;
+    private javax.swing.JLabel lblTransactions;
     private javax.swing.JPanel pnlMain;
     private javax.swing.JTextField txtInvoiceID;
+    private javax.swing.JTextArea txtMessage;
+    private javax.swing.JTextField txtVerifiedBy;
     // End of variables declaration//GEN-END:variables
 }

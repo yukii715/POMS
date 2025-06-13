@@ -182,15 +182,15 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(logOutButton))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DashboardPanelLayout.createSequentialGroup()
-                        .addContainerGap(28, Short.MAX_VALUE)
+                        .addContainerGap(29, Short.MAX_VALUE)
                         .addComponent(WelcomeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 1027, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, DashboardPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(DashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(UserIdLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 871, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(UsernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 901, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(EmailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(112, Short.MAX_VALUE)
+                .addGroup(DashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(EmailLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(UsernameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 932, Short.MAX_VALUE)
+                    .addComponent(UserIdLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18))
         );
         DashboardPanelLayout.setVerticalGroup(
@@ -271,7 +271,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                     .addComponent(approvePORefreshButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(approvePOButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(approvePOEditButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(125, Short.MAX_VALUE))
+                .addContainerGap(124, Short.MAX_VALUE))
         );
         approvePOPanelLayout.setVerticalGroup(
             approvePOPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -335,7 +335,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                         .addComponent(viewPOComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(42, 42, 42)
                         .addComponent(viewPurchaseOrderRefreshButton)))
-                .addContainerGap(74, Short.MAX_VALUE))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
         PurchaseOrderLayout.setVerticalGroup(
             PurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -408,7 +408,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                             .addGroup(ConfirmPurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(ConfirmPOLabel)
                                 .addComponent(ConfirmPOScrollpane, javax.swing.GroupLayout.PREFERRED_SIZE, 1020, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(0, 19, Short.MAX_VALUE))
+                .addGap(0, 20, Short.MAX_VALUE))
         );
         ConfirmPurchaseOrderLayout.setVerticalGroup(
             ConfirmPurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -533,7 +533,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                                 .addComponent(ProcessPaymentButton)
                                 .addGap(161, 161, 161)
                                 .addComponent(ClearFormButton, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(110, Short.MAX_VALUE))
+                .addContainerGap(120, Short.MAX_VALUE))
         );
         processPaymentPanelLayout.setVerticalGroup(
             processPaymentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -606,7 +606,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 .addGroup(TransactionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(viewTransactionsRefreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(viewTransactionsScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 963, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         TransactionsPanelLayout.setVerticalGroup(
             TransactionsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -652,7 +652,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 .addGroup(PurchaseRequisitionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ViewPRRefreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 945, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(71, Short.MAX_VALUE))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
         PurchaseRequisitionPanelLayout.setVerticalGroup(
             PurchaseRequisitionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -698,7 +698,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 .addGroup(SupplierEntryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(supplierEntryButton)
                     .addComponent(supplierEntryScrollPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 945, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(72, Short.MAX_VALUE))
+                .addContainerGap(73, Short.MAX_VALUE))
         );
         SupplierEntryPanelLayout.setVerticalGroup(
             SupplierEntryPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -758,7 +758,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         ApprovedByTextField.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
         ApprovedByTextField.setText("jTextField1");
 
-        PRStatusLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
+        PRStatusLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 20)); // NOI18N
         PRStatusLabel.setText("Status");
 
         PRMessageLabel.setFont(new java.awt.Font("Comic Sans MS", 0, 30)); // NOI18N
@@ -802,8 +802,8 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                                 .addGap(111, 111, 111))
                             .addGroup(generateReportPanelLayout.createSequentialGroup()
                                 .addGap(18, 18, 18)
-                                .addComponent(PRStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 444, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
+                                .addComponent(PRStatusLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap())))))
         );
         generateReportPanelLayout.setVerticalGroup(
             generateReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -833,7 +833,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                         .addComponent(generatePRButton)
                         .addGap(44, 44, 44)))
                 .addComponent(generatePRScrollpane, javax.swing.GroupLayout.PREFERRED_SIZE, 521, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         FrameTab.addTab("Purchase Report ", generateReportPanel);
@@ -870,7 +870,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                 .addGroup(ViewPurchaseReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ViewPurchaseReportButton, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(viewReportScrollpane, javax.swing.GroupLayout.PREFERRED_SIZE, 945, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(71, Short.MAX_VALUE))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
         ViewPurchaseReportPanelLayout.setVerticalGroup(
             ViewPurchaseReportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -902,7 +902,12 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         String invoiceID = InvoiceIdTextField.getText().trim();
         String approvedBy = ApprovedByTextField.getText().trim();
         String message = MessageTextField.getText().trim();
-
+        
+        if (message.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Report message is required. Please enter it.", "Oops! Something's Missing", JOptionPane.ERROR_MESSAGE);
+            return;
+        
+        }
         if (txID == null || invoiceID.isEmpty() || approvedBy.isEmpty()) {
             PRStatusLabel.setText("Please fill in all fields.");
             return;
@@ -914,30 +919,31 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             return;
         }
         
-        String poid = null;
-        Pattern pattern = Pattern.compile("POID=(PO\\d+)");
-        Matcher matcher = pattern.matcher(tx.getDetails());
-        if (matcher.find()) {
-            poid = matcher.group(1);
-        }
+        String poid = tx.getPOID(); 
         
         if (poid == null || poid.length() < 5) {
             PRStatusLabel.setText("PO ID not found in transaction details.");
             return;
         }
-        List<PurchaseReport> allReports = PurchaseReport.toList();
-        int nextIndex = allReports.size();
-        String newID = IdGenerator.generateID("PUR", 5, nextIndex);
-        PurchaseReport report = new PurchaseReport();
-        report.setReportID(newID);
-        report.setPOID(poid);
-        report.setInvoiceID(invoiceID);
-        report.setTransactionID(txID);
-        report.setDateTime(LocalDateTime.now());
-        report.setVerifiedBy(approvedBy);
-        report.setPaymentProcessBy("FM001");
-        report.setMessage(message);
-
+       
+        List<PurchaseReport> existingReports = PurchaseReport.toList();
+        String prefix = "PUR";
+        int length = 5;
+        
+        int max = existingReports.stream().map(PurchaseReport::getReportID).filter(id -> id.startsWith(prefix)).mapToInt(id -> {
+            try {
+                return Integer.parseInt(id.substring(prefix.length()));
+            } catch (NumberFormatException e) {
+                return 0;
+            }
+        })
+        .max()
+        .orElse(0);
+        
+        String newReportID = String.format("%s%0" + length + "d", prefix, max + 1);
+        
+        PurchaseReport report = new PurchaseReport(poid, invoiceID, approvedBy, message);
+        report.setReportID(newReportID);
         report.add();
         
         PurchaseOrder po = com.owsb.poms.system.model.PurchaseOrder.getPoById(poid);
@@ -946,6 +952,8 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             po.setPerformedBy("FM001");
             po.updateStatus();
         }
+        
+        TransactionIDComboBox.removeItem(txID);
         TransactionIDComboBox.setSelectedIndex(-1);
         InvoiceIdTextField.setText("");
         ApprovedByTextField.setText("");
@@ -1251,7 +1259,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
        for (PurchaseOrder po : poList) {
            if (po.getPOID().equals(poid)) {
                po.setStatus(newStatus);
-               po.setPerformedBy("IM001"); 
+               po.setPerformedBy("FM001"); 
                po.updateStatus();
                ConfirmPOLabel.setText(poid + " is " + newStatus.name().toLowerCase());
                break;
@@ -1307,7 +1315,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     private boolean isPOAlreadyPaid(String poID) {
             List <Transaction> transanctions = Transaction.toList();
             for (Transaction tx : transanctions) {
-                if (tx.getDetails() != null && tx.getDetails().contains(poID)) {
+                if (tx.getPOID() != null && tx.getPOID().equals(poID)) {
                     return true;
                 }
             }
@@ -1315,6 +1323,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         }
         
         private void clearProcessingPaymentForm() {
+            selectBankComboBox.setSelectedIndex(-1);
             selectPOComboBox.setSelectedIndex(-1);
             bankNameTextfield.setText("");
             BankAccNumberTextfield.setText("");
@@ -1349,6 +1358,10 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         String amountStr = AmountTextfield.getText().trim();
         String userDetails = Detailstextfield.getText().trim();
         
+        if (Detailstextfield.getText().isBlank()) {
+            ProcessingPaymentStatusLabel.setText("Status: Details is required in the details field.");
+            return;
+        }
         if (yourbank == null){
             ProcessingPaymentStatusLabel.setText("Status : Bank information not found.");
             return;
@@ -1371,13 +1384,15 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         
         Transaction tx = new Transaction();
         tx.setTransactionID(tx.generateID());
+        tx.setPOID(poID);
         tx.setBankFrom(yourbank.getBankName());
         tx.setBankFromAccountNumber(yourbank.getAccountNumber());
         tx.setBankReceived(supplierBank);
         tx.setBankReceivedAccountNumber(supplierAcc);
         tx.setDateTime(LocalDateTime.now());
         tx.setAmount(amount);
-        tx.setDetails("POID=" + poID + " | " + userDetails);
+        tx.setDetails(userDetails);
+        tx.setProcessBy("FM001");
         tx.add();
         
         PurchaseOrder po = com.owsb.poms.system.model.PurchaseOrder.getPoById(poID);
@@ -1397,11 +1412,11 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     
     private void populateTransactionIDComboBox() {
         TransactionIDComboBox.removeAllItems();
-        List<String> usedTransactions = PurchaseReport.toList().stream().map(PurchaseReport :: getTransactionID).collect(Collectors.toList());
+        List<String> reportedPOIDs= PurchaseReport.toList().stream().map(PurchaseReport :: getPOID).toList();
         List<Transaction> transactions = Transaction.toList();
         
         for (Transaction tx : transactions) {
-            if (tx.getDetails() != null && tx.getDetails().contains("POID=")&& !usedTransactions.contains(tx.getTransactionID())) {
+            if (!reportedPOIDs.contains(tx.getPOID())) {
                 TransactionIDComboBox.addItem(tx.getTransactionID());
             }
         }
@@ -1463,7 +1478,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                     po.getPRID(),
                     po.getTotalPrice(),
                     po.getSupplierID(),
-                    po.getGeneratedDateTime().toString(),
+                    po.getGeneratedDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                     po.getDeliveryDate().toString(),
                     po.getStatus().name(),
                     po.getCreateBy(),
@@ -1615,7 +1630,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         TransactionIDComboBox.removeAllItems();
         List<Transaction> transactions = Transaction.toList();
         for (Transaction tx : transactions) {
-            if (tx.getDetails() != null && tx.getDetails().contains("POID=")) {
+            if (tx.getPOID()!= null && tx.getPOID().isEmpty()) {
             TransactionIDComboBox.addItem(tx.getTransactionID());
             }
         }
@@ -1655,17 +1670,23 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     private void loadAllPurchaseReports() {
        viewPurchaseReportTableModel.setRowCount(0);
         List<PurchaseReport> reports = PurchaseReport.toList();
+        List<Transaction> transactions = Transaction.toList();
+        List<Report> generateReports = Report.toList();
         
         for (PurchaseReport r : reports) {
-            String msg = (r.getMessage() == null) ? "(No message)" : r.getMessage();
+            Transaction relatedTx = transactions.stream().filter(tx -> tx.getPOID().equals(r.getPOID())).findFirst().orElse(null);
+
+            String txID = (relatedTx != null) ? relatedTx.getTransactionID() : "(Unknown)";
+            String processedBy = (relatedTx != null) ? relatedTx.getProcessBy() : "(Unknown)";
+            String msg = generateReports.stream().filter(gr -> gr.getReportID().equals(r.getReportID())).map(Report::getMessage).findFirst().orElse("(No message)");
             viewPurchaseReportTableModel.addRow(new Object[]{
                 r.getReportID(),
                 r.getPOID(),
                 r.getInvoiceID(),
-                r.getTransactionID(),
+                txID,
                 r.getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
                 r.getVerifiedBy(),
-                r.getPaymentProcessBy(),
+                processedBy,
                 msg
             });
         }

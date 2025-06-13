@@ -168,11 +168,9 @@ public class PRModifier extends javax.swing.JDialog {
         setPreferredSize(new java.awt.Dimension(700, 680));
 
         pnlMain.setBackground(new java.awt.Color(255, 204, 204));
-        pnlMain.setForeground(new java.awt.Color(0, 0, 0));
         pnlMain.setPreferredSize(new java.awt.Dimension(700, 700));
 
         jLabel2.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel2.setText("Supplier:");
 
@@ -186,12 +184,10 @@ public class PRModifier extends javax.swing.JDialog {
         });
 
         jLabel3.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel3.setText("Required Date:");
 
         jLabel6.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel6.setText("Item:");
 
@@ -208,7 +204,6 @@ public class PRModifier extends javax.swing.JDialog {
         srlItems.setViewportView(tblItems);
 
         lblSupplierID.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblSupplierID.setForeground(new java.awt.Color(0, 0, 0));
         lblSupplierID.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblSupplierID.setText("[SupplierID]");
 
@@ -241,12 +236,10 @@ public class PRModifier extends javax.swing.JDialog {
         });
 
         jLabel4.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("/");
 
         jLabel5.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("/");
 

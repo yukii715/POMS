@@ -9,6 +9,7 @@ import java.util.UUID;
 
 public class Transaction implements hasFile<Transaction>, hasId{
     private String transactionID;
+    private String POID;
     private String bankFrom;
     private long bankFromAccountNumber;
     private String bankReceived;
@@ -16,14 +17,16 @@ public class Transaction implements hasFile<Transaction>, hasId{
     private LocalDateTime dateTime;
     private double amount;
     private String details;
+    private String processBy;
     
     private static final String filePath = "data/Transaction/transaction_record.txt";
 
     public Transaction() {
     }
 
-    public Transaction(String bankFrom, long bankFromAccountNumber, String bankReceived, long bankReceivedAccountNumber, double amount, String details) {
+    public Transaction(String POID, String bankFrom, long bankFromAccountNumber, String bankReceived, long bankReceivedAccountNumber, double amount, String details, String processBy) {
         this.transactionID = generateID();
+        this.POID = POID;
         this.bankFrom = bankFrom;
         this.bankFromAccountNumber = bankFromAccountNumber;
         this.bankReceived = bankReceived;
@@ -31,6 +34,7 @@ public class Transaction implements hasFile<Transaction>, hasId{
         this.dateTime = LocalDateTime.now();
         this.amount = amount;
         this.details = details;
+        this.processBy = processBy;
     }
 
     public String getTransactionID() {
@@ -96,29 +100,49 @@ public class Transaction implements hasFile<Transaction>, hasId{
     public void setDetails(String details) {
         this.details = details;
     }
+
+    public String getProcessBy() {
+        return processBy;
+    }
+
+    public void setProcessBy(String processBy) {
+        this.processBy = processBy;
+    }
+
+    public String getPOID() {
+        return POID;
+    }
+
+    public void setPOID(String POID) {
+        this.POID = POID;
+    }
     
     public String toString() {
         return transactionID + "\t"
+             + POID + "\t"
              + bankFrom + "\t"
              + bankFromAccountNumber + "\t"
              + bankReceived + "\t"
              + bankReceivedAccountNumber + "\t"
              + dateTime + "\t"
              + amount + "\t"
-             + details;
+             + details + "\t"
+             + processBy;
     }
     
     public static Transaction fromString(String line) {
         String[] parts = line.split("\t");
         Transaction tr = new Transaction();
         tr.setTransactionID(parts[0]);
-        tr.setBankFrom(parts[1]);
-        tr.setBankFromAccountNumber(Long.parseLong(parts[2]));
-        tr.setBankReceived(parts[3]);
-        tr.setBankReceivedAccountNumber(Long.parseLong(parts[4]));
-        tr.setDateTime(LocalDateTime.parse(parts[5]));
-        tr.setAmount(Double.parseDouble(parts[6]));
-        tr.setDetails(parts[7]);
+        tr.setPOID(parts[1]);
+        tr.setBankFrom(parts[2]);
+        tr.setBankFromAccountNumber(Long.parseLong(parts[3]));
+        tr.setBankReceived(parts[4]);
+        tr.setBankReceivedAccountNumber(Long.parseLong(parts[5]));
+        tr.setDateTime(LocalDateTime.parse(parts[6]));
+        tr.setAmount(Double.parseDouble(parts[7]));
+        tr.setDetails(parts[8]);
+        tr.setProcessBy(parts[9]);
 
         return tr;
     }

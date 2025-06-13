@@ -125,11 +125,11 @@ public class PODetails extends javax.swing.JDialog {
                 btn1.setText("Extend");
                 btn3.setText("Cancel");
                 break;
-            case CONFIRMED: // process payment
+            case CONFIRMED: // process payment or completed
                 confirmedPO = true;
-                btn1.setVisible(false);
-                btn3.setVisible(false);
-                btn2.setText("Process Payment");
+                btn2.setVisible(false);
+                btn1.setText("Process Payment");
+                btn3.setText("Completed");
                 break;
             case COMPLETED: // generate report
                 completedPO = true;
@@ -638,6 +638,14 @@ public class PODetails extends javax.swing.JDialog {
             dateModifier.setVisible(true);
             dispose();
         }
+        
+        // Process Payment
+        if (confirmedPO){
+            po.setRemark(remark);
+            ProcessPayment processPayment = new ProcessPayment(this, true, po, admin);
+            processPayment.setLocationRelativeTo(this);
+            processPayment.setVisible(true);
+        }
     }//GEN-LAST:event_btn1ActionPerformed
 
     private void btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn2ActionPerformed
@@ -690,17 +698,12 @@ public class PODetails extends javax.swing.JDialog {
             dispose();
         }
         
-        // Process Payment
-        if (confirmedPO){
-            po.setRemark(remark);
-            ProcessPayment processPayment = new ProcessPayment(this, true, po, admin);
-            processPayment.setLocationRelativeTo(this);
-            processPayment.setVisible(true);
-        }
-        
         // Generate Report
         if(completedPO){
-            
+            po.setRemark(remark);
+            OrderReport or = new OrderReport(this, true, po);
+            or.setLocationRelativeTo(this);
+            or.setVisible(true);
         }
         
         // OK
@@ -770,6 +773,47 @@ public class PODetails extends javax.swing.JDialog {
                 po.updateStatus();
                 JOptionPane.showMessageDialog(this, String.format("Order %s has been set as Invalid", getTitle()));
                 dispose();
+            }
+        }
+        
+        // Completed
+        if (confirmedPO){
+            if (po.getTransactions().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please complete the payment first!", "Payment Incomplete", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            if (!po.isFullyPaid()){
+                JOptionPane.showMessageDialog(
+                        this, 
+                        String.format(
+                                "Please complete the payment first!%n"
+                              + "Total: RM %.2f%n"
+                              + "Paid:  RM %.2f", 
+                                po.getTotalPrice(),
+                                po.getTransactions().stream().mapToDouble(Transaction::getAmount).sum()
+                        ), 
+                        "Payment Incomplete", 
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
+            
+            int result = JOptionPane.showConfirmDialog(
+                    this, 
+                    "Are you sure to set this PO as Completd?", 
+                    "Transaction Successful", 
+                    JOptionPane.YES_NO_OPTION, 
+                    JOptionPane.QUESTION_MESSAGE
+            );
+            if (result == JOptionPane.YES_OPTION){
+                po.setStatus(PurchaseOrder.Status.COMPLETED);
+                po.setRemark(remark);
+                po.updateStatus();
+                JOptionPane.showMessageDialog(this, String.format(
+                    "Order %s has been set as Completed!", 
+                    po.getPOID())
+                );
             }
         }
     }//GEN-LAST:event_btn3ActionPerformed
