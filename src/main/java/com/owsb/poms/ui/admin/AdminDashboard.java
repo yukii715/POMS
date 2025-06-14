@@ -13,6 +13,8 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.plaf.basic.*;
@@ -21,7 +23,7 @@ import javax.swing.table.*;
 public class AdminDashboard extends javax.swing.JFrame {
     private Point initialClick;
     private boolean maximise = false;
-    private boolean summary = false;  
+    private boolean notification = false;  
     private Admin admin;
     private String currentTab = "Dashboard";
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -41,12 +43,13 @@ public class AdminDashboard extends javax.swing.JFrame {
     // Sales
     private DailySales lastSales = DailySales.toList().isEmpty() ? null : DailySales.toList().getLast();
     private DailySales selectedSales = DailySales.toList().isEmpty() ? null : DailySales.toList().getLast();;
-    private LocalDate initialDate;
+    private LocalDate selectedDate;
     private List<LocalDate> validDates = new ArrayList<>();
     private Set<Integer> years = new LinkedHashSet<>();
     private Set<Integer> months = new LinkedHashSet<>();
     private Set<Integer> days = new LinkedHashSet<>();
     private List<DSItem> dsi = new ArrayList<>();
+    private boolean newSales;
     private boolean isFilling;
     private boolean isIniliaziling;
     private DefaultTableModel salesModel = new DefaultTableModel(){
@@ -230,22 +233,22 @@ public class AdminDashboard extends javax.swing.JFrame {
                     int row = e.getFirstRow();
                     int col = e.getColumn();
 
-                    if (col == 5){
+                    if (col == 6){
                         int quantity;
-                        int stock = Integer.parseInt(salesModel.getValueAt(row, 4).toString());
+                        int stock = Integer.parseInt(salesModel.getValueAt(row, 5).toString());
                         try{
                             quantity = Integer.parseInt(salesModel.getValueAt(row, col).toString());
-                            if (quantity > 0) {
-                                salesModel.setValueAt(stock + quantity, row, 6);
+                            if (quantity > 0 && quantity <= stock) {
+                                salesModel.setValueAt(stock - quantity, row, 7);
                             } else {
-                                salesModel.setValueAt("Invalid", row, 6);
+                                salesModel.setValueAt("Invalid", row, 7);
                             }
                         } catch (NumberFormatException ex){
-                            if (salesModel.getValueAt(row, 5).toString().isBlank()){
-                                salesModel.setValueAt(stock, row, 6);
+                            if (salesModel.getValueAt(row, 6).toString().isBlank()){
+                                salesModel.setValueAt(stock, row, 7);
                                 return;
                             }
-                            salesModel.setValueAt("Error", row, 6);
+                            salesModel.setValueAt("Error", row, 7);
                         }
                     }
                     
@@ -258,10 +261,10 @@ public class AdminDashboard extends javax.swing.JFrame {
         tblSales.getColumnModel().getColumn(1).setPreferredWidth(100);
         tblSales.getColumnModel().getColumn(2).setPreferredWidth(150);
         tblSales.getColumnModel().getColumn(3).setPreferredWidth(220);
-
         
+        itemList = Item.toList();
         if (sales == null){
-            itemList = Item.toList();
+            newSales = true;
             for (Item item : itemList) {
                 if (item.getStatus() != Item.Status.REMOVED)
                 {
@@ -270,7 +273,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                         item.getItemCategory(),
                         item.getItemType(),
                         item.getItemName(),
-                        String.valueOf(item.getSellPrice()),
+                        String.format("%.2f", item.getSellPrice()),
                         String.valueOf(item.getStock()),
                         "",
                         String.valueOf(item.getStock())
@@ -279,19 +282,42 @@ public class AdminDashboard extends javax.swing.JFrame {
             }
         }
         else{
+            newSales = false;
             String fileName = sales.getSalesID() + ".txt";
             dsi = DSItem.read(fileName);
-            for (DSItem item : dsi) {
-                salesModel.addRow(new String[]{
-                    item.getItemID(),
-                    item.getItemCategory(),
-                    item.getItemType(),
-                    item.getItemName(),
-                    String.valueOf(item.getSellPrice()),
-                    String.valueOf(item.getStock() + item.getQuantity()),
-                    String.valueOf(item.getQuantity()),
-                    String.valueOf(item.getStock())
-                });
+            if (sales.getDate().equals(lastSales.getDate())){
+                Map<String, DSItem> dsiMap = dsi.stream().collect(Collectors.toMap(DSItem::getItemID, Function.identity()));
+                for (Item item : itemList) {
+                    if (item.getStatus() != Item.Status.REMOVED)
+                    {
+                        DSItem dSItem = dsiMap.get(item.getItemID());
+                        
+                        salesModel.addRow(new String[]{
+                            item.getItemID(),
+                            item.getItemCategory(),
+                            item.getItemType(),
+                            item.getItemName(),
+                            String.format("%.2f", item.getSellPrice()),
+                            String.valueOf(dSItem.getStock() + dSItem.getQuantity()),
+                            String.valueOf(dSItem.getQuantity()),
+                            String.valueOf(dSItem.getStock())
+                        });
+                    }
+                }
+            }
+            else{
+                for (DSItem item : dsi) {
+                    salesModel.addRow(new String[]{
+                        item.getItemID(),
+                        item.getItemCategory(),
+                        item.getItemType(),
+                        item.getItemName(),
+                        String.format("%.2f", item.getSellPrice()),
+                        String.valueOf(item.getStock() + item.getQuantity()),
+                        String.valueOf(item.getQuantity()),
+                        String.valueOf(item.getStock())
+                    });
+                }
             }
         }
         
@@ -307,7 +333,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private void initialSalesDate(){
         LocalDate startDate = LocalDate.of(2024, 5, 30); // or any starting date you choose
         LocalDate endDate = LocalDate.now(); // today
-        initialDate = lastSales == null ? startDate : lastSales.getDate();
+        selectedDate = lastSales == null ? startDate : lastSales.getDate();
         
         while (!startDate.isAfter(endDate)) {
             validDates.add(startDate);
@@ -322,11 +348,11 @@ public class AdminDashboard extends javax.swing.JFrame {
             cmbYear.addItem(String.valueOf(year));
         }
         
-        cmbYear.setSelectedItem(String.valueOf(initialDate.getYear()));
+        cmbYear.setSelectedItem(String.valueOf(selectedDate.getYear()));
         updateMonthCombo();
-        cmbMonth.setSelectedItem(String.valueOf(initialDate.getMonthValue()));
+        cmbMonth.setSelectedItem(String.valueOf(selectedDate.getMonthValue()));
         updateDayCombo();
-        cmbDay.setSelectedItem(String.valueOf(initialDate.getDayOfMonth()));
+        cmbDay.setSelectedItem(String.valueOf(selectedDate.getDayOfMonth()));
     }
     
     private void updateMonthCombo() {
@@ -522,7 +548,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblLogo = new javax.swing.JLabel();
+        lblLogo1 = new javax.swing.JLabel();
         pnlNorthMargin = new javax.swing.JPanel();
         pnlNorthWestMargin = new javax.swing.JPanel();
         pnlNorthEastMargin = new javax.swing.JPanel();
@@ -535,6 +561,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         mainSplitPane = new javax.swing.JSplitPane();
         pnlNavigator = new javax.swing.JPanel();
         pnlLogo = new javax.swing.JPanel();
+        lblLogo = new javax.swing.JLabel();
         pnlTabs = new javax.swing.JPanel();
         pnlDashboardTab = new javax.swing.JPanel();
         pnlDashboardIndicator = new javax.swing.JPanel();
@@ -589,6 +616,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblNotification = new javax.swing.JLabel();
         lblLogout2 = new javax.swing.JLabel();
         lblReload = new javax.swing.JLabel();
+        lblLogout3 = new javax.swing.JLabel();
         pnlContent = new javax.swing.JPanel();
         pnlMainContent = new javax.swing.JPanel();
         pnlDashboard = new javax.swing.JPanel();
@@ -661,12 +689,12 @@ public class AdminDashboard extends javax.swing.JFrame {
         btnNewSupplier = new javax.swing.JButton();
         btnRemoveSupplier = new javax.swing.JButton();
         btnChangeSupplierName = new javax.swing.JButton();
-        pnlSummary = new javax.swing.JPanel();
+        pnlNotification = new javax.swing.JPanel();
         pnlSummaryDivider = new javax.swing.JPanel();
         pnlSummaryMain = new javax.swing.JPanel();
 
-        lblLogo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblLogo.setPreferredSize(new java.awt.Dimension(90, 90));
+        lblLogo1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblLogo1.setPreferredSize(new java.awt.Dimension(90, 90));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Admin Dashboard");
@@ -1371,8 +1399,8 @@ public class AdminDashboard extends javax.swing.JFrame {
             }
         });
 
-        lblLogout2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblLogout2.addMouseListener(new java.awt.event.MouseAdapter() {
+        lblLogout3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblLogout3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lblLogout2MouseClicked(evt);
             }
@@ -1676,10 +1704,12 @@ public class AdminDashboard extends javax.swing.JFrame {
             pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlSalesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(srlSales, javax.swing.GroupLayout.DEFAULT_SIZE, 847, Short.MAX_VALUE)
+                .addComponent(srlSales, javax.swing.GroupLayout.DEFAULT_SIZE, 832, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnSaveSales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(pnlSalesLayout.createSequentialGroup()
+                        .addGap(15, 15, 15)
                         .addGroup(pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel16)
                             .addComponent(jLabel17)
@@ -1688,8 +1718,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                         .addGroup(pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(cmbYear, 0, 60, Short.MAX_VALUE)
                             .addComponent(cmbMonth, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(cmbDay, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(btnSaveSales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(cmbDay, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         pnlSalesLayout.setVerticalGroup(
@@ -1711,7 +1740,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                             .addComponent(jLabel18))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSaveSales, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(srlSales, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE))
+                    .addComponent(srlSales, javax.swing.GroupLayout.DEFAULT_SIZE, 674, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -2101,9 +2130,9 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         pnlContent.add(pnlMainContent, java.awt.BorderLayout.CENTER);
 
-        pnlSummary.setBackground(new java.awt.Color(255, 153, 153));
-        pnlSummary.setPreferredSize(new java.awt.Dimension(0, 0));
-        pnlSummary.setLayout(new java.awt.BorderLayout());
+        pnlNotification.setBackground(new java.awt.Color(255, 153, 153));
+        pnlNotification.setPreferredSize(new java.awt.Dimension(0, 0));
+        pnlNotification.setLayout(new java.awt.BorderLayout());
 
         pnlSummaryDivider.setBackground(new java.awt.Color(243, 210, 210));
         pnlSummaryDivider.setPreferredSize(new java.awt.Dimension(5, 690));
@@ -2119,7 +2148,7 @@ public class AdminDashboard extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        pnlSummary.add(pnlSummaryDivider, java.awt.BorderLayout.WEST);
+        pnlNotification.add(pnlSummaryDivider, java.awt.BorderLayout.WEST);
 
         pnlSummaryMain.setBackground(new java.awt.Color(255, 153, 153));
         pnlSummaryMain.setPreferredSize(new java.awt.Dimension(200, 690));
@@ -2135,9 +2164,9 @@ public class AdminDashboard extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        pnlSummary.add(pnlSummaryMain, java.awt.BorderLayout.CENTER);
+        pnlNotification.add(pnlSummaryMain, java.awt.BorderLayout.CENTER);
 
-        pnlContent.add(pnlSummary, java.awt.BorderLayout.EAST);
+        pnlContent.add(pnlNotification, java.awt.BorderLayout.EAST);
 
         pnlContainer.add(pnlContent, java.awt.BorderLayout.CENTER);
 
@@ -2332,31 +2361,38 @@ public class AdminDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_pnlSouthEastMarginMouseDragged
 
     private void lblNotificationMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotificationMouseEntered
-        new CommonMethod().setLabelIcon("/icons/summary_select.png", 40, 40, Image.SCALE_SMOOTH, lblNotification);
+        if (!notification){
+            new CommonMethod().setLabelIcon("/icons/bell2.png", 35, 35, Image.SCALE_SMOOTH, lblNotification);
+        }
+        else{
+            new CommonMethod().setLabelIcon("/icons/notification2.png", 35, 35, Image.SCALE_SMOOTH, lblNotification);
+        }
         lblNotification.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }//GEN-LAST:event_lblNotificationMouseEntered
 
     private void lblNotificationMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotificationMouseExited
-        new CommonMethod().setLabelIcon("/icons/summary.png", 40, 40, Image.SCALE_SMOOTH, lblNotification);
-        if (summary){
-            new CommonMethod().setLabelIcon("/icons/summary_selected.png", 40, 40, Image.SCALE_SMOOTH, lblNotification);
+        if (!notification){
+            new CommonMethod().setLabelIcon("/icons/bell.png", 35, 35, Image.SCALE_SMOOTH, lblNotification);
+        }
+        else{
+            new CommonMethod().setLabelIcon("/icons/notification.png", 35, 35, Image.SCALE_SMOOTH, lblNotification);
         }
     }//GEN-LAST:event_lblNotificationMouseExited
 
     private void lblNotificationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotificationMouseClicked
-        if (!summary){
-            new CommonMethod().setLabelIcon("/icons/summary_selected.png", 40, 40, Image.SCALE_SMOOTH, lblNotification);
-            pnlSummary.setPreferredSize(new Dimension(300, 0));
-            pnlSummary.revalidate();
-            pnlSummary.repaint();
-            summary = true;
+        if (!notification){
+            new CommonMethod().setLabelIcon("/icons/notification.png", 35, 35, Image.SCALE_SMOOTH, lblNotification);
+            pnlNotification.setPreferredSize(new Dimension(300, 0));
+            pnlNotification.revalidate();
+            pnlNotification.repaint();
+            notification = true;
         }
         else{
-            new CommonMethod().setLabelIcon("/icons/summary.png", 40, 40, Image.SCALE_SMOOTH, lblNotification);
-            pnlSummary.setPreferredSize(new Dimension(0, 0));
-            pnlSummary.revalidate();
-            pnlSummary.repaint();
-            summary = false;
+            new CommonMethod().setLabelIcon("/icons/bell.png", 35, 35, Image.SCALE_SMOOTH, lblNotification);
+            pnlNotification.setPreferredSize(new Dimension(0, 0));
+            pnlNotification.revalidate();
+            pnlNotification.repaint();
+            notification = false;
         }
     }//GEN-LAST:event_lblNotificationMouseClicked
 
@@ -2485,29 +2521,6 @@ public class AdminDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEditItemActionPerformed
 
     private void btnUpdateStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateStockActionPerformed
-//        if (selectedItemRow == -1)
-//        {
-//            JOptionPane.showMessageDialog(this, "Please select an item to update stock", "Error", JOptionPane.ERROR_MESSAGE);
-//            return;
-//        }
-//        
-//        String input = JOptionPane.showInputDialog(this, String.format("Stock: %d", selectedItem.getStock()), "Update Stock", JOptionPane.INFORMATION_MESSAGE);
-//        
-//        if (input != null) {
-//            try {
-//                int newStock = Integer.parseInt(input.trim());
-//                if (newStock < 0) {
-//                    JOptionPane.showMessageDialog(this, "Stock cannot be negative!", "Invalid Input", JOptionPane.WARNING_MESSAGE);
-//                } else {
-//                    selectedItem.setStock(newStock);
-//                    selectedItem.updateStock(); 
-//                    JOptionPane.showMessageDialog(this, "Stock updated successfully!");
-//                    Inventory();
-//                }
-//            } catch (NumberFormatException e) {
-//                JOptionPane.showMessageDialog(this, "Please enter a valid integer!", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-//            }
-//        }
         this.setEnabled(false);
         UpdateStock us = new UpdateStock(this, false);
         us.setLocationRelativeTo(this);
@@ -2716,7 +2729,6 @@ public class AdminDashboard extends javax.swing.JFrame {
 
             JOptionPane.showMessageDialog(this, textArea, "Password Reset", JOptionPane.INFORMATION_MESSAGE);
             JOptionPane.showMessageDialog(this, "Password Reset Successfully!");
-            dispose();
         }
     }//GEN-LAST:event_btnResetPassowardActionPerformed
 
@@ -2830,7 +2842,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private void btnSaveSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveSalesActionPerformed
         boolean allQuantityEmpty = true;
         for (int row = 0; row < tblSales.getRowCount(); row++) {
-            Object value = salesModel.getValueAt(row, 6); 
+            Object value = salesModel.getValueAt(row, 6);
             if (value != null && !value.toString().isBlank()) {
                 allQuantityEmpty = false;
                 break;
@@ -2841,61 +2853,83 @@ public class AdminDashboard extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No quantity entered!", "Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
+
         for (int i = 0; i < tblSales.getRowCount(); i++){
-            if (salesModel.getValueAt(i, 6).toString().equals("Error") ||
-                salesModel.getValueAt(i, 6).toString().equals("Invalid")){
+            if (salesModel.getValueAt(i, 7).toString().equals("Error") ||
+                salesModel.getValueAt(i, 7).toString().equals("Invalid")){
                 JOptionPane.showMessageDialog(this, "Invalid Quantity Found!", "Error", JOptionPane.ERROR_MESSAGE);
-                return; 
+                return;
             }
         }
-        
-        int result = JOptionPane.showConfirmDialog(this, "Are you sure to make this update?", "Update Stock", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        int result = JOptionPane.showConfirmDialog(this, "Are you sure to save this sales record?", "Save Sales Record", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (result == JOptionPane.YES_OPTION){
-            
-            List <StockUpdateReport> list = new ArrayList<>();
-            
+
+            List <StockUpdateReport> stkList = new ArrayList<>();
+            List <DSItem> dsiList = new ArrayList<>();
+            double income = 0;
+
             for (int i = 0; i < tblSales.getRowCount(); i++){
                 for (Item item : itemList){
                     if (salesModel.getValueAt(i, 0).toString().equals(item.getItemID())){
                         item.setStock(Integer.parseInt(salesModel.getValueAt(i, 7).toString()));
                         String quantityString = salesModel.getValueAt(i, 6).toString();
                         int quantity = quantityString.isBlank() ? 0 : Integer.parseInt(quantityString);
-                        list.add(new StockUpdateReport(item.getItemID(), item.getItemCategory(), item.getItemType(), item.getItemName(), item.getStock(), quantity));
+                        income += quantity * item.getSellPrice();
+                        stkList.add(new StockUpdateReport(item.getItemID(), item.getItemCategory(), item.getItemType(), item.getItemName(), item.getStock(), quantity));
+                        dsiList.add(new DSItem(item.getItemID(), item.getItemCategory(), item.getItemType(), item.getItemName(), quantity, item.getStock(), item.getSellPrice()));
                     }
                 }
             }
-            
+
             new Item().saveToFile(itemList);
-            new StockUpdateReport().save(list, "Stock Decreasing");
-            JOptionPane.showMessageDialog(this, "Stock has updated successfully!");
-            dispose();
+            new StockUpdateReport().save(stkList, "Stock Decreasing");
+            if (newSales){
+                new DSItem().save(dsiList, selectedDate, income);
+            }
+            else{
+                new DSItem().update(dsiList, selectedDate, income, lastSales);
+            }
+            JOptionPane.showMessageDialog(this, String.format("Sales has recorded successfully!%nTotal Income: RM %.2f", income));
+            lastSales = DailySales.toList().getLast();
         }
     }//GEN-LAST:event_btnSaveSalesActionPerformed
-
-    private void cmbYearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbYearActionPerformed
-        if (isFilling || isIniliaziling) return;
-        updateMonthCombo();
-    }//GEN-LAST:event_cmbYearActionPerformed
-
-    private void cmbMonthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbMonthActionPerformed
-        if (isFilling || isIniliaziling) return;
-        updateDayCombo();
-    }//GEN-LAST:event_cmbMonthActionPerformed
 
     private void cmbDayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbDayActionPerformed
         if (isFilling || isIniliaziling) return;
         int year = Integer.parseInt(cmbYear.getSelectedItem().toString());
         int month = Integer.parseInt(cmbMonth.getSelectedItem().toString());
         int day = Integer.parseInt(cmbDay.getSelectedItem().toString());
-        LocalDate selectedDate = LocalDate.of(year, month, day);
-        if (!selectedDate.equals(initialDate)){
-            btnSaveSales.setEnabled(false);
-        }
-        else{
+        selectedDate = LocalDate.of(year, month, day);
+        if (selectedDate.equals(lastSales.getDate())){
             btnSaveSales.setEnabled(true);
+            Sales(lastSales);
+            return;
         }
+        if (selectedDate.equals(lastSales.getDate().plusDays(1))){
+            btnSaveSales.setEnabled(true);
+            Sales(null);
+            return;
+        }
+        for (DailySales ds : DailySales.toList()){
+            if (selectedDate.equals(ds.getDate())){
+                btnSaveSales.setEnabled(false);
+                Sales(ds);
+                return;
+            }
+        }
+        btnSaveSales.setEnabled(false);
     }//GEN-LAST:event_cmbDayActionPerformed
+
+    private void cmbMonthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbMonthActionPerformed
+        if (isFilling || isIniliaziling) return;
+        updateDayCombo();
+    }//GEN-LAST:event_cmbMonthActionPerformed
+
+    private void cmbYearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbYearActionPerformed
+        if (isFilling || isIniliaziling) return;
+        updateMonthCombo();
+    }//GEN-LAST:event_cmbYearActionPerformed
  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBankSetting;
@@ -2955,8 +2989,10 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel lblItemStock;
     private javax.swing.JLabel lblItemType;
     private javax.swing.JLabel lblLogo;
+    private javax.swing.JLabel lblLogo1;
     private javax.swing.JLabel lblLogout1;
     private javax.swing.JLabel lblLogout2;
+    private javax.swing.JLabel lblLogout3;
     private javax.swing.JLabel lblMaximise;
     private javax.swing.JLabel lblMinimise;
     private javax.swing.JLabel lblName;
@@ -3005,6 +3041,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel pnlNorthEastMargin;
     private javax.swing.JPanel pnlNorthMargin;
     private javax.swing.JPanel pnlNorthWestMargin;
+    private javax.swing.JPanel pnlNotification;
     private javax.swing.JPanel pnlOrders;
     private javax.swing.JPanel pnlOrdersIndicator;
     private javax.swing.JPanel pnlOrdersTab;
@@ -3016,7 +3053,6 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel pnlSouthMargin;
     private javax.swing.JPanel pnlSouthMargin3;
     private javax.swing.JPanel pnlSouthWestMargin;
-    private javax.swing.JPanel pnlSummary;
     private javax.swing.JPanel pnlSummaryDivider;
     private javax.swing.JPanel pnlSummaryMain;
     private javax.swing.JPanel pnlSuppliers;

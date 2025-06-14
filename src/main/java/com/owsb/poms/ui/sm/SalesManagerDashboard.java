@@ -2372,7 +2372,7 @@ public class SalesManagerDashboard extends javax.swing.JFrame {
         String filePath = "data/Sales/" + todayID + ".txt";
         todayItems = DSItem.read(filePath);
         todayItems.add(dsItem);
-        dsItem.save(todayItems);
+        //dsItem.save(todayItems);
         itemList.get(0).saveToFile(itemList);
         
         JOptionPane.showMessageDialog(this, "Sale Entry Saved Successfully!");

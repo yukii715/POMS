@@ -370,11 +370,21 @@ public class POModifier extends javax.swing.JDialog {
             
             isInitializing = true;
             
-            DateResolver.connect(cmbYear, cmbMonth, cmbDay, isInitializing);
+            LocalDate today = LocalDate.now();
+            int currentYear = today.getYear();
+            int currentMonth = today.getMonthValue();
+            int currentDay = today.getDayOfMonth();
             
             deliveryDate = edit ? po.getDeliveryDate() : pr.getRequiredDeliveryDate();
+            
+            for (int i = 0; i <= 2; i++) {
+                cmbYear.addItem(String.valueOf(currentYear + i));
+            }
+            
             cmbYear.setSelectedItem(String.valueOf(deliveryDate.getYear()));
+            DateResolver.populateCbMonth(cmbYear, cmbMonth, cmbDay, currentYear, currentMonth);
             cmbMonth.setSelectedItem(String.format("%02d", deliveryDate.getMonthValue()));
+            DateResolver.populateCbDay(cmbYear, cmbMonth, cmbDay, currentYear, currentMonth, currentDay);
             cmbDay.setSelectedItem(String.format("%02d", deliveryDate.getDayOfMonth()));
 
             isInitializing = false;
@@ -567,6 +577,8 @@ public class POModifier extends javax.swing.JDialog {
     }//GEN-LAST:event_cmbMonthActionPerformed
 
     private void cmbDayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbDayActionPerformed
+        if (isInitializing || isFilling) return;
+        
         if (cmbDay.getSelectedIndex() != -1)
         {
             int year = Integer.parseInt(cmbYear.getSelectedItem().toString());

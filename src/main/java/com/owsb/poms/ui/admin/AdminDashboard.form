@@ -2,7 +2,7 @@
 
 <Form version="1.9" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
-    <Component class="javax.swing.JLabel" name="lblLogo">
+    <Component class="javax.swing.JLabel" name="lblLogo1">
       <Properties>
         <Property name="horizontalAlignment" type="int" value="0"/>
         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -1183,7 +1183,7 @@
                     <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lblReloadMouseEntered"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JLabel" name="lblLogout2">
+                <Component class="javax.swing.JLabel" name="lblLogout3">
                   <Properties>
                     <Property name="horizontalAlignment" type="int" value="0"/>
                   </Properties>
@@ -1600,10 +1600,12 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="srlSales" pref="847" max="32767" attributes="0"/>
+                                  <Component id="srlSales" pref="832" max="32767" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Group type="102" attributes="0">
+                                      <Component id="btnSaveSales" max="32767" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="1" attributes="0">
                                               <Component id="jLabel16" min="-2" max="-2" attributes="0"/>
                                               <Component id="jLabel17" min="-2" max="-2" attributes="0"/>
@@ -1616,7 +1618,6 @@
                                               <Component id="cmbDay" alignment="1" max="32767" attributes="0"/>
                                           </Group>
                                       </Group>
-                                      <Component id="btnSaveSales" max="32767" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
@@ -1645,7 +1646,7 @@
                                           <EmptySpace max="32767" attributes="0"/>
                                           <Component id="btnSaveSales" min="-2" pref="36" max="-2" attributes="0"/>
                                       </Group>
-                                      <Component id="srlSales" pref="676" max="32767" attributes="0"/>
+                                      <Component id="srlSales" pref="674" max="32767" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
@@ -2450,7 +2451,7 @@
                     </Container>
                   </SubComponents>
                 </Container>
-                <Container class="javax.swing.JPanel" name="pnlSummary">
+                <Container class="javax.swing.JPanel" name="pnlNotification">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="99" green="99" red="ff" type="rgb"/>

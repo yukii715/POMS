@@ -420,8 +420,8 @@ public class ProcessPayment extends javax.swing.JDialog {
                           + "Paid     : RM %.2f%n"
                           + "Remaining: RM %.2f", 
                             po.getTotalPrice(),
-                            paid,
-                            hasToPay
+                            paid + amount,
+                            hasToPay - amount
                     );
 
             if (po.isFullyPaid()){

@@ -1,0 +1,25 @@
+ITM00001	Hygiene	Cleaning Supplies	GoodHealth Shampoo 200ml	0	0	9.9
+ITM00002	Grocery	Staple Food	SunGro Premium Rice 5kg	0	0	25.9
+ITM00003	Grocery	Dry Ingredient	SunGro Brown Sugar 1kg	0	0	4.7
+ITM00004	Electronics	Peripheral	LiteTech Wireless Mouse	0	0	49.9
+ITM00005	Beverage	Tea	Green Basket Green Tea 500ml	0	0	14.5
+ITM00006	Hardware	Hand Tool	MegaTools Hammer 16oz	0	0	22.0
+ITM00007	Electronics	Peripheral	LiteTech USB Keyboard	0	0	59.9
+ITM00008	Hygiene	Oral Care	GoodHealth Toothpaste 150g	0	0	7.2
+ITM00009	Hygiene	Cleaning Supplies	GoodHealth Antibacterial Wipes 50s	0	0	9.5
+ITM00010	Hygiene	Cleaning Supplies	GoodHealth Hand Sanitizer 100ml	0	0	6.9
+ITM00011	Grocery	Instant Food	SunGro Instant Noodles Chicken 5s	0	0	4.9
+ITM00012	Grocery	Canned Food	SunGro Sardines in Tomato Sauce	0	0	3.8
+ITM00013	Grocery	Dairy Product	SunGro Evaporated Milk 400g	0	0	3.3
+ITM00014	Beverage	Juice	FreshFarm Apple Juice 1L	0	0	6.5
+ITM00015	Grocery	Fresh Produce	FreshFarm Fresh Eggs Grade A 10s	0	20	8.0
+ITM00016	Grocery	Fresh Produce	New Item from FarmFresh (test)	10	110	100.0
+ITM00017	Hardware	Hand Tool	MegaTools Pliers Set	0	0	29.9
+ITM00018	Hardware	Power Tool	MegaTools Electric Drill 650W	0	0	139.0
+ITM00019	Electronics	Accessories	LiteTech HDMI Cable 2m	10	10	12.9
+ITM00020	Electronics	Mobile Accessory	LiteTech Portable Charger 10000mAh	0	10	65.0
+ITM00021	Electronics	Home Appliance	LiteTech LED Bulb 10W	0	15	8.9
+ITM00022	Grocery	Organic Food	Green Basket Organic Oats 500g	0	0	9.9
+ITM00023	Beverage	Organic Tea	Green Basket Herbal Tea 30s	0	0	15.5
+ITM00024	Grocery	Organic Food	Green Basket Organic Brown Rice 2kg	0	0	14.0
+ITM00026	Grocery	Dairy Product	Emborg Cheddar Cheese 20pc	0	0	7.9

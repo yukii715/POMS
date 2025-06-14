@@ -32,12 +32,6 @@ public class DateResolver {
             cbYear.addItem(String.valueOf(currentYear + i));
         }
         
-        if (isInitializing)
-        {
-            populateCbMonth(cbYear, cbMonth, cbDay, currentYear, currentMonth);
-            populateCbDay(cbYear, cbMonth, cbDay, currentYear, currentMonth, currentDay);
-        }
-
         cbYear.addActionListener(e -> {
             if (isInitializing) return;
             

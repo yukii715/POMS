@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class DailySales implements hasId, hasFile<DailySales>{
     private String salesID;
     private LocalDate date;
-    private List<LocalDateTime> updatedDateTimeList;
+    private List<LocalDateTime> updatedDateTimeList = new ArrayList<>();
     private double totalIncome;
     
     private static final String filePath = "data/Sales/daily_sales.txt";
@@ -18,8 +18,7 @@ public class DailySales implements hasId, hasFile<DailySales>{
     public DailySales() {
     }
 
-    public DailySales(String salesID, LocalDate date, double totalIncome) {
-        this.salesID = salesID;
+    public DailySales(LocalDate date, double totalIncome) {
         this.date = date;
         this.updatedDateTimeList.add(LocalDateTime.now());
         this.totalIncome = totalIncome;
@@ -72,11 +71,11 @@ public class DailySales implements hasId, hasFile<DailySales>{
         DailySales ds = new DailySales();
         ds.setSalesID(parts[0]);
         ds.setDate(LocalDate.parse(parts[1]));
-        ds.setTotalIncome(Double.parseDouble(parts[2]));
-        ds.setUpdatedDateTimeList(Arrays.stream(parts[3].replaceAll("^\\[|\\]$", "").split(","))
+        ds.setUpdatedDateTimeList(Arrays.stream(parts[2].replaceAll("^\\[|\\]$", "").split(","))
                                       .map(String::trim)
                                       .map(LocalDateTime::parse)
                                       .collect(Collectors.toList()));
+        ds.setTotalIncome(Double.parseDouble(parts[3]));
 
         return ds;
     }
@@ -100,5 +99,14 @@ public class DailySales implements hasId, hasFile<DailySales>{
         var dss = toList();
         dss.add(this);
         this.saveToFile(dss);
+    }
+    
+    public void newIncome(){
+        DataHandler.updateFieldAndSave(
+                toList(),
+                ds -> ds.getSalesID().equals(this.getSalesID()),              
+                ds -> ds.setTotalIncome(this.getTotalIncome()),           
+                list -> this.saveToFile(list)
+        );
     }
 }

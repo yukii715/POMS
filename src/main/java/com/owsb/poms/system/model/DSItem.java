@@ -1,6 +1,7 @@
 package com.owsb.poms.system.model;
 
 import com.owsb.poms.system.functions.FileHandler;
+import java.time.LocalDate;
 import java.util.List;
 
 public class DSItem extends DailySales{
@@ -109,14 +110,27 @@ public class DSItem extends DailySales{
         return dsi;
     }
     
-    public void save(List<DSItem> list) {
-        String fileName = this.getSalesID()+ ".txt";
+    public void save(List<DSItem> list, LocalDate date, double income ) {
+        DailySales ds = new DailySales(date, income);
+        ds.setSalesID(ds.generateID());
+        
+        String fileName = ds.getSalesID()+ ".txt";
         String filePath = this.filePath + fileName;
         
+        ds.add();
         FileHandler.saveToFile(filePath, list, DSItem::toString);
     }
     
-    public static List<DSItem> read(String filePath){
-        return FileHandler.readFromFile(filePath, DSItem::fromString);
+    public void update(List<DSItem> list, LocalDate date, double income ,DailySales sales) {
+        String fileName = sales.getSalesID()+ ".txt";
+        String filePath = this.filePath + fileName;
+        
+        sales.setTotalIncome(income);
+        sales.newIncome();
+        FileHandler.saveToFile(filePath, list, DSItem::toString);
+    }
+    
+    public static List<DSItem> read(String fileName){
+        return FileHandler.readFromFile(filePath + fileName, DSItem::fromString);
     }
 }

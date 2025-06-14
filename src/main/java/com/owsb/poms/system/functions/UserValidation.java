@@ -34,6 +34,6 @@ public class UserValidation {
     public static boolean exitedId (String UID){
         var users = User.toList();
         return users.stream().anyMatch(
-                user -> user.getUID().equals(UID) && !user.isIsDeleted());
+                user -> user.getUID().equalsIgnoreCase(UID) && !user.isIsDeleted());
     }
 }

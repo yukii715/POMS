@@ -1,1 +1,10 @@
 PUR00001	PurchaseReport	Marked	2025-06-12T22:36:17.847254200
+SUP00001	StockUpdateReport	Stock Increasing	2025-06-14T15:56:44.746191100
+SUP00002	StockUpdateReport	Stock Decreasing	2025-06-14T16:07:14.482843400
+SUP00003	StockUpdateReport	Stock Decreasing	2025-06-14T16:10:39.108823700
+SUP00004	StockUpdateReport	Stock Decreasing	2025-06-14T16:12:26.720919800
+SUP00005	StockUpdateReport	Stock Decreasing	2025-06-14T16:17:25.423245400
+SUP00006	StockUpdateReport	Stock Decreasing	2025-06-14T16:50:14.728025800
+SUP00007	StockUpdateReport	Stock Decreasing	2025-06-14T16:50:37.639869500
+SUP00008	StockUpdateReport	Stock Decreasing	2025-06-14T17:06:18.904049
+SUP00009	StockUpdateReport	Stock Decreasing	2025-06-14T17:06:40.956559600

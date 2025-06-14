@@ -63,8 +63,15 @@ public class PRModifier extends javax.swing.JDialog {
         cmbSuppliers.setSelectedItem(Supplier.getNameById(pr.getSupplierID()));
         cmbSuppliers.setEnabled(false);
         
+        LocalDate today = LocalDate.now();
+        int currentYear = today.getYear();
+        int currentMonth = today.getMonthValue();
+        int currentDay = today.getDayOfMonth();
+        
         cmbYear.setSelectedItem(String.valueOf(pr.getRequiredDeliveryDate().getYear()));
+        DateResolver.populateCbMonth(cmbYear, cmbMonth, cmbDay, currentYear, currentMonth);
         cmbMonth.setSelectedItem(String.format("%02d", pr.getRequiredDeliveryDate().getMonthValue()));
+        DateResolver.populateCbDay(cmbYear, cmbMonth, cmbDay, currentYear, currentMonth, currentDay);
         cmbDay.setSelectedItem(String.format("%02d", pr.getRequiredDeliveryDate().getDayOfMonth()));
         
         isInitializing = false;
@@ -74,7 +81,6 @@ public class PRModifier extends javax.swing.JDialog {
         previousItems = pr.getItems();
         selectedItems = pr.getItems();
         supplierItems = Item.getItemsFromSupplier(pr.getSupplierID());
-        
         
         for (int i = 0; i < supplierItems.size(); i++){
             for (int j = 0; j < selectedItems.size(); j++){
