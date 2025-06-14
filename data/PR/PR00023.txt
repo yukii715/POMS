@@ -1,0 +1,3 @@
+ITM00027	Beverage	Coffee	PrimaFood Instant Coffee 250mL	40
+ITM00028	Grocery	Snack	PrimaFood Biscuit Assorted 700g	50
+ITM00029	Grocery	Coffee Additive	PrimaFood Non-Dairy Creamer 500g	50

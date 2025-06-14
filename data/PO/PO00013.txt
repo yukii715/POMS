@@ -1,0 +1,2 @@
+ITM00005	Beverage	Tea	Green Basket Green Tea 500ml	40	8.0
+ITM00023	Beverage	Organic Tea	Green Basket Herbal Tea 30s	50	9.0

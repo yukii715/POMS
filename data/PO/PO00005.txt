@@ -1,2 +1,2 @@
-ITM00001	Hygiene	Cleaning Supplies	GoodHealth Shampoo 200ml	20	5.0
-ITM00008	Hygiene	Oral Care	GoodHealth Toothpaste 150g	30	6.0
+ITM00001	Hygiene	Cleaning Supplies	GoodHealth Shampoo 200ml	30	5.0
+ITM00008	Hygiene	Oral Care	GoodHealth Toothpaste 150g	50	6.0
