@@ -56,6 +56,11 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         ChangePasswordButton = new javax.swing.JButton();
         UsernameLabel = new javax.swing.JLabel();
         EmailLabel = new javax.swing.JLabel();
+        PurchaseOrder = new javax.swing.JPanel();
+        viewPOScroolPane = new javax.swing.JScrollPane();
+        viewPOTable = new javax.swing.JTable();
+        viewPurchaseOrderRefreshButton = new javax.swing.JButton();
+        viewPOComboBox = new javax.swing.JComboBox<>();
         approvePOPanel = new javax.swing.JPanel();
         approvePOScrollpane = new javax.swing.JScrollPane();
         approvePOTable = new javax.swing.JTable();
@@ -63,11 +68,6 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         approvePORefreshButton = new javax.swing.JButton();
         approvePOStatusLabel = new javax.swing.JLabel();
         approvePOEditButton = new javax.swing.JButton();
-        PurchaseOrder = new javax.swing.JPanel();
-        viewPOScroolPane = new javax.swing.JScrollPane();
-        viewPOTable = new javax.swing.JTable();
-        viewPurchaseOrderRefreshButton = new javax.swing.JButton();
-        viewPOComboBox = new javax.swing.JComboBox<>();
         ConfirmPurchaseOrder = new javax.swing.JPanel();
         InvalidPOButton = new javax.swing.JButton();
         ConfirmPOButton = new javax.swing.JButton();
@@ -123,7 +123,6 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setMaximumSize(new java.awt.Dimension(1200, 800));
 
         jPanel1.setBackground(new java.awt.Color(255, 245, 247));
         jPanel1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -215,6 +214,68 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         DashboardPanel.getAccessibleContext().setAccessibleName("DashboardPanel");
         DashboardPanel.getAccessibleContext().setAccessibleDescription("");
 
+        PurchaseOrder.setBackground(new java.awt.Color(255, 245, 247));
+
+        viewPOTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        viewPOScroolPane.setViewportView(viewPOTable);
+
+        viewPurchaseOrderRefreshButton.setFont(new java.awt.Font("Comic Sans MS", 0, 40)); // NOI18N
+        viewPurchaseOrderRefreshButton.setText("Refresh");
+        viewPurchaseOrderRefreshButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewPurchaseOrderRefreshButtonActionPerformed(evt);
+            }
+        });
+
+        viewPOComboBox.setFont(new java.awt.Font("Comic Sans MS", 0, 40)); // NOI18N
+        viewPOComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        viewPOComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewPOComboBoxActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout PurchaseOrderLayout = new javax.swing.GroupLayout(PurchaseOrder);
+        PurchaseOrder.setLayout(PurchaseOrderLayout);
+        PurchaseOrderLayout.setHorizontalGroup(
+            PurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PurchaseOrderLayout.createSequentialGroup()
+                .addGap(42, 42, 42)
+                .addGroup(PurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(viewPOScroolPane, javax.swing.GroupLayout.PREFERRED_SIZE, 945, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(PurchaseOrderLayout.createSequentialGroup()
+                        .addComponent(viewPOComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(42, 42, 42)
+                        .addComponent(viewPurchaseOrderRefreshButton)))
+                .addContainerGap(75, Short.MAX_VALUE))
+        );
+        PurchaseOrderLayout.setVerticalGroup(
+            PurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(PurchaseOrderLayout.createSequentialGroup()
+                .addGroup(PurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(PurchaseOrderLayout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(viewPOComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PurchaseOrderLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(viewPurchaseOrderRefreshButton)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(viewPOScroolPane, javax.swing.GroupLayout.PREFERRED_SIZE, 675, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        FrameTab.addTab(" Purchase Order", PurchaseOrder);
+
         approvePOPanel.setBackground(new java.awt.Color(255, 245, 247));
 
         approvePOTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -287,72 +348,10 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                         .addComponent(approvePORefreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(approvePOStatusLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 7, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         FrameTab.addTab("Approve Purchase Order", approvePOPanel);
-
-        PurchaseOrder.setBackground(new java.awt.Color(255, 245, 247));
-
-        viewPOTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        viewPOScroolPane.setViewportView(viewPOTable);
-
-        viewPurchaseOrderRefreshButton.setFont(new java.awt.Font("Comic Sans MS", 0, 40)); // NOI18N
-        viewPurchaseOrderRefreshButton.setText("Refresh");
-        viewPurchaseOrderRefreshButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewPurchaseOrderRefreshButtonActionPerformed(evt);
-            }
-        });
-
-        viewPOComboBox.setFont(new java.awt.Font("Comic Sans MS", 0, 40)); // NOI18N
-        viewPOComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        viewPOComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewPOComboBoxActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout PurchaseOrderLayout = new javax.swing.GroupLayout(PurchaseOrder);
-        PurchaseOrder.setLayout(PurchaseOrderLayout);
-        PurchaseOrderLayout.setHorizontalGroup(
-            PurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PurchaseOrderLayout.createSequentialGroup()
-                .addGap(42, 42, 42)
-                .addGroup(PurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(viewPOScroolPane, javax.swing.GroupLayout.PREFERRED_SIZE, 945, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(PurchaseOrderLayout.createSequentialGroup()
-                        .addComponent(viewPOComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(42, 42, 42)
-                        .addComponent(viewPurchaseOrderRefreshButton)))
-                .addContainerGap(75, Short.MAX_VALUE))
-        );
-        PurchaseOrderLayout.setVerticalGroup(
-            PurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(PurchaseOrderLayout.createSequentialGroup()
-                .addGroup(PurchaseOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(PurchaseOrderLayout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(viewPOComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, PurchaseOrderLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(viewPurchaseOrderRefreshButton)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(viewPOScroolPane, javax.swing.GroupLayout.PREFERRED_SIZE, 675, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        FrameTab.addTab(" Purchase Order", PurchaseOrder);
 
         ConfirmPurchaseOrder.setBackground(new java.awt.Color(255, 245, 247));
 
@@ -415,7 +414,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ConfirmPurchaseOrderLayout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addComponent(ConfirmPOLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                 .addComponent(AutoRefreshLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ConfirmPOScrollpane, javax.swing.GroupLayout.PREFERRED_SIZE, 586, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -833,7 +832,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
                         .addComponent(generatePRButton)
                         .addGap(44, 44, 44)))
                 .addComponent(generatePRScrollpane, javax.swing.GroupLayout.PREFERRED_SIZE, 521, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         FrameTab.addTab("Purchase Report ", generateReportPanel);
@@ -1223,7 +1222,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
     
    DefaultTableModel confirmPOTableModel;
    private void initConfirmPOFunctionality() {
-       String[] columns = {"PO ID","PR ITEM","Total Price","Supplier ID","Generated Date", "Delivery Date", "Status", "Created By", "Approved By"};
+       String[] columns = {"PO ID","PR ID","Total Price","Supplier ID","Generated Date", "Delivery Date", "Status", "Created By", "Approved By"};
        confirmPOTableModel = new DefaultTableModel(columns, 0) {
            public boolean isCellEditable(int row, int column) {
                return false;

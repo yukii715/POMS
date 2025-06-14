@@ -112,9 +112,6 @@ public class Item implements hasFile<Item>, hasId, hasStatus{
     }
     
     public static Item fromString(String line) {String[] parts = line.split("\t");
-        if (parts.length != 8) {
-            throw new IllegalArgumentException("Invalid input line for Item: " + line);
-        }
         Item item = new Item();
         item.setItemID(parts[0]);
         item.setItemName(parts[1]);

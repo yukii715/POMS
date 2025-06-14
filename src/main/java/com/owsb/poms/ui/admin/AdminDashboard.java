@@ -89,13 +89,27 @@ public class AdminDashboard extends javax.swing.JFrame {
        } 
     } ;
     private String[] suppliersColumnName = {"ID", "Name", "Added Time"};
+    
+    // Notification
+    private List<Notification> notifications = new ArrayList<>();
+    private DefaultTableModel notificationModel = new DefaultTableModel(){
+       public boolean isCellEditable(int row, int column){
+           return false;
+       } 
+    } ;
+    private String[] notificationColumnName = {"Date", "Time", "Request", "Send By", "Done"};
 
     public AdminDashboard(Admin admin){
         initComponents();
         this.setLocationRelativeTo(null);
         
-        CommonMethod.setRoundedLabelIcon("data/Users/admin/profile picture/11.jpg", lblProfilePicture, 60);
-        CommonMethod.setRoundedLabelIcon("data/Users/admin/profile picture/11.jpg", lbltest, 300);
+        SwingUtilities.invokeLater(() -> {
+            BasicSplitPaneUI ui = (BasicSplitPaneUI) mainSplitPane.getUI();
+            BasicSplitPaneDivider divider = ui.getDivider();
+            divider.setBorder(BorderFactory.createLineBorder(new java.awt.Color(243, 220, 220), 5));
+            divider.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            divider.repaint();
+        });
 
         new CommonMethod().setFrameIcon("/icons/logo.png", 330, 330, Image.SCALE_SMOOTH, this);
         new CommonMethod().setLabelIcon("/icons/logo.png", 90, 90, Image.SCALE_SMOOTH, lblLogo);
@@ -106,6 +120,8 @@ public class AdminDashboard extends javax.swing.JFrame {
         new CommonMethod().setLabelIcon("/icons/logout.png", 23, 23, Image.SCALE_SMOOTH, lblLogout1);
         new CommonMethod().setLabelIcon("/icons/logout2.png", 30, 30, Image.SCALE_SMOOTH, lblLogout2);
         new CommonMethod().setLabelIcon("/icons/reload.png", 30, 30, Image.SCALE_SMOOTH, lblReload);
+        new CommonMethod().setLabelIcon("/icons/profile.png", 40, 40, Image.SCALE_SMOOTH, lblProfilePicture);
+        new CommonMethod().setLabelIcon("/icons/logo.png", 350, 350, Image.SCALE_SMOOTH, lbltest);
         
         
         new CommonMethod().setLabelIcon("/icons/dashboard.png", 30, 30, Image.SCALE_SMOOTH, lblDashboardIcon);
@@ -114,14 +130,6 @@ public class AdminDashboard extends javax.swing.JFrame {
         new CommonMethod().setLabelIcon("/icons/orders.png", 30, 30, Image.SCALE_SMOOTH, lblOrdersIcon);
         new CommonMethod().setLabelIcon("/icons/inventory.png", 30, 30, Image.SCALE_SMOOTH, lblInventoryIcon);
         new CommonMethod().setLabelIcon("/icons/suppliers.png", 30, 30, Image.SCALE_SMOOTH, lblSuppliersIcon);
-        
-        SwingUtilities.invokeLater(() -> {
-            BasicSplitPaneUI ui = (BasicSplitPaneUI) mainSplitPane.getUI();
-            BasicSplitPaneDivider divider = ui.getDivider();
-            divider.setBorder(BorderFactory.createLineBorder(new java.awt.Color(243, 220, 220), 5));
-            divider.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            divider.repaint();
-        });
         
         this.admin = admin;
         lblUsername.setText(admin.getUsername());
@@ -172,6 +180,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         Orders();
         Inventory();
         Suppliers();
+        Notification();
     }
     
     // Users Tab
@@ -222,6 +231,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     
     // Sales Tab
     private void Sales(DailySales sales){
+        lblUpdatedDateTime.setText("");
         salesModel.setRowCount(0);
         
         salesModel.setColumnIdentifiers(salesColumnName);
@@ -284,6 +294,13 @@ public class AdminDashboard extends javax.swing.JFrame {
         else{
             newSales = false;
             String fileName = sales.getSalesID() + ".txt";
+            var dateTimeList = sales.getUpdatedDateTimeList();
+            String updatedDateTime = "";
+            for (int i = dateTimeList.size() - 1; i > -1; i--){
+                updatedDateTime += dateTimeList.get(i).format(dateTimeFormatter) + "<br>";
+            }
+            lblUpdatedDateTime.setText("<html>" + updatedDateTime + "</html>");
+            
             dsi = DSItem.read(fileName);
             if (sales.getDate().equals(lastSales.getDate())){
                 Map<String, DSItem> dsiMap = dsi.stream().collect(Collectors.toMap(DSItem::getItemID, Function.identity()));
@@ -538,6 +555,41 @@ public class AdminDashboard extends javax.swing.JFrame {
         // Apply it as the default for any Object‐typed cell:
         tblSuppliers.setDefaultRenderer(Object.class, centerRenderer);
     }
+    
+    // Notification Panel
+    private void Notification(){
+        notificationModel.setRowCount(0);
+        
+        notificationModel.setColumnIdentifiers(notificationColumnName);
+        JTableHeader header = tblNotification.getTableHeader();
+        header.setBackground(new java.awt.Color(255, 153, 153));
+        
+        srlNotification.getViewport().setBackground(new java.awt.Color(255, 153, 153));
+        
+        tblNotification.getColumnModel().getColumn(0).setPreferredWidth(100);
+        tblNotification.getColumnModel().getColumn(1).setPreferredWidth(80);
+        tblNotification.getColumnModel().getColumn(2).setPreferredWidth(120);
+        tblNotification.getColumnModel().getColumn(3).setPreferredWidth(80);
+        
+        notifications = Notification.toList();
+        
+        for (int i = notifications.size() - 1; i > -1; i--){
+            notificationModel.addRow(new String[]{
+                    notifications.get(i).getDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                    notifications.get(i).getDateTime().format(DateTimeFormatter.ofPattern("HH:mm:ss")),
+                    notifications.get(i).getRequestType().name(),
+                    notifications.get(i).getSendBy(),
+                    notifications.get(i).isDone() ? "✓" : ""
+                });
+        }
+        
+        // Create a single “center” renderer:
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Apply it as the default for any Object‐typed cell:
+        tblNotification.setDefaultRenderer(Object.class, centerRenderer);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -616,7 +668,6 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblNotification = new javax.swing.JLabel();
         lblLogout2 = new javax.swing.JLabel();
         lblReload = new javax.swing.JLabel();
-        lblLogout3 = new javax.swing.JLabel();
         pnlContent = new javax.swing.JPanel();
         pnlMainContent = new javax.swing.JPanel();
         pnlDashboard = new javax.swing.JPanel();
@@ -648,6 +699,8 @@ public class AdminDashboard extends javax.swing.JFrame {
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         btnSaveSales = new javax.swing.JButton();
+        jLabel19 = new javax.swing.JLabel();
+        lblUpdatedDateTime = new javax.swing.JLabel();
         pnlOrders = new javax.swing.JPanel();
         srlOrder = new javax.swing.JScrollPane();
         tblOrder = new javax.swing.JTable();
@@ -690,8 +743,10 @@ public class AdminDashboard extends javax.swing.JFrame {
         btnRemoveSupplier = new javax.swing.JButton();
         btnChangeSupplierName = new javax.swing.JButton();
         pnlNotification = new javax.swing.JPanel();
-        pnlSummaryDivider = new javax.swing.JPanel();
-        pnlSummaryMain = new javax.swing.JPanel();
+        pnlNotificationDivider = new javax.swing.JPanel();
+        pnlNotificationMain = new javax.swing.JPanel();
+        srlNotification = new javax.swing.JScrollPane();
+        tblNotification = new javax.swing.JTable();
 
         lblLogo1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblLogo1.setPreferredSize(new java.awt.Dimension(90, 90));
@@ -860,8 +915,10 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         mainSplitPane.setBackground(new java.awt.Color(255, 237, 237));
         mainSplitPane.setDividerLocation(200);
+        mainSplitPane.setDividerSize(5);
         mainSplitPane.setForeground(new java.awt.Color(255, 204, 204));
         mainSplitPane.setToolTipText("");
+        mainSplitPane.setContinuousLayout(true);
         mainSplitPane.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         mainSplitPane.setPreferredSize(new java.awt.Dimension(1200, 800));
 
@@ -884,7 +941,7 @@ public class AdminDashboard extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlLogoLayout.createSequentialGroup()
                 .addContainerGap(54, Short.MAX_VALUE)
                 .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(56, Short.MAX_VALUE))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
         pnlLogoLayout.setVerticalGroup(
             pnlLogoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1259,7 +1316,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblProfileDivider.setLayout(lblProfileDividerLayout);
         lblProfileDividerLayout.setHorizontalGroup(
             lblProfileDividerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 200, Short.MAX_VALUE)
+            .addGap(0, 199, Short.MAX_VALUE)
         );
         lblProfileDividerLayout.setVerticalGroup(
             lblProfileDividerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1282,7 +1339,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                 .addComponent(pnlLogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlTabs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 328, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(pnlProfile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -1399,19 +1456,12 @@ public class AdminDashboard extends javax.swing.JFrame {
             }
         });
 
-        lblLogout3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblLogout3.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblLogout2MouseClicked(evt);
-            }
-        });
-
         javax.swing.GroupLayout pnlToolsLayout = new javax.swing.GroupLayout(pnlTools);
         pnlTools.setLayout(pnlToolsLayout);
         pnlToolsLayout.setHorizontalGroup(
             pnlToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlToolsLayout.createSequentialGroup()
-                .addGap(0, 839, Short.MAX_VALUE)
+                .addGap(0, 838, Short.MAX_VALUE)
                 .addGroup(pnlToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlWindowControls, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlToolsLayout.createSequentialGroup()
@@ -1463,7 +1513,7 @@ public class AdminDashboard extends javax.swing.JFrame {
             .addGroup(pnlDashboardLayout.createSequentialGroup()
                 .addGap(273, 273, 273)
                 .addComponent(lbltest, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(316, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDashboardLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnBankSetting, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1474,7 +1524,7 @@ public class AdminDashboard extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDashboardLayout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addComponent(btnBankSetting, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 234, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 232, Short.MAX_VALUE)
                 .addComponent(lbltest, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(81, 81, 81))
         );
@@ -1605,7 +1655,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                     .addComponent(btnResetPassoward, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnEditBirthday, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnDeleteAccount, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(68, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlUsersLayout.setVerticalGroup(
             pnlUsersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1639,7 +1689,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnDeleteAccount, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(srlUser, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE))
+                    .addComponent(srlUser, javax.swing.GroupLayout.DEFAULT_SIZE, 674, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -1698,27 +1748,38 @@ public class AdminDashboard extends javax.swing.JFrame {
             }
         });
 
+        jLabel19.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel19.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel19.setText("Updated Date Time:");
+
+        lblUpdatedDateTime.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        lblUpdatedDateTime.setForeground(new java.awt.Color(0, 0, 0));
+        lblUpdatedDateTime.setText("[UpdatedDateTime]");
+
         javax.swing.GroupLayout pnlSalesLayout = new javax.swing.GroupLayout(pnlSales);
         pnlSales.setLayout(pnlSalesLayout);
         pnlSalesLayout.setHorizontalGroup(
             pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlSalesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(srlSales, javax.swing.GroupLayout.DEFAULT_SIZE, 832, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnSaveSales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(pnlSalesLayout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addGroup(pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel16)
-                            .addComponent(jLabel17)
-                            .addComponent(jLabel18))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(cmbYear, 0, 60, Short.MAX_VALUE)
-                            .addComponent(cmbMonth, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(cmbDay, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addComponent(srlSales, javax.swing.GroupLayout.PREFERRED_SIZE, 817, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addGroup(pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnSaveSales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(pnlSalesLayout.createSequentialGroup()
+                            .addGap(23, 23, 23)
+                            .addGroup(pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel16)
+                                .addComponent(jLabel17)
+                                .addComponent(jLabel18))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(cmbYear, 0, 60, Short.MAX_VALUE)
+                                .addComponent(cmbMonth, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(cmbDay, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(jLabel19)
+                    .addComponent(lblUpdatedDateTime))
                 .addContainerGap())
         );
         pnlSalesLayout.setVerticalGroup(
@@ -1738,6 +1799,10 @@ public class AdminDashboard extends javax.swing.JFrame {
                         .addGroup(pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cmbDay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel18))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel19)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblUpdatedDateTime)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSaveSales, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(srlSales, javax.swing.GroupLayout.DEFAULT_SIZE, 674, Short.MAX_VALUE))
@@ -1788,7 +1853,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                 .addComponent(srlOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 737, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
                 .addGroup(pnlOrdersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnViewAllPO, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
+                    .addComponent(btnViewAllPO, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnViewPR, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -1802,7 +1867,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                         .addGap(34, 34, 34)
                         .addComponent(btnViewPR, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(srlOrder, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE))
+                    .addComponent(srlOrder, javax.swing.GroupLayout.DEFAULT_SIZE, 674, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -1958,7 +2023,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                             .addComponent(lblSupplier)
                             .addComponent(lblItemStock)
                             .addComponent(lblItemStatus))))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlInventoryLayout.setVerticalGroup(
             pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2007,7 +2072,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                         .addComponent(btnUpdateStock, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btnUpdateStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 152, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(srlItems))
                 .addContainerGap())
         );
@@ -2134,37 +2199,41 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlNotification.setPreferredSize(new java.awt.Dimension(0, 0));
         pnlNotification.setLayout(new java.awt.BorderLayout());
 
-        pnlSummaryDivider.setBackground(new java.awt.Color(243, 210, 210));
-        pnlSummaryDivider.setPreferredSize(new java.awt.Dimension(5, 690));
+        pnlNotificationDivider.setBackground(new java.awt.Color(243, 210, 210));
+        pnlNotificationDivider.setPreferredSize(new java.awt.Dimension(5, 690));
 
-        javax.swing.GroupLayout pnlSummaryDividerLayout = new javax.swing.GroupLayout(pnlSummaryDivider);
-        pnlSummaryDivider.setLayout(pnlSummaryDividerLayout);
-        pnlSummaryDividerLayout.setHorizontalGroup(
-            pnlSummaryDividerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout pnlNotificationDividerLayout = new javax.swing.GroupLayout(pnlNotificationDivider);
+        pnlNotificationDivider.setLayout(pnlNotificationDividerLayout);
+        pnlNotificationDividerLayout.setHorizontalGroup(
+            pnlNotificationDividerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 5, Short.MAX_VALUE)
         );
-        pnlSummaryDividerLayout.setVerticalGroup(
-            pnlSummaryDividerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        pnlNotificationDividerLayout.setVerticalGroup(
+            pnlNotificationDividerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        pnlNotification.add(pnlSummaryDivider, java.awt.BorderLayout.WEST);
+        pnlNotification.add(pnlNotificationDivider, java.awt.BorderLayout.WEST);
 
-        pnlSummaryMain.setBackground(new java.awt.Color(255, 153, 153));
-        pnlSummaryMain.setPreferredSize(new java.awt.Dimension(200, 690));
+        pnlNotificationMain.setBackground(new java.awt.Color(255, 153, 153));
+        pnlNotificationMain.setPreferredSize(new java.awt.Dimension(200, 690));
+        pnlNotificationMain.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.GroupLayout pnlSummaryMainLayout = new javax.swing.GroupLayout(pnlSummaryMain);
-        pnlSummaryMain.setLayout(pnlSummaryMainLayout);
-        pnlSummaryMainLayout.setHorizontalGroup(
-            pnlSummaryMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        pnlSummaryMainLayout.setVerticalGroup(
-            pnlSummaryMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
+        tblNotification.setBackground(new java.awt.Color(255, 153, 153));
+        tblNotification.setModel(notificationModel);
+        tblNotification.setGridColor(java.awt.Color.gray);
+        tblNotification.setSelectionBackground(new java.awt.Color(255, 204, 204));
+        tblNotification.setShowGrid(false);
+        tblNotification.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblNotificationMouseClicked(evt);
+            }
+        });
+        srlNotification.setViewportView(tblNotification);
 
-        pnlNotification.add(pnlSummaryMain, java.awt.BorderLayout.CENTER);
+        pnlNotificationMain.add(srlNotification, java.awt.BorderLayout.CENTER);
+
+        pnlNotification.add(pnlNotificationMain, java.awt.BorderLayout.CENTER);
 
         pnlContent.add(pnlNotification, java.awt.BorderLayout.EAST);
 
@@ -2382,7 +2451,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private void lblNotificationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotificationMouseClicked
         if (!notification){
             new CommonMethod().setLabelIcon("/icons/notification.png", 35, 35, Image.SCALE_SMOOTH, lblNotification);
-            pnlNotification.setPreferredSize(new Dimension(300, 0));
+            pnlNotification.setPreferredSize(new Dimension(350, 0));
             pnlNotification.revalidate();
             pnlNotification.repaint();
             notification = true;
@@ -2521,6 +2590,29 @@ public class AdminDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEditItemActionPerformed
 
     private void btnUpdateStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateStockActionPerformed
+//        if (selectedItemRow == -1)
+//        {
+//            JOptionPane.showMessageDialog(this, "Please select an item to update stock", "Error", JOptionPane.ERROR_MESSAGE);
+//            return;
+//        }
+//        
+//        String input = JOptionPane.showInputDialog(this, String.format("Stock: %d", selectedItem.getStock()), "Update Stock", JOptionPane.INFORMATION_MESSAGE);
+//        
+//        if (input != null) {
+//            try {
+//                int newStock = Integer.parseInt(input.trim());
+//                if (newStock < 0) {
+//                    JOptionPane.showMessageDialog(this, "Stock cannot be negative!", "Invalid Input", JOptionPane.WARNING_MESSAGE);
+//                } else {
+//                    selectedItem.setStock(newStock);
+//                    selectedItem.updateStock(); 
+//                    JOptionPane.showMessageDialog(this, "Stock updated successfully!");
+//                    Inventory();
+//                }
+//            } catch (NumberFormatException e) {
+//                JOptionPane.showMessageDialog(this, "Please enter a valid integer!", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+//            }
+//        }    
         this.setEnabled(false);
         UpdateStock us = new UpdateStock(this, false);
         us.setLocationRelativeTo(this);
@@ -2892,6 +2984,7 @@ public class AdminDashboard extends javax.swing.JFrame {
             }
             JOptionPane.showMessageDialog(this, String.format("Sales has recorded successfully!%nTotal Income: RM %.2f", income));
             lastSales = DailySales.toList().getLast();
+            Sales(lastSales);
         }
     }//GEN-LAST:event_btnSaveSalesActionPerformed
 
@@ -2930,6 +3023,34 @@ public class AdminDashboard extends javax.swing.JFrame {
         if (isFilling || isIniliaziling) return;
         updateMonthCombo();
     }//GEN-LAST:event_cmbYearActionPerformed
+
+    private void tblNotificationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNotificationMouseClicked
+        if (evt.getClickCount() == 2 ) {
+            int selectedRow = tblNotification.getSelectedRow();
+            Object check = tblNotification.getValueAt(selectedRow, 4);
+            
+            String Message = check.equals("✓") ? 
+                    "Are you sure you want to mark this request as not done?" : 
+                    "Are you sure you want to mark this request as done?";
+            String title = check.equals("✓") ? "Mark As Not Done" : "Mark As Done";
+            
+            int result = JOptionPane.showConfirmDialog(
+                this, 
+                Message, 
+                title, 
+                JOptionPane.YES_NO_OPTION, 
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (result == JOptionPane.YES_OPTION){
+                String mark = check.equals("✓") ? "" : "✓";
+                tblNotification.setValueAt(mark, selectedRow, 4);
+                int index = Notification.toList().size() - selectedRow - 1;
+                notifications.get(index).setDone(!check.equals("✓"));
+                new Notification().saveToFile(notifications);
+            }
+        }
+    }//GEN-LAST:event_tblNotificationMouseClicked
  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBankSetting;
@@ -2962,6 +3083,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -2992,7 +3114,6 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel lblLogo1;
     private javax.swing.JLabel lblLogout1;
     private javax.swing.JLabel lblLogout2;
-    private javax.swing.JLabel lblLogout3;
     private javax.swing.JLabel lblMaximise;
     private javax.swing.JLabel lblMinimise;
     private javax.swing.JLabel lblName;
@@ -3018,6 +3139,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel lblSuppliersDivider2;
     private javax.swing.JLabel lblSuppliersIcon;
     private javax.swing.JLabel lblUID;
+    private javax.swing.JLabel lblUpdatedDateTime;
     private javax.swing.JLabel lblUserID;
     private javax.swing.JLabel lblUsername;
     private javax.swing.JLabel lblUsers;
@@ -3042,6 +3164,8 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel pnlNorthMargin;
     private javax.swing.JPanel pnlNorthWestMargin;
     private javax.swing.JPanel pnlNotification;
+    private javax.swing.JPanel pnlNotificationDivider;
+    private javax.swing.JPanel pnlNotificationMain;
     private javax.swing.JPanel pnlOrders;
     private javax.swing.JPanel pnlOrdersIndicator;
     private javax.swing.JPanel pnlOrdersTab;
@@ -3053,8 +3177,6 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel pnlSouthMargin;
     private javax.swing.JPanel pnlSouthMargin3;
     private javax.swing.JPanel pnlSouthWestMargin;
-    private javax.swing.JPanel pnlSummaryDivider;
-    private javax.swing.JPanel pnlSummaryMain;
     private javax.swing.JPanel pnlSuppliers;
     private javax.swing.JPanel pnlSuppliersIndicator;
     private javax.swing.JPanel pnlSuppliersTab;
@@ -3067,11 +3189,13 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel pnlWestMargin;
     private javax.swing.JPanel pnlWindowControls;
     private javax.swing.JScrollPane srlItems;
+    private javax.swing.JScrollPane srlNotification;
     private javax.swing.JScrollPane srlOrder;
     private javax.swing.JScrollPane srlSales;
     private javax.swing.JScrollPane srlSuppliers;
     private javax.swing.JScrollPane srlUser;
     private javax.swing.JTable tblItems;
+    private javax.swing.JTable tblNotification;
     private javax.swing.JTable tblOrder;
     private javax.swing.JTable tblSales;
     private javax.swing.JTable tblSuppliers;

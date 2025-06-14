@@ -126,7 +126,7 @@ public class DSItem extends DailySales{
         String filePath = this.filePath + fileName;
         
         sales.setTotalIncome(income);
-        sales.newIncome();
+        sales.update();
         FileHandler.saveToFile(filePath, list, DSItem::toString);
     }
     

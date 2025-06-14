@@ -101,11 +101,16 @@ public class DailySales implements hasId, hasFile<DailySales>{
         this.saveToFile(dss);
     }
     
-    public void newIncome(){
+    public void update(){
+        var updatedList = this.getUpdatedDateTimeList();
+        updatedList.add(LocalDateTime.now());
         DataHandler.updateFieldAndSave(
                 toList(),
                 ds -> ds.getSalesID().equals(this.getSalesID()),              
-                ds -> ds.setTotalIncome(this.getTotalIncome()),           
+                ds -> {
+                        ds.setTotalIncome(this.getTotalIncome());
+                        ds.setUpdatedDateTimeList(updatedList);
+                    },           
                 list -> this.saveToFile(list)
         );
     }

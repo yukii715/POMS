@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 public class FileHandler {
     
-        // Generic write method
+    // Generic write method
     public static <T> void saveToFile(String filePath, List<T> list, Function<T, String> mapper) {
         File file = new File(filePath);
         file.getParentFile().mkdirs(); 

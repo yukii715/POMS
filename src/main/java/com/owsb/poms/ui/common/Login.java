@@ -9,7 +9,6 @@ import com.owsb.poms.system.model.User.PurchaseManager;
 import com.owsb.poms.system.model.User.SalesManager;
 import com.owsb.poms.system.model.User.User;
 import java.awt.*;
-import java.time.LocalDate;
 import javax.swing.JOptionPane;
 
 public class Login extends javax.swing.JFrame {
@@ -337,7 +336,7 @@ public class Login extends javax.swing.JFrame {
         }
         
         JOptionPane.showMessageDialog(this, "Password reset request has been sent!");
-        Notification notification = new Notification(sendBy);
+        Notification notification = new Notification(sendBy.toUpperCase().trim(), Notification.RequestType.ResetPassword);
         notification.add();
     }//GEN-LAST:event_lblForgotPasswordMouseClicked
 

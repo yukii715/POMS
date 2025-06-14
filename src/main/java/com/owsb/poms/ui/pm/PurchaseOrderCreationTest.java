@@ -534,7 +534,7 @@ public class PurchaseOrderCreationTest extends javax.swing.JFrame {
             for (PurchaseOrder po : PoList) {
                 if (po.getPOID().equals(poID)) {
                     // Update the status using your existing methods
-                    po.setStatus(PurchaseOrder.Status.ARRIVED);
+                    po.setStatus(PurchaseOrder.Status.PROCESSING);
                     po.updateStatus();
                     break;
                 }

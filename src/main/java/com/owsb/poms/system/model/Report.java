@@ -97,7 +97,10 @@ public class Report implements hasFile<Report>{
     }
     
     public List<StockReport> getStockReport(){
-        String filePath = String.format("data/Reports/Stock/%s.txt", FileHandler.findFileByPrefix(StockReport.filePath, reportID));
+//        String filePath = String.format("data/Reports/Stock/%s.txt", FileHandler.findFileByPrefix(StockReport.filePath, reportID))
+        String filePath = String.format("%s", FileHandler.findFileByPrefix(StockReport.filePath, reportID));
+
+        System.out.println(filePath);
         return StockReport.read(filePath);
     }
 }

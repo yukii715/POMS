@@ -3,6 +3,7 @@ package com.owsb.poms.system.model;
 import com.owsb.poms.system.functions.*;
 import com.owsb.poms.system.functions.interfaces.hasId;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StockReport extends Report implements hasId{
@@ -76,7 +77,7 @@ public class StockReport extends Report implements hasId{
     }
 
     public static List<StockReport> generateStockList(List<Item> itemList) {
-        List<StockReport> stockReportList = null;
+        List<StockReport> stockReportList = new ArrayList<>();
         for (Item item : itemList) {
             if (!Item.Status.REMOVED.equals(item.getStatus())) {
                 StockReport report = new StockReport(
@@ -125,6 +126,7 @@ public class StockReport extends Report implements hasId{
         report.add();
         FileHandler.saveToFile(filePath, stockReport, StockReport::toString);
     }
+    
     
     @Override
     public String generateID() {

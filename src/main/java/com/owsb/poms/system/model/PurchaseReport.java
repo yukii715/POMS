@@ -100,7 +100,7 @@ public class PurchaseReport implements hasId, hasFile<PurchaseReport>{
     public String generateID() {
         String prefix = "PUR";
         int length = 5;
-        int startNum = IdGenerator.getTotalByFolder(filePath);
+        int startNum = IdGenerator.getTotal(filePath);
         return IdGenerator.generateID(prefix, length, startNum);
     }
 

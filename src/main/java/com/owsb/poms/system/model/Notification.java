@@ -7,18 +7,24 @@ import java.util.List;
 
 public class Notification implements  hasFile<Notification>{
     private String sendBy;
-    private boolean done;
     private LocalDateTime dateTime;
+    private RequestType requestType;
+    private boolean done;
     
     private static final String filePath = "data/Notification/notification.txt";
+    
+    public enum RequestType{
+        ResetPassword
+    }
 
     public Notification() {
     }
 
-    public Notification(String sendBy) {
+    public Notification(String sendBy, RequestType requestType) {
         this.sendBy = sendBy;
-        this.done = false;
         this.dateTime = LocalDateTime.now();
+        this.requestType = requestType;
+        this.done = false;
     }
 
     public String getSendBy() {
@@ -44,12 +50,21 @@ public class Notification implements  hasFile<Notification>{
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
+
+    public RequestType getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(RequestType requestType) {
+        this.requestType = requestType;
+    }
     
     @Override
     public String toString() {
         return sendBy + "\t"
-             + done + "\t"
-             + dateTime ;
+             + dateTime + "\t"
+             + requestType + "\t"
+             + done;
     }
     
     public static Notification fromString(String line) {
@@ -57,8 +72,9 @@ public class Notification implements  hasFile<Notification>{
 
         Notification notification = new Notification();
         notification.setSendBy(parts[0]);
-        notification.setDone(Boolean.parseBoolean(parts[1]));
-        notification.setDateTime(LocalDateTime.parse(parts[2]));
+        notification.setDateTime(LocalDateTime.parse(parts[1]));
+        notification.setRequestType(RequestType.valueOf(parts[2]));
+        notification.setDone(Boolean.parseBoolean(parts[3]));
 
         return notification;
     }
