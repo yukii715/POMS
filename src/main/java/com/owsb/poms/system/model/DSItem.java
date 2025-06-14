@@ -9,6 +9,7 @@ public class DSItem extends DailySales{
     private String itemType;
     private String itemName;
     private int quantity;
+    private int stock;
     private double sellPrice;
     
     private static final String filePath = "data/Sales/";
@@ -16,12 +17,13 @@ public class DSItem extends DailySales{
     public DSItem() {
     }
 
-    public DSItem(String itemID, String itemCategories, String itemType, String itemName, int quantity, double sellPrice) {
+    public DSItem(String itemID, String itemCategories, String itemType, String itemName, int quantity, int stock, double sellPrice) {
         this.itemID = itemID;
         this.itemCategory = itemCategories;
         this.itemType = itemType;
         this.itemName = itemName;
         this.quantity = quantity;
+        this.stock = stock;
         this.sellPrice = sellPrice;
     }
 
@@ -65,6 +67,14 @@ public class DSItem extends DailySales{
         this.quantity = quantity;
     }
 
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
     public double getSellPrice() {
         return sellPrice;
     }
@@ -80,6 +90,7 @@ public class DSItem extends DailySales{
                 + itemType + "\t"
                 + itemName + "\t"
                 + quantity + "\t"
+                + stock + "\t"
                 + sellPrice;
     }
 
@@ -92,7 +103,8 @@ public class DSItem extends DailySales{
         dsi.setItemType(parts[2]);
         dsi.setItemName(parts[3]);
         dsi.setQuantity(Integer.parseInt(parts[4]));
-        dsi.setSellPrice(Double.parseDouble(parts[5]));
+        dsi.setStock(Integer.parseInt(parts[5]));
+        dsi.setSellPrice(Double.parseDouble(parts[6]));
 
         return dsi;
     }

@@ -1,2 +1,2 @@
-ITM00001	Hygiene	Cleaning Supplies	GoodHealth Shampoo 200ml	3
-ITM00009	Hygiene	Cleaning Supplies	GoodHealth Antibacterial Wipes 50s	32
+ITM00006	Hardware	Hand Tool	MegaTools Hammer 16oz	30
+ITM00017	Hardware	Hand Tool	MegaTools Pliers Set	60

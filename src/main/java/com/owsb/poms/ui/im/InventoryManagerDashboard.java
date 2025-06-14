@@ -86,11 +86,8 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         new CommonMethod().setLabelIcon("/icons/logo.png", 300, 300, Image.SCALE_SMOOTH, lblLogo);
         
         this.IM = IM;        
-        
-        String uppercase = IM.getUsername();
-        String title = uppercase.substring(0, 1).toUpperCase() + uppercase.substring(1).toLowerCase();
 
-        lblUsername.setText(title);
+        lblUsername.setText(IM.getUsername());
         lblUserID.setText(IM.getUID());
 
         ItemTab();

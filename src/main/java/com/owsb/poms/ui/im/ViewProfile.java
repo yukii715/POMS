@@ -27,9 +27,7 @@ public class ViewProfile extends javax.swing.JDialog {
         im = User.getUserById(imUID);
         
         lblUserID.setText(im.getUID());
-        String uppercase = im.getUsername();
-        String title = uppercase.substring(0, 1).toUpperCase() + uppercase.substring(1).toLowerCase();
-        lblUsername.setText(title);
+        lblUsername.setText(im.getUsername());
         lblEmail.setText(im.getEmail());
         
         String date = dateFormatter.format(im.getBirthday());

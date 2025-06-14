@@ -1,5 +1,6 @@
 package com.owsb.poms.ui.admin;
 
+import com.owsb.poms.system.functions.*;
 import com.owsb.poms.system.model.User.*;
 import com.owsb.poms.ui.admin.Inventory.*;
 import com.owsb.poms.system.model.*;
@@ -8,11 +9,12 @@ import com.owsb.poms.ui.admin.Orders.*;
 import com.owsb.poms.ui.admin.Users.UserCreation;
 import com.owsb.poms.ui.common.*;
 import java.awt.*;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.EnumSet;
+import java.util.*;
 import java.util.List;
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
 import javax.swing.plaf.basic.*;
 import javax.swing.table.*;
 
@@ -37,6 +39,22 @@ public class AdminDashboard extends javax.swing.JFrame {
     private String[] usersColumnName = {"UID", "Name", "Email", "Role", "Join On", "Age", "Birthday"};
     
     // Sales
+    private DailySales lastSales = DailySales.toList().isEmpty() ? null : DailySales.toList().getLast();
+    private DailySales selectedSales = DailySales.toList().isEmpty() ? null : DailySales.toList().getLast();;
+    private LocalDate initialDate;
+    private List<LocalDate> validDates = new ArrayList<>();
+    private Set<Integer> years = new LinkedHashSet<>();
+    private Set<Integer> months = new LinkedHashSet<>();
+    private Set<Integer> days = new LinkedHashSet<>();
+    private List<DSItem> dsi = new ArrayList<>();
+    private boolean isFilling;
+    private boolean isIniliaziling;
+    private DefaultTableModel salesModel = new DefaultTableModel(){
+       public boolean isCellEditable(int row, int column){
+           return column == 6;
+       } 
+    } ;
+    private String[] salesColumnName = {"ID", "Category", "Type", "Name", "Price", "Stock", "Quantity", "New"};
     
     // Orders
     private List<PurchaseOrder> orderList;
@@ -81,9 +99,10 @@ public class AdminDashboard extends javax.swing.JFrame {
         new CommonMethod().setLabelIcon("/icons/minimise.png", 15, 15, Image.SCALE_SMOOTH, lblMinimise);
         new CommonMethod().setLabelIcon("/icons/maximise.png", 15, 15, Image.SCALE_SMOOTH, lblMaximise);
         new CommonMethod().setLabelIcon("/icons/close.png", 15, 15, Image.SCALE_SMOOTH, lblClose);
-        new CommonMethod().setLabelIcon("/icons/summary.png", 40, 40, Image.SCALE_SMOOTH, lblSummary);
+        new CommonMethod().setLabelIcon("/icons/bell.png", 35, 35, Image.SCALE_SMOOTH, lblNotification);
         new CommonMethod().setLabelIcon("/icons/logout.png", 23, 23, Image.SCALE_SMOOTH, lblLogout1);
         new CommonMethod().setLabelIcon("/icons/logout2.png", 30, 30, Image.SCALE_SMOOTH, lblLogout2);
+        new CommonMethod().setLabelIcon("/icons/reload.png", 30, 30, Image.SCALE_SMOOTH, lblReload);
         
         
         new CommonMethod().setLabelIcon("/icons/dashboard.png", 30, 30, Image.SCALE_SMOOTH, lblDashboardIcon);
@@ -106,10 +125,10 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblUserID.setText(admin.getUID());
         lblEmail.setText(admin.getEmail());
         
-        Users();
-        Orders();
-        Inventory();
-        Suppliers();
+        Reload();
+        isIniliaziling = true;
+        initialSalesDate();
+        isIniliaziling = false;
     }
     
     private void tabEntered(JPanel tab, JPanel tabIndicator){
@@ -142,6 +161,14 @@ public class AdminDashboard extends javax.swing.JFrame {
             CardLayout card = (CardLayout) pnlMainContent.getLayout();
             card.show(pnlMainContent, currentTab);
         }
+    }
+    
+    public void Reload(){
+        Users();
+        Sales(selectedSales);
+        Orders();
+        Inventory();
+        Suppliers();
     }
     
     // Users Tab
@@ -189,6 +216,166 @@ public class AdminDashboard extends javax.swing.JFrame {
         // Apply it as the default for any Object‐typed cell:
         tblUser.setDefaultRenderer(Object.class, centerRenderer);
     }
+    
+    // Sales Tab
+    private void Sales(DailySales sales){
+        salesModel.setRowCount(0);
+        
+        salesModel.setColumnIdentifiers(salesColumnName);
+        JTableHeader header = tblSales.getTableHeader();
+        header.setBackground(new java.awt.Color(255, 255, 204));
+        
+        salesModel.addTableModelListener(e -> {
+                if (e.getType() == TableModelEvent.UPDATE) {
+                    int row = e.getFirstRow();
+                    int col = e.getColumn();
+
+                    if (col == 5){
+                        int quantity;
+                        int stock = Integer.parseInt(salesModel.getValueAt(row, 4).toString());
+                        try{
+                            quantity = Integer.parseInt(salesModel.getValueAt(row, col).toString());
+                            if (quantity > 0) {
+                                salesModel.setValueAt(stock + quantity, row, 6);
+                            } else {
+                                salesModel.setValueAt("Invalid", row, 6);
+                            }
+                        } catch (NumberFormatException ex){
+                            if (salesModel.getValueAt(row, 5).toString().isBlank()){
+                                salesModel.setValueAt(stock, row, 6);
+                                return;
+                            }
+                            salesModel.setValueAt("Error", row, 6);
+                        }
+                    }
+                    
+                }
+            });
+        
+        srlSales.getViewport().setBackground(new java.awt.Color(255, 255, 204));
+        
+        tblSales.getColumnModel().getColumn(0).setPreferredWidth(80);
+        tblSales.getColumnModel().getColumn(1).setPreferredWidth(100);
+        tblSales.getColumnModel().getColumn(2).setPreferredWidth(150);
+        tblSales.getColumnModel().getColumn(3).setPreferredWidth(220);
+
+        
+        if (sales == null){
+            itemList = Item.toList();
+            for (Item item : itemList) {
+                if (item.getStatus() != Item.Status.REMOVED)
+                {
+                    salesModel.addRow(new String[]{
+                        item.getItemID(),
+                        item.getItemCategory(),
+                        item.getItemType(),
+                        item.getItemName(),
+                        String.valueOf(item.getSellPrice()),
+                        String.valueOf(item.getStock()),
+                        "",
+                        String.valueOf(item.getStock())
+                    });
+                }
+            }
+        }
+        else{
+            String fileName = sales.getSalesID() + ".txt";
+            dsi = DSItem.read(fileName);
+            for (DSItem item : dsi) {
+                salesModel.addRow(new String[]{
+                    item.getItemID(),
+                    item.getItemCategory(),
+                    item.getItemType(),
+                    item.getItemName(),
+                    String.valueOf(item.getSellPrice()),
+                    String.valueOf(item.getStock() + item.getQuantity()),
+                    String.valueOf(item.getQuantity()),
+                    String.valueOf(item.getStock())
+                });
+            }
+        }
+        
+        
+        // Create a single “center” renderer:
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Apply it as the default for any Object‐typed cell:
+        tblSales.setDefaultRenderer(Object.class, centerRenderer);
+    }
+    
+    private void initialSalesDate(){
+        LocalDate startDate = LocalDate.of(2024, 5, 30); // or any starting date you choose
+        LocalDate endDate = LocalDate.now(); // today
+        initialDate = lastSales == null ? startDate : lastSales.getDate();
+        
+        while (!startDate.isAfter(endDate)) {
+            validDates.add(startDate);
+            startDate = startDate.plusDays(1);
+        }
+        
+        for (LocalDate date : validDates) {
+            years.add(date.getYear());
+        }
+        
+        for (int year : years) {
+            cmbYear.addItem(String.valueOf(year));
+        }
+        
+        cmbYear.setSelectedItem(String.valueOf(initialDate.getYear()));
+        updateMonthCombo();
+        cmbMonth.setSelectedItem(String.valueOf(initialDate.getMonthValue()));
+        updateDayCombo();
+        cmbDay.setSelectedItem(String.valueOf(initialDate.getDayOfMonth()));
+    }
+    
+    private void updateMonthCombo() {
+        int selectedYear = Integer.parseInt(cmbYear.getSelectedItem().toString());
+
+        months = new LinkedHashSet<>();
+        for (LocalDate date : validDates) {
+            if (date.getYear() == selectedYear) {
+                months.add(date.getMonthValue());
+            }
+        }
+
+        cmbMonth.removeAllItems();
+        isFilling = true;
+        for (int month : months) {
+            cmbMonth.addItem(String.valueOf(month)); 
+        }
+        
+        if (!isIniliaziling){
+            cmbMonth.setSelectedIndex(-1);
+            cmbDay.setSelectedIndex(-1);
+        }
+        isFilling = false;
+    }
+
+    private void updateDayCombo() {
+        int selectedYear = Integer.parseInt(cmbYear.getSelectedItem().toString());
+        int selectedMonth = Integer.parseInt(cmbMonth.getSelectedItem().toString());
+
+        if (cmbYear.getSelectedItem() == null || cmbMonth.getSelectedItem() == null) {
+            return; // Safely exit if year or month is not selected
+        }
+
+        days = new LinkedHashSet<>();
+        for (LocalDate date : validDates) {
+            if (date.getYear() == selectedYear && date.getMonthValue() == selectedMonth) {
+                days.add(date.getDayOfMonth());
+            }
+        }
+
+        cmbDay.removeAllItems();
+        isFilling = true;
+        for (int day : days) {
+            cmbDay.addItem(String.valueOf(day));
+        }
+        if (!isIniliaziling) cmbDay.setSelectedIndex(-1);
+        isFilling = false;
+    }
+
     
     // Orders Tab
     private void Orders(){
@@ -399,8 +586,9 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblMinimise = new javax.swing.JLabel();
         lblMaximise = new javax.swing.JLabel();
         lblClose = new javax.swing.JLabel();
-        lblSummary = new javax.swing.JLabel();
+        lblNotification = new javax.swing.JLabel();
         lblLogout2 = new javax.swing.JLabel();
+        lblReload = new javax.swing.JLabel();
         pnlContent = new javax.swing.JPanel();
         pnlMainContent = new javax.swing.JPanel();
         pnlDashboard = new javax.swing.JPanel();
@@ -423,6 +611,15 @@ public class AdminDashboard extends javax.swing.JFrame {
         btnEditBirthday = new javax.swing.JButton();
         btnDeleteAccount = new javax.swing.JButton();
         pnlSales = new javax.swing.JPanel();
+        srlSales = new javax.swing.JScrollPane();
+        tblSales = new javax.swing.JTable();
+        cmbYear = new javax.swing.JComboBox<>();
+        cmbMonth = new javax.swing.JComboBox<>();
+        cmbDay = new javax.swing.JComboBox<>();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        btnSaveSales = new javax.swing.JButton();
         pnlOrders = new javax.swing.JPanel();
         srlOrder = new javax.swing.JScrollPane();
         tblOrder = new javax.swing.JTable();
@@ -988,6 +1185,9 @@ public class AdminDashboard extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lblProfilePictureMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                lblProfilePictureMouseEntered(evt);
+            }
         });
         pnlProfile.add(lblProfilePicture, java.awt.BorderLayout.WEST);
 
@@ -1017,6 +1217,9 @@ public class AdminDashboard extends javax.swing.JFrame {
         lblLogout1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lblLogout1MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                lblLogout1MouseEntered(evt);
             }
         });
         pnlProfile.add(lblLogout1, java.awt.BorderLayout.EAST);
@@ -1051,7 +1254,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                 .addComponent(pnlLogo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pnlTabs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 331, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 328, Short.MAX_VALUE)
                 .addComponent(pnlProfile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -1138,16 +1341,36 @@ public class AdminDashboard extends javax.swing.JFrame {
         });
         pnlWindowControls.add(lblClose);
 
-        lblSummary.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblSummary.addMouseListener(new java.awt.event.MouseAdapter() {
+        lblNotification.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblNotification.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblSummaryMouseClicked(evt);
+                lblNotificationMouseClicked(evt);
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                lblSummaryMouseEntered(evt);
+                lblNotificationMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                lblSummaryMouseExited(evt);
+                lblNotificationMouseExited(evt);
+            }
+        });
+
+        lblLogout2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblLogout2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblLogout2MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                lblLogout2MouseEntered(evt);
+            }
+        });
+
+        lblReload.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblReload.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblReloadMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                lblReloadMouseEntered(evt);
             }
         });
 
@@ -1163,13 +1386,15 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlToolsLayout.setHorizontalGroup(
             pnlToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlToolsLayout.createSequentialGroup()
-                .addGap(0, 897, Short.MAX_VALUE)
+                .addGap(0, 839, Short.MAX_VALUE)
                 .addGroup(pnlToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlWindowControls, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlToolsLayout.createSequentialGroup()
+                        .addComponent(lblReload, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(lblLogout2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(lblSummary, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(lblNotification, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         pnlToolsLayout.setVerticalGroup(
             pnlToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1177,8 +1402,11 @@ public class AdminDashboard extends javax.swing.JFrame {
                 .addComponent(pnlWindowControls, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                 .addGroup(pnlToolsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblSummary, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblNotification, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblLogout2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addGroup(pnlToolsLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(lblReload, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pnlContainer.add(pnlTools, java.awt.BorderLayout.NORTH);
@@ -1392,18 +1620,102 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         pnlMainContent.add(pnlUsers, "Users");
 
-        pnlSales.setBackground(new java.awt.Color(204, 255, 51));
+        pnlSales.setBackground(new java.awt.Color(218, 167, 112));
         pnlSales.setName(""); // NOI18N
+
+        tblSales.setBackground(new java.awt.Color(255, 255, 204));
+        tblSales.setForeground(new java.awt.Color(0, 0, 0));
+        tblSales.setModel(salesModel);
+        tblSales.setGridColor(java.awt.Color.gray);
+        tblSales.setRowSelectionAllowed(false);
+        tblSales.setSelectionBackground(new java.awt.Color(255, 153, 153));
+        tblSales.setShowGrid(true);
+        srlSales.setViewportView(tblSales);
+
+        cmbYear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbYearActionPerformed(evt);
+            }
+        });
+
+        cmbMonth.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbMonthActionPerformed(evt);
+            }
+        });
+
+        cmbDay.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbDayActionPerformed(evt);
+            }
+        });
+
+        jLabel16.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel16.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel16.setText("Year:");
+
+        jLabel17.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel17.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel17.setText("Month:");
+
+        jLabel18.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        jLabel18.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel18.setText("Day:");
+
+        btnSaveSales.setBackground(new java.awt.Color(255, 204, 204));
+        btnSaveSales.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnSaveSales.setForeground(new java.awt.Color(0, 0, 0));
+        btnSaveSales.setText("Save");
+        btnSaveSales.setToolTipText("");
+        btnSaveSales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveSalesActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlSalesLayout = new javax.swing.GroupLayout(pnlSales);
         pnlSales.setLayout(pnlSalesLayout);
         pnlSalesLayout.setHorizontalGroup(
             pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 995, Short.MAX_VALUE)
+            .addGroup(pnlSalesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(srlSales, javax.swing.GroupLayout.DEFAULT_SIZE, 847, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(pnlSalesLayout.createSequentialGroup()
+                        .addGroup(pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel16)
+                            .addComponent(jLabel17)
+                            .addComponent(jLabel18))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(cmbYear, 0, 60, Short.MAX_VALUE)
+                            .addComponent(cmbMonth, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cmbDay, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(btnSaveSales, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         pnlSalesLayout.setVerticalGroup(
             pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 700, Short.MAX_VALUE)
+            .addGroup(pnlSalesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlSalesLayout.createSequentialGroup()
+                        .addGroup(pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cmbYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel16))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cmbMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel17))
+                        .addGap(18, 18, 18)
+                        .addGroup(pnlSalesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cmbDay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel18))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSaveSales, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(srlSales, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pnlMainContent.add(pnlSales, "Sales");
@@ -1473,7 +1785,7 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         pnlMainContent.add(pnlOrders, "Orders");
 
-        pnlInventory.setBackground(new java.awt.Color(255, 153, 51));
+        pnlInventory.setBackground(new java.awt.Color(250, 188, 126));
 
         tblItems.setBackground(new java.awt.Color(255, 255, 204));
         tblItems.setForeground(new java.awt.Color(0, 0, 0));
@@ -1615,10 +1927,10 @@ public class AdminDashboard extends javax.swing.JFrame {
                         .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
                             .addComponent(jLabel7))
-                        .addGap(66, 66, 66)
+                        .addGap(35, 35, 35)
                         .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblItemName)
-                            .addComponent(lblItemType)))
+                            .addComponent(lblItemType)
+                            .addComponent(lblItemName)))
                     .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(btnNewItem, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnRemoveItem, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1629,23 +1941,23 @@ public class AdminDashboard extends javax.swing.JFrame {
                         .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(jLabel1))
-                        .addGap(49, 49, 49)
+                        .addGap(18, 18, 18)
                         .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblItemID)
-                            .addComponent(lblItemCategory)))
+                            .addComponent(lblItemCategory)
+                            .addComponent(lblItemID)))
                     .addGroup(pnlInventoryLayout.createSequentialGroup()
                         .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
                             .addComponent(jLabel6)
                             .addComponent(jLabel4)
                             .addComponent(jLabel11))
-                        .addGap(59, 59, 59)
+                        .addGap(28, 28, 28)
                         .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblItemPrice)
                             .addComponent(lblSupplier)
                             .addComponent(lblItemStock)
-                            .addComponent(lblItemPrice)
                             .addComponent(lblItemStatus))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
         pnlInventoryLayout.setVerticalGroup(
             pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2057,34 +2369,34 @@ public class AdminDashboard extends javax.swing.JFrame {
         ResizablePanel.SetSE(this, evt, initialClick, maximise);
     }//GEN-LAST:event_pnlSouthEastMarginMouseDragged
 
-    private void lblSummaryMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSummaryMouseEntered
-        new CommonMethod().setLabelIcon("/icons/summary_select.png", 40, 40, Image.SCALE_SMOOTH, lblSummary);
-        lblSummary.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-    }//GEN-LAST:event_lblSummaryMouseEntered
+    private void lblNotificationMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotificationMouseEntered
+        new CommonMethod().setLabelIcon("/icons/summary_select.png", 40, 40, Image.SCALE_SMOOTH, lblNotification);
+        lblNotification.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_lblNotificationMouseEntered
 
-    private void lblSummaryMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSummaryMouseExited
-        new CommonMethod().setLabelIcon("/icons/summary.png", 40, 40, Image.SCALE_SMOOTH, lblSummary);
+    private void lblNotificationMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotificationMouseExited
+        new CommonMethod().setLabelIcon("/icons/summary.png", 40, 40, Image.SCALE_SMOOTH, lblNotification);
         if (summary){
-            new CommonMethod().setLabelIcon("/icons/summary_selected.png", 40, 40, Image.SCALE_SMOOTH, lblSummary);
+            new CommonMethod().setLabelIcon("/icons/summary_selected.png", 40, 40, Image.SCALE_SMOOTH, lblNotification);
         }
-    }//GEN-LAST:event_lblSummaryMouseExited
+    }//GEN-LAST:event_lblNotificationMouseExited
 
-    private void lblSummaryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSummaryMouseClicked
+    private void lblNotificationMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblNotificationMouseClicked
         if (!summary){
-            new CommonMethod().setLabelIcon("/icons/summary_selected.png", 40, 40, Image.SCALE_SMOOTH, lblSummary);
+            new CommonMethod().setLabelIcon("/icons/summary_selected.png", 40, 40, Image.SCALE_SMOOTH, lblNotification);
             pnlSummary.setPreferredSize(new Dimension(300, 0));
             pnlSummary.revalidate();
             pnlSummary.repaint();
             summary = true;
         }
         else{
-            new CommonMethod().setLabelIcon("/icons/summary.png", 40, 40, Image.SCALE_SMOOTH, lblSummary);
+            new CommonMethod().setLabelIcon("/icons/summary.png", 40, 40, Image.SCALE_SMOOTH, lblNotification);
             pnlSummary.setPreferredSize(new Dimension(0, 0));
             pnlSummary.revalidate();
             pnlSummary.repaint();
             summary = false;
         }
-    }//GEN-LAST:event_lblSummaryMouseClicked
+    }//GEN-LAST:event_lblNotificationMouseClicked
 
     private void pnlDashboardTabMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlDashboardTabMouseEntered
         tabEntered(pnlDashboardTab, pnlDashboardIndicator);
@@ -2211,29 +2523,34 @@ public class AdminDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEditItemActionPerformed
 
     private void btnUpdateStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateStockActionPerformed
-        if (selectedItemRow == -1)
-        {
-            JOptionPane.showMessageDialog(this, "Please select an item to update stock", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        String input = JOptionPane.showInputDialog(this, String.format("Stock: %d", selectedItem.getStock()), "Update Stock", JOptionPane.INFORMATION_MESSAGE);
-        
-        if (input != null) {
-            try {
-                int newStock = Integer.parseInt(input.trim());
-                if (newStock < 0) {
-                    JOptionPane.showMessageDialog(this, "Stock cannot be negative!", "Invalid Input", JOptionPane.WARNING_MESSAGE);
-                } else {
-                    selectedItem.setStock(newStock);
-                    selectedItem.updateStock(); 
-                    JOptionPane.showMessageDialog(this, "Stock updated successfully!");
-                    Inventory();
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid integer!", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+//        if (selectedItemRow == -1)
+//        {
+//            JOptionPane.showMessageDialog(this, "Please select an item to update stock", "Error", JOptionPane.ERROR_MESSAGE);
+//            return;
+//        }
+//        
+//        String input = JOptionPane.showInputDialog(this, String.format("Stock: %d", selectedItem.getStock()), "Update Stock", JOptionPane.INFORMATION_MESSAGE);
+//        
+//        if (input != null) {
+//            try {
+//                int newStock = Integer.parseInt(input.trim());
+//                if (newStock < 0) {
+//                    JOptionPane.showMessageDialog(this, "Stock cannot be negative!", "Invalid Input", JOptionPane.WARNING_MESSAGE);
+//                } else {
+//                    selectedItem.setStock(newStock);
+//                    selectedItem.updateStock(); 
+//                    JOptionPane.showMessageDialog(this, "Stock updated successfully!");
+//                    Inventory();
+//                }
+//            } catch (NumberFormatException e) {
+//                JOptionPane.showMessageDialog(this, "Please enter a valid integer!", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+//            }
+//        }
+        this.setEnabled(false);
+        UpdateStock us = new UpdateStock(this, false);
+        us.setLocationRelativeTo(this);
+        us.setVisible(true);
+        Inventory();
     }//GEN-LAST:event_btnUpdateStockActionPerformed
 
     private void btnUpdateStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateStatusActionPerformed
@@ -2358,15 +2675,130 @@ public class AdminDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCreateUserActionPerformed
 
     private void btnChangeUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeUsernameActionPerformed
+        if (selectedUserRow == -1)
+        {
+            JOptionPane.showMessageDialog(this, "Please select a user to change username", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         
+        if (admin.getRole().equals(User.Role.Admin)){
+            if (selectedUser.getRole().equals(User.Role.Root) || selectedUser.getRole().equals(User.Role.Admin)){
+                JOptionPane.showMessageDialog(this, "You don't have permission to change username of this account!", "Permission Denied", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+        
+        int result = JOptionPane.showConfirmDialog(
+                this, 
+                String.format(
+                        "Are you sure to change username of %s %s?", 
+                        selectedUser.getUID(),
+                        selectedUser.getUsername()
+                ), 
+                "Change Username", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (result == JOptionPane.YES_OPTION) {
+            String input = JOptionPane.showInputDialog(this, "New Username:", "Change Username", JOptionPane.INFORMATION_MESSAGE).toUpperCase().trim();
+            if (!UserValidation.validUsername(input)){
+                JOptionPane.showMessageDialog(
+                        this, 
+                        "Invalid username, it might be:\n"
+                      + "1. Username already existed\n"
+                      + "2. Username contains invalid characters\n"
+                      + "3. Username is blank\n"
+                      + "Note: Username can only contains alphabets (At least 3)", 
+                        "Error", 
+                        JOptionPane.ERROR_MESSAGE
+                );
+                     return;
+             }
+            selectedUser.setUsername(input);
+            selectedUser.changeUsername();
+            JOptionPane.showMessageDialog(this, "Username Changed Successfully!");
+            Users();
+        }
     }//GEN-LAST:event_btnChangeUsernameActionPerformed
 
     private void btnResetPassowardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetPassowardActionPerformed
+        if (selectedUserRow == -1)
+        {
+            JOptionPane.showMessageDialog(this, "Please select a user to reset password", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         
+        if (admin.getRole().equals(User.Role.Admin)){
+            if (selectedUser.getRole().equals(User.Role.Root) || selectedUser.getRole().equals(User.Role.Admin)){
+                JOptionPane.showMessageDialog(this, "You don't have permission to reset password of this account!", "Permission Denied", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+        int result = JOptionPane.showConfirmDialog(
+                this, 
+                String.format(
+                        "Are you sure to reset password of %s %s?",
+                        selectedUser.getUID(),
+                        selectedUser.getUsername()
+                ), 
+                "Reset Password", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (result == JOptionPane.YES_OPTION) {
+            String newPassword = SecurePassword.newPassword();
+            selectedUser.changePassword(newPassword);
+            
+            String message = String.format("Reset Password Successfully!%nNew Password: %s", newPassword);
+            JTextArea textArea = new JTextArea(message);
+            textArea.setEditable(false);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            textArea.setBackground(UIManager.getColor("Panel.background")); 
+            textArea.setBorder(null);
+            textArea.setPreferredSize(new Dimension(250, 50));
+
+            JOptionPane.showMessageDialog(this, textArea, "Password Reset", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Password Reset Successfully!");
+            dispose();
+        }
     }//GEN-LAST:event_btnResetPassowardActionPerformed
 
     private void btnEditBirthdayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditBirthdayActionPerformed
-        // TODO add your handling code here:
+        if (selectedUserRow == -1)
+        {
+            JOptionPane.showMessageDialog(this, "Please select a user to edit birthday", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (admin.getRole().equals(User.Role.Admin)){
+            if (selectedUser.getRole().equals(User.Role.Root) || selectedUser.getRole().equals(User.Role.Admin)){
+                JOptionPane.showMessageDialog(this, "You don't have permission to edit birthday of this account!", "Permission Denied", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+        
+        int result = JOptionPane.showConfirmDialog(
+                this, 
+                String.format(
+                        "Are you sure to edit birthday of %s %s?", 
+                        selectedUser.getUID(), 
+                        selectedUser.getUsername()
+                ), 
+                "Edit Birthday", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (result == JOptionPane.YES_OPTION) {
+            String input = JOptionPane.showInputDialog(this, "New Birthday:", "Edit Birthday", JOptionPane.INFORMATION_MESSAGE);
+            if (!UserValidation.validBirthday(input)){
+                JOptionPane.showMessageDialog(
+                   this, 
+                   "Invalid birthday\n"
+                 + "Note: Please enter the birthday in yyyyMMdd form\n"
+                 + "E.g. 20000101 (1 January 2000)\n"
+                 + "*All employees must be 16 years of age or older", 
+                   "Error", 
+                   JOptionPane.ERROR_MESSAGE
+                );
+                     return;
+             }
+            selectedUser.setBirthday(User.getBirthdayByString(input));
+            selectedUser.changeBirthday();
+            JOptionPane.showMessageDialog(this, "Birthday Edited Successfully!");
+            Users();
+        }
     }//GEN-LAST:event_btnEditBirthdayActionPerformed
 
     private void lblProfilePictureMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblProfilePictureMouseClicked
@@ -2376,7 +2808,33 @@ public class AdminDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_lblProfilePictureMouseClicked
 
     private void btnDeleteAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteAccountActionPerformed
-        // TODO add your handling code here:
+        if (selectedUserRow == -1)
+        {
+            JOptionPane.showMessageDialog(this, "Please select a user to delete", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (admin.getRole().equals(User.Role.Admin)){
+            if (selectedUser.getRole().equals(User.Role.Root) || selectedUser.getRole().equals(User.Role.Admin)){
+                JOptionPane.showMessageDialog(this, "You don't have permission to delete this account!", "Permission Denied", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+        
+        int result = JOptionPane.showConfirmDialog(
+                this, 
+                String.format(
+                        "Are you sure to delete this account? (%s %s)%n"
+                      + "Warning: This action cannot be reverted!",
+                        selectedUser.getUID(),
+                        selectedUser.getUsername()
+                ), 
+                "Delete Account", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (result == JOptionPane.YES_OPTION)
+        {
+            selectedUser.delete();
+            Users();
+        }
     }//GEN-LAST:event_btnDeleteAccountActionPerformed
 
     private void lblLogout2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblLogout2MouseClicked
@@ -2386,6 +2844,96 @@ public class AdminDashboard extends javax.swing.JFrame {
     private void lblLogout1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblLogout1MouseClicked
         admin.logout(this);
     }//GEN-LAST:event_lblLogout1MouseClicked
+
+    private void lblReloadMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblReloadMouseClicked
+        Reload();
+    }//GEN-LAST:event_lblReloadMouseClicked
+
+    private void lblProfilePictureMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblProfilePictureMouseEntered
+        lblProfilePicture.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_lblProfilePictureMouseEntered
+
+    private void lblLogout1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblLogout1MouseEntered
+        lblLogout1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_lblLogout1MouseEntered
+
+    private void lblLogout2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblLogout2MouseEntered
+        lblLogout2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_lblLogout2MouseEntered
+
+    private void lblReloadMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblReloadMouseEntered
+        lblReload.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_lblReloadMouseEntered
+
+    private void btnSaveSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveSalesActionPerformed
+        boolean allQuantityEmpty = true;
+        for (int row = 0; row < tblSales.getRowCount(); row++) {
+            Object value = salesModel.getValueAt(row, 6); 
+            if (value != null && !value.toString().isBlank()) {
+                allQuantityEmpty = false;
+                break;
+            }
+        }
+
+        if (allQuantityEmpty) {
+            JOptionPane.showMessageDialog(this, "No quantity entered!", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        for (int i = 0; i < tblSales.getRowCount(); i++){
+            if (salesModel.getValueAt(i, 6).toString().equals("Error") ||
+                salesModel.getValueAt(i, 6).toString().equals("Invalid")){
+                JOptionPane.showMessageDialog(this, "Invalid Quantity Found!", "Error", JOptionPane.ERROR_MESSAGE);
+                return; 
+            }
+        }
+        
+        int result = JOptionPane.showConfirmDialog(this, "Are you sure to make this update?", "Update Stock", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (result == JOptionPane.YES_OPTION){
+            
+            List <StockUpdateReport> list = new ArrayList<>();
+            
+            for (int i = 0; i < tblSales.getRowCount(); i++){
+                for (Item item : itemList){
+                    if (salesModel.getValueAt(i, 0).toString().equals(item.getItemID())){
+                        item.setStock(Integer.parseInt(salesModel.getValueAt(i, 7).toString()));
+                        String quantityString = salesModel.getValueAt(i, 6).toString();
+                        int quantity = quantityString.isBlank() ? 0 : Integer.parseInt(quantityString);
+                        list.add(new StockUpdateReport(item.getItemID(), item.getItemCategory(), item.getItemType(), item.getItemName(), item.getStock(), quantity));
+                    }
+                }
+            }
+            
+            new Item().saveToFile(itemList);
+            new StockUpdateReport().save(list, "Stock Decreasing");
+            JOptionPane.showMessageDialog(this, "Stock has updated successfully!");
+            dispose();
+        }
+    }//GEN-LAST:event_btnSaveSalesActionPerformed
+
+    private void cmbYearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbYearActionPerformed
+        if (isFilling || isIniliaziling) return;
+        updateMonthCombo();
+    }//GEN-LAST:event_cmbYearActionPerformed
+
+    private void cmbMonthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbMonthActionPerformed
+        if (isFilling || isIniliaziling) return;
+        updateDayCombo();
+    }//GEN-LAST:event_cmbMonthActionPerformed
+
+    private void cmbDayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbDayActionPerformed
+        if (isFilling || isIniliaziling) return;
+        int year = Integer.parseInt(cmbYear.getSelectedItem().toString());
+        int month = Integer.parseInt(cmbMonth.getSelectedItem().toString());
+        int day = Integer.parseInt(cmbDay.getSelectedItem().toString());
+        LocalDate selectedDate = LocalDate.of(year, month, day);
+        if (!selectedDate.equals(initialDate)){
+            btnSaveSales.setEnabled(false);
+        }
+        else{
+            btnSaveSales.setEnabled(true);
+        }
+    }//GEN-LAST:event_cmbDayActionPerformed
  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBankSetting;
@@ -2400,10 +2948,14 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JButton btnRemoveItem;
     private javax.swing.JButton btnRemoveSupplier;
     private javax.swing.JButton btnResetPassoward;
+    private javax.swing.JButton btnSaveSales;
     private javax.swing.JButton btnUpdateStatus;
     private javax.swing.JButton btnUpdateStock;
     private javax.swing.JButton btnViewAllPO;
     private javax.swing.JButton btnViewPR;
+    private javax.swing.JComboBox<String> cmbDay;
+    private javax.swing.JComboBox<String> cmbMonth;
+    private javax.swing.JComboBox<String> cmbYear;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -2411,6 +2963,9 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -2443,18 +2998,19 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel lblMaximise;
     private javax.swing.JLabel lblMinimise;
     private javax.swing.JLabel lblName;
+    private javax.swing.JLabel lblNotification;
     private javax.swing.JLabel lblOrders;
     private javax.swing.JLabel lblOrdersDivider1;
     private javax.swing.JLabel lblOrdersDivider2;
     private javax.swing.JLabel lblOrdersIcon;
     private javax.swing.JPanel lblProfileDivider;
     private javax.swing.JLabel lblProfilePicture;
+    private javax.swing.JLabel lblReload;
     private javax.swing.JLabel lblRole;
     private javax.swing.JLabel lblSales;
     private javax.swing.JLabel lblSalesDivider1;
     private javax.swing.JLabel lblSalesDivider2;
     private javax.swing.JLabel lblSalesIcon;
-    private javax.swing.JLabel lblSummary;
     private javax.swing.JLabel lblSupplier;
     private javax.swing.JLabel lblSupplierAddedTime;
     private javax.swing.JLabel lblSupplierID;
@@ -2514,10 +3070,12 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel pnlWindowControls;
     private javax.swing.JScrollPane srlItems;
     private javax.swing.JScrollPane srlOrder;
+    private javax.swing.JScrollPane srlSales;
     private javax.swing.JScrollPane srlSuppliers;
     private javax.swing.JScrollPane srlUser;
     private javax.swing.JTable tblItems;
     private javax.swing.JTable tblOrder;
+    private javax.swing.JTable tblSales;
     private javax.swing.JTable tblSuppliers;
     private javax.swing.JTable tblUser;
     // End of variables declaration//GEN-END:variables

@@ -21,7 +21,6 @@ public class Item implements hasFile<Item>, hasId, hasStatus{
         NEW,
         SUFFICIENT,
         SHORTAGE,
-        REQUESTING,
         REMOVED
     }
 
