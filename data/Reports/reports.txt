@@ -22,3 +22,13 @@ STK00002	StockReport	daily check	2025-06-14T22:38:31.185680500
 PUR00001	PurchaseReport	purchase report	2025-06-15T11:15:00.695524600
 PUR00002	PurchaseReport	purchase report	2025-06-15T11:15:26.594575300
 PUR00003	PurchaseReport	purchase report	2025-06-15T12:40:13.493791700
+SUP00020	StockUpdateReport	Stock Decreasing	2025-06-15T15:56:44.530673600
+SUP00021	StockUpdateReport	Stock Decreasing	2025-06-15T15:57:18.776714800
+SUP00022	StockUpdateReport	Stock Decreasing	2025-06-15T16:00:00.485042900
+SUP00023	StockUpdateReport	Stock Decreasing	2025-06-15T16:00:24.308059100
+SUP00024	StockUpdateReport	Stock Decreasing	2025-06-15T16:01:01.659519700
+SUP00025	StockUpdateReport	Stock Decreasing	2025-06-15T16:02:30.859313200
+SUP00026	StockUpdateReport	Stock Decreasing	2025-06-15T16:03:08.339436200
+SUP00027	StockUpdateReport	Stock Increasing	2025-06-15T16:44:59.972852300
+PUR00004	PurchaseReport	purchase report	2025-06-15T17:08:03.846250500
+STK00003	StockReport	615 daily check	2025-06-15T17:19:23.904770800

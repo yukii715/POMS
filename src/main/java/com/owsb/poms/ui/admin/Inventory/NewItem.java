@@ -32,9 +32,11 @@ public class NewItem extends javax.swing.JDialog {
             cmbCategory.addItem(category);
         }
         
-        var suppliers = Supplier.getAllSuppliers();
-        for (String supplier : suppliers) {
-            cmbSuppliers.addItem(supplier);
+        for (Supplier supplier : Supplier.toList()) {
+            if (!supplier.isDeleted())
+            {
+                cmbSuppliers.addItem(supplier.getSupplierName());
+            }
         }
         cmbSuppliers.setSelectedIndex(-1);
     }

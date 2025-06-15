@@ -319,7 +319,7 @@ public class AdminDashboard extends javax.swing.JFrame {
                             String.format("%.2f", item.getSellPrice()),
                             dSItem != null ? String.valueOf(dSItem.getStock() + dSItem.getQuantity()) : String.valueOf(item.getStock()),
                             dSItem != null ? String.valueOf(dSItem.getQuantity()) : "0",
-                            dSItem != null ? String.valueOf(dSItem.getStock() + dSItem.getQuantity()) : String.valueOf(item.getStock()),
+                            dSItem != null ? String.valueOf(dSItem.getStock()) : String.valueOf(item.getStock()),
                         });
                     }
                 }

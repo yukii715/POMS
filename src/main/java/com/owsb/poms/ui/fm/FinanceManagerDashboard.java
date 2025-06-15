@@ -6,7 +6,9 @@ import com.owsb.poms.system.model.*;
 import com.owsb.poms.system.model.User.FinanceManager;
 import com.owsb.poms.system.model.User.User;
 import com.owsb.poms.system.model.company.Bank;
+import com.owsb.poms.ui.common.CommonMethod;
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,6 +33,7 @@ public class FinanceManagerDashboard extends javax.swing.JFrame {
         for (int i = 0; i < FrameTab.getTabCount(); i++) {
         FrameTab.setBackgroundAt(i, new java.awt.Color(255, 107, 149));
         }
+        new CommonMethod().setFrameIcon("/icons/logo.png", 330, 330, Image.SCALE_SMOOTH, this);
         startBlinkingLabel(WelcomeLabel);
         initUserProfile();
         initApprovePOFunctionality();

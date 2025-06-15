@@ -1,0 +1,30 @@
+ITM00001	GoodHealth Shampoo 200ml	Hygiene	Cleaning Supplies	0	0
+ITM00002	SunGro Premium Rice 5kg	Grocery	Staple Food	0	0
+ITM00003	SunGro Brown Sugar 1kg	Grocery	Dry Ingredient	0	0
+ITM00004	LiteTech Wireless Mouse	Electronics	Peripheral	0	0
+ITM00005	Green Basket Green Tea 500ml	Beverage	Tea	0	0
+ITM00006	MegaTools Hammer 16oz	Hardware	Hand Tool	0	0
+ITM00007	LiteTech USB Keyboard	Electronics	Peripheral	0	0
+ITM00008	GoodHealth Toothpaste 150g	Hygiene	Oral Care	0	0
+ITM00009	GoodHealth Antibacterial Wipes 50s	Hygiene	Cleaning Supplies	0	0
+ITM00010	GoodHealth Hand Sanitizer 100ml	Hygiene	Cleaning Supplies	0	0
+ITM00011	SunGro Instant Noodles Chicken 5s	Grocery	Instant Food	0	0
+ITM00012	SunGro Sardines in Tomato Sauce	Grocery	Canned Food	0	0
+ITM00013	SunGro Evaporated Milk 400g	Grocery	Dairy Product	0	0
+ITM00014	FreshFarm Apple Juice 1L	Beverage	Juice	0	0
+ITM00015	FreshFarm Fresh Eggs Grade A 10s	Grocery	Fresh Produce	10	0
+ITM00016	FarmFresh Milk 1.5L	Grocery	Fresh Produce	45	0
+ITM00017	MegaTools Pliers Set	Hardware	Hand Tool	0	0
+ITM00018	MegaTools Electric Drill 650W	Hardware	Power Tool	0	0
+ITM00019	LiteTech HDMI Cable 2m	Electronics	Accessories	5	0
+ITM00020	LiteTech Portable Charger 10000mAh	Electronics	Mobile Accessory	5	0
+ITM00021	LiteTech LED Bulb 10W	Electronics	Home Appliance	30	10
+ITM00022	Green Basket Organic Oats 500g	Grocery	Organic Food	0	0
+ITM00023	Green Basket Herbal Tea 30s	Beverage	Organic Tea	0	0
+ITM00024	Green Basket Organic Brown Rice 2kg	Grocery	Organic Food	0	0
+ITM00026	Emborg Cheddar Cheese 20pc	Grocery	Dairy Product	0	0
+ITM00027	PrimaFood Instant Coffee 250mL	Beverage	Coffee	30	0
+ITM00028	PrimaFood Biscuit Assorted 700g	Grocery	Snack	0	0
+ITM00029	PrimaFood Non-Dairy Creamer 500g	Grocery	Coffee Additive	40	0
+ITM00030	SunGro Milk 500mL	Grocery	Dairy Product	0	0
+ITM00031	Asia Stationery A4 Paper 500s	Stationery	Paper	0	0

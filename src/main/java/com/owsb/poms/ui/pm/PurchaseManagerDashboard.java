@@ -4,6 +4,8 @@ package com.owsb.poms.ui.pm;
 import com.owsb.poms.system.model.*;
 import com.owsb.poms.system.model.User.PurchaseManager;
 import com.owsb.poms.system.model.User.User;
+import com.owsb.poms.ui.common.CommonMethod;
+import java.awt.Image;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import javax.swing.RowFilter;
@@ -56,6 +58,7 @@ private List<PurchaseOrder> PoList;
     }
     
     public PurchaseManagerDashboard(PurchaseManager purchaseManager) {
+        new CommonMethod().setFrameIcon("/icons/logo.png", 330, 330, Image.SCALE_SMOOTH, this);
         setTitle("Purchase Manager Home Page");
         setSize(400, 300); 
         initComponents();

@@ -13,18 +13,18 @@ ITM00012	Grocery	Canned Food	SunGro Sardines in Tomato Sauce	0	0	3.8
 ITM00013	Grocery	Dairy Product	SunGro Evaporated Milk 400g	0	0	3.3
 ITM00014	Beverage	Juice	FreshFarm Apple Juice 1L	0	0	6.5
 ITM00015	Grocery	Fresh Produce	FreshFarm Fresh Eggs Grade A 10s	0	20	8.0
-ITM00016	Grocery	Fresh Produce	FarmFresh Milk 1.5L	0	80	100.0
+ITM00016	Grocery	Fresh Produce	FarmFresh Milk 1.5L	35	45	100.0
 ITM00017	Hardware	Hand Tool	MegaTools Pliers Set	0	0	29.9
 ITM00018	Hardware	Power Tool	MegaTools Electric Drill 650W	0	0	139.0
 ITM00019	Electronics	Accessories	LiteTech HDMI Cable 2m	0	5	12.9
 ITM00020	Electronics	Mobile Accessory	LiteTech Portable Charger 10000mAh	0	5	65.0
-ITM00021	Electronics	Home Appliance	LiteTech LED Bulb 10W	35	80	8.9
+ITM00021	Electronics	Home Appliance	LiteTech LED Bulb 10W	20	60	8.9
 ITM00022	Grocery	Organic Food	Green Basket Organic Oats 500g	0	0	9.9
 ITM00023	Beverage	Organic Tea	Green Basket Herbal Tea 30s	0	0	15.5
 ITM00024	Grocery	Organic Food	Green Basket Organic Brown Rice 2kg	0	0	14.0
 ITM00026	Grocery	Dairy Product	Emborg Cheddar Cheese 20pc	0	0	7.9
 ITM00027	Beverage	Coffee	PrimaFood Instant Coffee 250mL	0	30	9.9
 ITM00028	Grocery	Snack	PrimaFood Biscuit Assorted 700g	0	0	11.8
-ITM00029	Grocery	Coffee Additive	PrimaFood Non-Dairy Creamer 500g	10	40	7.5
+ITM00029	Grocery	Coffee Additive	PrimaFood Non-Dairy Creamer 500g	0	40	7.5
 ITM00030	Grocery	Dairy Product	SunGro Milk 500mL	0	0	12.9
 ITM00031	Stationery	Paper	Asia Stationery A4 Paper 500s	0	0	13.9

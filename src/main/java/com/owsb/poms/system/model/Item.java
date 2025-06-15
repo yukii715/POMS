@@ -5,7 +5,6 @@ import java.util.List;
 import com.owsb.poms.system.functions.interfaces.*;
 
 public class Item implements hasFile<Item>, hasId, hasStatus{
-    
     private String itemID;
     private String itemName;
     private String itemCategory;
