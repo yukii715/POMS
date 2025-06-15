@@ -23,7 +23,6 @@ public class Item implements hasFile<Item>, hasId, hasStatus{
         REMOVED
     }
 
-    // Constructor
     public Item(String itemCategory, String itemType, String itemName, String supplierID, double sellPrice) {
         this.itemID = generateID();
         this.itemName = itemName;
@@ -35,11 +34,9 @@ public class Item implements hasFile<Item>, hasId, hasStatus{
         this.status = Status.NEW;
     }
 
-    // Default constructor
     public Item() {
     }
 
-    // Getters and Setters
     public String getItemID() {
         return itemID;
     }

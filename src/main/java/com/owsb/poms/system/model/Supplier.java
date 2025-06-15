@@ -1,6 +1,4 @@
 package com.owsb.poms.system.model;
-import com.owsb.poms.system.model.Item;
-import java.util.List;
 
 import com.owsb.poms.system.functions.*;
 import java.time.LocalDateTime;

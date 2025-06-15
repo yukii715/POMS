@@ -3,7 +3,6 @@ package com.owsb.poms.system.functions;
 import java.io.*;
 
 public class IdGenerator {
-    
     // Use synchronized to prevent multiple threads generate ID at the same time
     public static synchronized int getTotal(String file) {
         int lines = 0;
