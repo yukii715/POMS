@@ -974,7 +974,7 @@ public class InventoryManagerDashboard extends javax.swing.JFrame {
         };
 
         selectedItem.setStock(newQuantity);
-        selectedItem.updateStock();
+        selectedItem.editStock();
         selectedItem.setStatus(newStatus);
         selectedItem.updateStatus();
 

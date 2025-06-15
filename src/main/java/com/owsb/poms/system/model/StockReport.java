@@ -103,9 +103,9 @@ public class StockReport extends Report implements hasId{
 
         StockReport sr = new StockReport();
         sr.setItemID(parts[0]);
-        sr.setItemCategory(parts[1]);
-        sr.setItemType(parts[2]);
-        sr.setItemName(parts[3]);
+        sr.setItemName(parts[1]);
+        sr.setItemCategory(parts[2]);
+        sr.setItemType(parts[3]);
         sr.setStock(Integer.parseInt(parts[4]));
         sr.setStatus(Item.Status.valueOf(parts[5]));
 

@@ -166,7 +166,7 @@ public class Item implements hasFile<Item>, hasId, hasStatus{
         );
     }
     
-    public void updateStock(){
+    public void editStock(){
         DataHandler.updateFieldAndSave(
                 toList(),
                 item -> item.getItemID().equals(this.getItemID()),              

@@ -3,15 +3,18 @@ package com.owsb.poms.ui.admin.Orders;
 import com.owsb.poms.system.model.User.*;
 import com.owsb.poms.system.model.*;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.table.*;
 
 public class POList extends javax.swing.JDialog {
     private Admin admin;
     private List<PurchaseOrder> poList;
-    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private List<PurchaseOrder.Status> statuses = new ArrayList<>();
+    private List<JCheckBox> checkBoxs = new ArrayList<>();
     
     private DefaultTableModel poModel = new DefaultTableModel(){
        public boolean isCellEditable(int row, int column){
@@ -24,11 +27,20 @@ public class POList extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         
+        checkBoxs.addAll(
+                List.of(
+                        cbNew, cbApproved, cbArrived, cbCancelled, cbCompleted, cbConfirmed, cbDeleted, cbExtended, 
+                        cbInvalid, cbProcessing, cbRejected, cbReported, cbVerified
+                )
+        );
+        
         this.admin = admin;
         setTitle("Purchase Orders");
-        
         cbAllPOs.setSelected(true);
-        
+        for (JCheckBox cb : checkBoxs){
+            cb.setSelected(true);
+        }
+        Collections.addAll(statuses, PurchaseOrder.Status.values());
         PO();
     }
 
@@ -47,15 +59,17 @@ public class POList extends javax.swing.JDialog {
         poList = PurchaseOrder.toList();
         
         for (PurchaseOrder po : poList) {
-            poModel.addRow(new String[]{
-                po.getPOID(),
-                po.getPRID(),
-                po.getSupplierID(),
-                String.format("RM %.2f", po.getTotalPrice()),
-                po.getDeliveryDate().format(dateFormatter),
-                po.getCreateBy(),
-                po.getStatus().name()
-            });
+            if (statuses.contains(po.getStatus())){
+                poModel.addRow(new String[]{
+                    po.getPOID(),
+                    po.getPRID(),
+                    po.getSupplierID(),
+                    String.format("RM %.2f", po.getTotalPrice()),
+                    po.getDeliveryDate().format(dateFormatter),
+                    po.getCreateBy(),
+                    po.getStatus().name()
+                });
+            }
         }
         
         // Create a single “center” renderer:
@@ -64,6 +78,21 @@ public class POList extends javax.swing.JDialog {
 
         // Apply it as the default for any Object‐typed cell:
         tblPO.setDefaultRenderer(Object.class, centerRenderer);
+    }
+    
+    private void cbFunc(JCheckBox cb, PurchaseOrder.Status status){
+        if (cb.isSelected()){
+            if (checkBoxs.stream().allMatch(JCheckBox::isSelected)){
+                cbAllPOs.setSelected(true);
+            }
+            statuses.add(status);
+            PO();
+        }
+        else{
+            cbAllPOs.setSelected(false);
+            statuses.remove(status);
+            PO();
+        }
     }
     
     /**
@@ -80,13 +109,25 @@ public class POList extends javax.swing.JDialog {
         tblPO = new javax.swing.JTable();
         btnNew = new javax.swing.JButton();
         cbAllPOs = new javax.swing.JCheckBox();
+        cbNew = new javax.swing.JCheckBox();
+        cbApproved = new javax.swing.JCheckBox();
+        cbRejected = new javax.swing.JCheckBox();
+        cbProcessing = new javax.swing.JCheckBox();
+        cbDeleted = new javax.swing.JCheckBox();
+        cbExtended = new javax.swing.JCheckBox();
+        cbConfirmed = new javax.swing.JCheckBox();
+        cbCompleted = new javax.swing.JCheckBox();
+        cbInvalid = new javax.swing.JCheckBox();
+        cbVerified = new javax.swing.JCheckBox();
+        cbArrived = new javax.swing.JCheckBox();
+        cbReported = new javax.swing.JCheckBox();
+        cbCancelled = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         pnlMain.setBackground(new java.awt.Color(255, 204, 204));
 
         tblPO.setBackground(new java.awt.Color(255, 255, 204));
-        tblPO.setForeground(new java.awt.Color(0, 0, 0));
         tblPO.setModel(poModel);
         tblPO.setGridColor(java.awt.Color.gray);
         tblPO.setSelectionBackground(new java.awt.Color(255, 153, 153));
@@ -100,7 +141,6 @@ public class POList extends javax.swing.JDialog {
 
         btnNew.setBackground(new java.awt.Color(204, 204, 255));
         btnNew.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        btnNew.setForeground(new java.awt.Color(0, 0, 0));
         btnNew.setText("New");
         btnNew.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -110,11 +150,127 @@ public class POList extends javax.swing.JDialog {
 
         cbAllPOs.setBackground(new java.awt.Color(204, 204, 255));
         cbAllPOs.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        cbAllPOs.setForeground(new java.awt.Color(0, 0, 0));
         cbAllPOs.setLabel("All POs");
         cbAllPOs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbAllPOsActionPerformed(evt);
+            }
+        });
+
+        cbNew.setBackground(new java.awt.Color(204, 204, 255));
+        cbNew.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        cbNew.setText("New");
+        cbNew.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbNewActionPerformed(evt);
+            }
+        });
+
+        cbApproved.setBackground(new java.awt.Color(204, 204, 255));
+        cbApproved.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        cbApproved.setText("Approved");
+        cbApproved.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbApprovedActionPerformed(evt);
+            }
+        });
+
+        cbRejected.setBackground(new java.awt.Color(204, 204, 255));
+        cbRejected.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        cbRejected.setText("Rejected");
+        cbRejected.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbRejectedActionPerformed(evt);
+            }
+        });
+
+        cbProcessing.setBackground(new java.awt.Color(204, 204, 255));
+        cbProcessing.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        cbProcessing.setText("Processing");
+        cbProcessing.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbProcessingActionPerformed(evt);
+            }
+        });
+
+        cbDeleted.setBackground(new java.awt.Color(204, 204, 255));
+        cbDeleted.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        cbDeleted.setText("Deleted");
+        cbDeleted.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbDeletedActionPerformed(evt);
+            }
+        });
+
+        cbExtended.setBackground(new java.awt.Color(204, 204, 255));
+        cbExtended.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        cbExtended.setText("Extended");
+        cbExtended.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbExtendedActionPerformed(evt);
+            }
+        });
+
+        cbConfirmed.setBackground(new java.awt.Color(204, 204, 255));
+        cbConfirmed.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        cbConfirmed.setText("Confirmed");
+        cbConfirmed.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbConfirmedActionPerformed(evt);
+            }
+        });
+
+        cbCompleted.setBackground(new java.awt.Color(204, 204, 255));
+        cbCompleted.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        cbCompleted.setText("Completed");
+        cbCompleted.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbCompletedActionPerformed(evt);
+            }
+        });
+
+        cbInvalid.setBackground(new java.awt.Color(204, 204, 255));
+        cbInvalid.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        cbInvalid.setText("Invalid");
+        cbInvalid.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbInvalidActionPerformed(evt);
+            }
+        });
+
+        cbVerified.setBackground(new java.awt.Color(204, 204, 255));
+        cbVerified.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        cbVerified.setText("Verified");
+        cbVerified.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbVerifiedActionPerformed(evt);
+            }
+        });
+
+        cbArrived.setBackground(new java.awt.Color(204, 204, 255));
+        cbArrived.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        cbArrived.setText("Arrived");
+        cbArrived.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbArrivedActionPerformed(evt);
+            }
+        });
+
+        cbReported.setBackground(new java.awt.Color(204, 204, 255));
+        cbReported.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        cbReported.setText("Reported");
+        cbReported.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbReportedActionPerformed(evt);
+            }
+        });
+
+        cbCancelled.setBackground(new java.awt.Color(204, 204, 255));
+        cbCancelled.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        cbCancelled.setText("Cancelled");
+        cbCancelled.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbCancelledActionPerformed(evt);
             }
         });
 
@@ -124,9 +280,27 @@ public class POList extends javax.swing.JDialog {
             pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMainLayout.createSequentialGroup()
                 .addContainerGap(856, Short.MAX_VALUE)
-                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(cbAllPOs, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
-                    .addComponent(btnNew, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(cbCancelled, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cbReported, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(cbInvalid, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cbConfirmed, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cbCompleted, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(cbExtended, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cbArrived, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cbVerified, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(cbRejected, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cbDeleted, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cbProcessing, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(cbAllPOs, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
+                        .addComponent(btnNew, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cbNew, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
+                        .addComponent(cbApproved, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)))
                 .addGap(33, 33, 33))
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlMainLayout.createSequentialGroup()
@@ -141,7 +315,33 @@ public class POList extends javax.swing.JDialog {
                 .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
                 .addComponent(cbAllPOs)
-                .addContainerGap(602, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(cbNew)
+                .addGap(18, 18, 18)
+                .addComponent(cbApproved)
+                .addGap(18, 18, 18)
+                .addComponent(cbRejected)
+                .addGap(18, 18, 18)
+                .addComponent(cbDeleted)
+                .addGap(18, 18, 18)
+                .addComponent(cbProcessing)
+                .addGap(18, 18, 18)
+                .addComponent(cbExtended)
+                .addGap(18, 18, 18)
+                .addComponent(cbArrived)
+                .addGap(18, 18, 18)
+                .addComponent(cbVerified)
+                .addGap(18, 18, 18)
+                .addComponent(cbInvalid)
+                .addGap(18, 18, 18)
+                .addComponent(cbConfirmed)
+                .addGap(18, 18, 18)
+                .addComponent(cbCompleted)
+                .addGap(18, 18, 18)
+                .addComponent(cbCancelled)
+                .addGap(18, 18, 18)
+                .addComponent(cbReported)
+                .addContainerGap(56, Short.MAX_VALUE))
             .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(pnlMainLayout.createSequentialGroup()
                     .addContainerGap()
@@ -185,13 +385,89 @@ public class POList extends javax.swing.JDialog {
     }//GEN-LAST:event_btnNewActionPerformed
 
     private void cbAllPOsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbAllPOsActionPerformed
-        
+        for (JCheckBox cb : checkBoxs){
+            if (cbAllPOs.isSelected()){
+                cb.setSelected(true);
+                Collections.addAll(statuses, PurchaseOrder.Status.values());
+                PO();
+            }
+            else{
+                cb.setSelected(false);
+                statuses.clear();
+                PO();
+            }
+        }
     }//GEN-LAST:event_cbAllPOsActionPerformed
+
+    private void cbNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbNewActionPerformed
+        cbFunc(cbNew, PurchaseOrder.Status.NEW);
+    }//GEN-LAST:event_cbNewActionPerformed
+
+    private void cbApprovedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbApprovedActionPerformed
+        cbFunc(cbApproved, PurchaseOrder.Status.APPROVED);
+    }//GEN-LAST:event_cbApprovedActionPerformed
+
+    private void cbRejectedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbRejectedActionPerformed
+        cbFunc(cbRejected, PurchaseOrder.Status.REJECTED);
+    }//GEN-LAST:event_cbRejectedActionPerformed
+
+    private void cbProcessingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProcessingActionPerformed
+        cbFunc(cbProcessing, PurchaseOrder.Status.PROCESSING);
+    }//GEN-LAST:event_cbProcessingActionPerformed
+
+    private void cbDeletedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbDeletedActionPerformed
+        cbFunc(cbDeleted, PurchaseOrder.Status.DELETED);
+    }//GEN-LAST:event_cbDeletedActionPerformed
+
+    private void cbExtendedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbExtendedActionPerformed
+        cbFunc(cbExtended, PurchaseOrder.Status.EXTENDED);
+    }//GEN-LAST:event_cbExtendedActionPerformed
+
+    private void cbConfirmedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbConfirmedActionPerformed
+        cbFunc(cbConfirmed, PurchaseOrder.Status.CONFIRMED);
+    }//GEN-LAST:event_cbConfirmedActionPerformed
+
+    private void cbCompletedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbCompletedActionPerformed
+        cbFunc(cbCompleted, PurchaseOrder.Status.COMPLETED);
+    }//GEN-LAST:event_cbCompletedActionPerformed
+
+    private void cbInvalidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbInvalidActionPerformed
+        cbFunc(cbInvalid, PurchaseOrder.Status.INVALID);
+    }//GEN-LAST:event_cbInvalidActionPerformed
+
+    private void cbVerifiedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbVerifiedActionPerformed
+        cbFunc(cbVerified, PurchaseOrder.Status.VERIFIED);
+    }//GEN-LAST:event_cbVerifiedActionPerformed
+
+    private void cbArrivedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbArrivedActionPerformed
+        cbFunc(cbArrived, PurchaseOrder.Status.ARRIVED);
+    }//GEN-LAST:event_cbArrivedActionPerformed
+
+    private void cbReportedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbReportedActionPerformed
+        cbFunc(cbReported, PurchaseOrder.Status.REPORTED);
+    }//GEN-LAST:event_cbReportedActionPerformed
+
+    private void cbCancelledActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbCancelledActionPerformed
+        cbFunc(cbCancelled, PurchaseOrder.Status.CANCELLED);
+    }//GEN-LAST:event_cbCancelledActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNew;
     private javax.swing.JCheckBox cbAllPOs;
+    private javax.swing.JCheckBox cbApproved;
+    private javax.swing.JCheckBox cbArrived;
+    private javax.swing.JCheckBox cbCancelled;
+    private javax.swing.JCheckBox cbCompleted;
+    private javax.swing.JCheckBox cbConfirmed;
+    private javax.swing.JCheckBox cbDeleted;
+    private javax.swing.JCheckBox cbExtended;
+    private javax.swing.JCheckBox cbInvalid;
+    private javax.swing.JCheckBox cbNew;
+    private javax.swing.JCheckBox cbProcessing;
+    private javax.swing.JCheckBox cbRejected;
+    private javax.swing.JCheckBox cbReported;
+    private javax.swing.JCheckBox cbVerified;
     private javax.swing.JPanel pnlMain;
     private javax.swing.JScrollPane srlPO;
     private javax.swing.JTable tblPO;

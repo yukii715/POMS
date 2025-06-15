@@ -4,7 +4,7 @@ import com.owsb.poms.system.functions.*;
 import com.owsb.poms.system.model.User.*;
 import com.owsb.poms.ui.admin.Inventory.*;
 import com.owsb.poms.system.model.*;
-import com.owsb.poms.ui.admin.Dashboard.BankSetting;
+import com.owsb.poms.ui.admin.Dashboard.*;
 import com.owsb.poms.ui.admin.Orders.*;
 import com.owsb.poms.ui.admin.Users.UserCreation;
 import com.owsb.poms.ui.common.*;
@@ -122,6 +122,8 @@ public class AdminDashboard extends javax.swing.JFrame {
         new CommonMethod().setLabelIcon("/icons/reload.png", 30, 30, Image.SCALE_SMOOTH, lblReload);
         new CommonMethod().setLabelIcon("/icons/profile.png", 40, 40, Image.SCALE_SMOOTH, lblProfilePicture);
         new CommonMethod().setLabelIcon("/icons/logo.png", 350, 350, Image.SCALE_SMOOTH, lbltest);
+        new CommonMethod().setLabelIcon("/icons/report.png", 125, 125, Image.SCALE_SMOOTH, lblReport);
+        new CommonMethod().setLabelIcon("/icons/bank.png", 125, 125, Image.SCALE_SMOOTH, lblBank);
         
         
         new CommonMethod().setLabelIcon("/icons/dashboard.png", 30, 30, Image.SCALE_SMOOTH, lblDashboardIcon);
@@ -315,9 +317,9 @@ public class AdminDashboard extends javax.swing.JFrame {
                             item.getItemType(),
                             item.getItemName(),
                             String.format("%.2f", item.getSellPrice()),
-                            String.valueOf(dSItem.getStock() + dSItem.getQuantity()),
-                            String.valueOf(dSItem.getQuantity()),
-                            String.valueOf(dSItem.getStock())
+                            dSItem != null ? String.valueOf(dSItem.getStock() + dSItem.getQuantity()) : String.valueOf(item.getStock()),
+                            dSItem != null ? String.valueOf(dSItem.getQuantity()) : "0",
+                            dSItem != null ? String.valueOf(dSItem.getStock() + dSItem.getQuantity()) : String.valueOf(item.getStock()),
                         });
                     }
                 }
@@ -672,7 +674,12 @@ public class AdminDashboard extends javax.swing.JFrame {
         pnlMainContent = new javax.swing.JPanel();
         pnlDashboard = new javax.swing.JPanel();
         lbltest = new javax.swing.JLabel();
-        btnBankSetting = new javax.swing.JButton();
+        pnlBank = new javax.swing.JPanel();
+        lblBank = new javax.swing.JLabel();
+        lblBankTitle = new javax.swing.JLabel();
+        pnlReport = new javax.swing.JPanel();
+        lblReport = new javax.swing.JLabel();
+        lblReportTitle = new javax.swing.JLabel();
         pnlUsers = new javax.swing.JPanel();
         srlUser = new javax.swing.JScrollPane();
         tblUser = new javax.swing.JTable();
@@ -730,6 +737,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         btnUpdateStatus = new javax.swing.JButton();
         lblSupplier = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
+        btnEditStock = new javax.swing.JButton();
         pnlSuppliers = new javax.swing.JPanel();
         srlSuppliers = new javax.swing.JScrollPane();
         tblSuppliers = new javax.swing.JTable();
@@ -1496,37 +1504,111 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         lbltest.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-        btnBankSetting.setBackground(new java.awt.Color(255, 204, 204));
-        btnBankSetting.setFont(new java.awt.Font("Berlin Sans FB", 0, 18)); // NOI18N
-        btnBankSetting.setForeground(new java.awt.Color(0, 0, 0));
-        btnBankSetting.setText("Bank Setting");
-        btnBankSetting.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBankSettingActionPerformed(evt);
+        pnlBank.setBackground(new java.awt.Color(255, 204, 204));
+        pnlBank.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pnlBankMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                pnlBankMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                pnlBankMouseExited(evt);
             }
         });
+
+        lblBankTitle.setFont(new java.awt.Font("Berlin Sans FB", 0, 24)); // NOI18N
+        lblBankTitle.setForeground(new java.awt.Color(0, 0, 0));
+        lblBankTitle.setText("Bank");
+
+        javax.swing.GroupLayout pnlBankLayout = new javax.swing.GroupLayout(pnlBank);
+        pnlBank.setLayout(pnlBankLayout);
+        pnlBankLayout.setHorizontalGroup(
+            pnlBankLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlBankLayout.createSequentialGroup()
+                .addContainerGap(62, Short.MAX_VALUE)
+                .addComponent(lblBank, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(62, Short.MAX_VALUE))
+            .addGroup(pnlBankLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblBankTitle)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlBankLayout.setVerticalGroup(
+            pnlBankLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlBankLayout.createSequentialGroup()
+                .addGap(43, 43, 43)
+                .addComponent(lblBank, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
+                .addComponent(lblBankTitle)
+                .addGap(29, 29, 29))
+        );
+
+        pnlReport.setBackground(new java.awt.Color(255, 204, 204));
+        pnlReport.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pnlReportMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                pnlReportMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                pnlReportMouseExited(evt);
+            }
+        });
+
+        lblReportTitle.setFont(new java.awt.Font("Berlin Sans FB", 0, 24)); // NOI18N
+        lblReportTitle.setForeground(new java.awt.Color(0, 0, 0));
+        lblReportTitle.setText("Report");
+
+        javax.swing.GroupLayout pnlReportLayout = new javax.swing.GroupLayout(pnlReport);
+        pnlReport.setLayout(pnlReportLayout);
+        pnlReportLayout.setHorizontalGroup(
+            pnlReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlReportLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblReportTitle)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlReportLayout.createSequentialGroup()
+                .addContainerGap(82, Short.MAX_VALUE)
+                .addComponent(lblReport, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(42, Short.MAX_VALUE))
+        );
+        pnlReportLayout.setVerticalGroup(
+            pnlReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlReportLayout.createSequentialGroup()
+                .addGap(43, 43, 43)
+                .addComponent(lblReport, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
+                .addComponent(lblReportTitle)
+                .addGap(29, 29, 29))
+        );
 
         javax.swing.GroupLayout pnlDashboardLayout = new javax.swing.GroupLayout(pnlDashboard);
         pnlDashboard.setLayout(pnlDashboardLayout);
         pnlDashboardLayout.setHorizontalGroup(
             pnlDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlDashboardLayout.createSequentialGroup()
-                .addGap(273, 273, 273)
-                .addComponent(lbltest, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDashboardLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnBankSetting, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24))
+                .addComponent(lbltest, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(pnlDashboardLayout.createSequentialGroup()
+                .addContainerGap(146, Short.MAX_VALUE)
+                .addComponent(pnlReport, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 201, Short.MAX_VALUE)
+                .addComponent(pnlBank, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(149, Short.MAX_VALUE))
         );
         pnlDashboardLayout.setVerticalGroup(
             pnlDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlDashboardLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(btnBankSetting, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 232, Short.MAX_VALUE)
+            .addGroup(pnlDashboardLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lbltest, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(81, 81, 81))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addGroup(pnlDashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlReport, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlBank, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         pnlMainContent.add(pnlDashboard, "Dashboard");
@@ -1980,6 +2062,15 @@ public class AdminDashboard extends javax.swing.JFrame {
         jLabel11.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
         jLabel11.setText("Supplier");
 
+        btnEditStock.setBackground(new java.awt.Color(255, 204, 204));
+        btnEditStock.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
+        btnEditStock.setText("Edit Stock");
+        btnEditStock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditStockActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlInventoryLayout = new javax.swing.GroupLayout(pnlInventory);
         pnlInventory.setLayout(pnlInventoryLayout);
         pnlInventoryLayout.setHorizontalGroup(
@@ -1997,12 +2088,6 @@ public class AdminDashboard extends javax.swing.JFrame {
                         .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblItemType)
                             .addComponent(lblItemName)))
-                    .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(btnNewItem, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnRemoveItem, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnEditItem, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnUpdateStock, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnUpdateStatus, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlInventoryLayout.createSequentialGroup()
                         .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
@@ -2022,14 +2107,22 @@ public class AdminDashboard extends javax.swing.JFrame {
                             .addComponent(lblItemPrice)
                             .addComponent(lblSupplier)
                             .addComponent(lblItemStock)
-                            .addComponent(lblItemStatus))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(lblItemStatus)))
+                    .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(btnEditStock, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnNewItem, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnRemoveItem, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnEditItem, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnUpdateStock, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnUpdateStatus, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
         pnlInventoryLayout.setVerticalGroup(
             pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlInventoryLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(srlItems)
                     .addGroup(pnlInventoryLayout.createSequentialGroup()
                         .addGroup(pnlInventoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
@@ -2071,9 +2164,10 @@ public class AdminDashboard extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(btnUpdateStock, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
+                        .addComponent(btnEditStock, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(btnUpdateStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(srlItems))
+                        .addGap(0, 96, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -2590,29 +2684,6 @@ public class AdminDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEditItemActionPerformed
 
     private void btnUpdateStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateStockActionPerformed
-//        if (selectedItemRow == -1)
-//        {
-//            JOptionPane.showMessageDialog(this, "Please select an item to update stock", "Error", JOptionPane.ERROR_MESSAGE);
-//            return;
-//        }
-//        
-//        String input = JOptionPane.showInputDialog(this, String.format("Stock: %d", selectedItem.getStock()), "Update Stock", JOptionPane.INFORMATION_MESSAGE);
-//        
-//        if (input != null) {
-//            try {
-//                int newStock = Integer.parseInt(input.trim());
-//                if (newStock < 0) {
-//                    JOptionPane.showMessageDialog(this, "Stock cannot be negative!", "Invalid Input", JOptionPane.WARNING_MESSAGE);
-//                } else {
-//                    selectedItem.setStock(newStock);
-//                    selectedItem.updateStock(); 
-//                    JOptionPane.showMessageDialog(this, "Stock updated successfully!");
-//                    Inventory();
-//                }
-//            } catch (NumberFormatException e) {
-//                JOptionPane.showMessageDialog(this, "Please enter a valid integer!", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-//            }
-//        }    
         this.setEnabled(false);
         UpdateStock us = new UpdateStock(this, false);
         us.setLocationRelativeTo(this);
@@ -2716,12 +2787,6 @@ public class AdminDashboard extends javax.swing.JFrame {
             Orders();
         }
     }//GEN-LAST:event_tblOrderMouseClicked
-
-    private void btnBankSettingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBankSettingActionPerformed
-        BankSetting bankSetting = new BankSetting(this, true);
-        bankSetting.setLocationRelativeTo(this);
-        bankSetting.setVisible(true);
-    }//GEN-LAST:event_btnBankSettingActionPerformed
 
     private void tblUserMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblUserMouseReleased
         selectedUserRow = tblUser.getSelectedRow();
@@ -3051,15 +3116,69 @@ public class AdminDashboard extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_tblNotificationMouseClicked
+
+    private void btnEditStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditStockActionPerformed
+        if (selectedItemRow == -1)
+        {
+            JOptionPane.showMessageDialog(this, "Please select an item to update stock", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        String input = JOptionPane.showInputDialog(this, String.format("Stock: %d", selectedItem.getStock()), "Edit Stock", JOptionPane.INFORMATION_MESSAGE);
+        
+        if (input != null) {
+            try {
+                int newStock = Integer.parseInt(input.trim());
+                if (newStock < 0) {
+                    JOptionPane.showMessageDialog(this, "Stock cannot be negative!", "Invalid Input", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    selectedItem.setStock(newStock);
+                    selectedItem.editStock(); 
+                    JOptionPane.showMessageDialog(this, "Stock updated successfully!");
+                    Inventory();
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid integer!", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            }
+        } 
+    }//GEN-LAST:event_btnEditStockActionPerformed
+
+    private void pnlReportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlReportMouseClicked
+        ReportViewer reportViewer = new ReportViewer(this, true);
+        reportViewer.setLocationRelativeTo(this);
+        reportViewer.setVisible(true);
+    }//GEN-LAST:event_pnlReportMouseClicked
+
+    private void pnlReportMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlReportMouseEntered
+        pnlReport.setBackground(new java.awt.Color(255, 153, 153));
+    }//GEN-LAST:event_pnlReportMouseEntered
+
+    private void pnlReportMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlReportMouseExited
+        pnlReport.setBackground(new java.awt.Color(255, 204, 204));
+    }//GEN-LAST:event_pnlReportMouseExited
+
+    private void pnlBankMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlBankMouseClicked
+        BankSetting bankSetting = new BankSetting(this, true);
+        bankSetting.setLocationRelativeTo(this);
+        bankSetting.setVisible(true);
+    }//GEN-LAST:event_pnlBankMouseClicked
+
+    private void pnlBankMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlBankMouseEntered
+        pnlBank.setBackground(new java.awt.Color(255, 153, 153));
+    }//GEN-LAST:event_pnlBankMouseEntered
+
+    private void pnlBankMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlBankMouseExited
+        pnlBank.setBackground(new java.awt.Color(255, 204, 204));
+    }//GEN-LAST:event_pnlBankMouseExited
  
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBankSetting;
     private javax.swing.JButton btnChangeSupplierName;
     private javax.swing.JButton btnChangeUsername;
     private javax.swing.JButton btnCreateUser;
     private javax.swing.JButton btnDeleteAccount;
     private javax.swing.JButton btnEditBirthday;
     private javax.swing.JButton btnEditItem;
+    private javax.swing.JButton btnEditStock;
     private javax.swing.JButton btnNewItem;
     private javax.swing.JButton btnNewSupplier;
     private javax.swing.JButton btnRemoveItem;
@@ -3092,6 +3211,8 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel lblBank;
+    private javax.swing.JLabel lblBankTitle;
     private javax.swing.JLabel lblClose;
     private javax.swing.JLabel lblCreationDateTime;
     private javax.swing.JLabel lblDashboard;
@@ -3125,6 +3246,8 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel lblProfileDivider;
     private javax.swing.JLabel lblProfilePicture;
     private javax.swing.JLabel lblReload;
+    private javax.swing.JLabel lblReport;
+    private javax.swing.JLabel lblReportTitle;
     private javax.swing.JLabel lblRole;
     private javax.swing.JLabel lblSales;
     private javax.swing.JLabel lblSalesDivider1;
@@ -3148,6 +3271,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel lblUsersIcon;
     private javax.swing.JLabel lbltest;
     private javax.swing.JSplitPane mainSplitPane;
+    private javax.swing.JPanel pnlBank;
     private javax.swing.JPanel pnlContainer;
     private javax.swing.JPanel pnlContent;
     private javax.swing.JPanel pnlDashboard;
@@ -3170,6 +3294,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel pnlOrdersIndicator;
     private javax.swing.JPanel pnlOrdersTab;
     private javax.swing.JPanel pnlProfile;
+    private javax.swing.JPanel pnlReport;
     private javax.swing.JPanel pnlSales;
     private javax.swing.JPanel pnlSalesIndicator;
     private javax.swing.JPanel pnlSalesTab;

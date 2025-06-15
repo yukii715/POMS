@@ -93,9 +93,9 @@ public class StockUpdateReport extends Report implements hasId{
 
         StockUpdateReport sur = new StockUpdateReport();
         sur.setItemID(parts[0]);
-        sur.setItemCategory(parts[1]);
-        sur.setItemType(parts[2]);
-        sur.setItemName(parts[3]);
+        sur.setItemName(parts[1]);
+        sur.setItemCategory(parts[2]);
+        sur.setItemType(parts[3]);
         sur.setStock(Integer.parseInt(parts[4]));
         sur.setUpdate(Integer.parseInt(parts[5]));
 
@@ -116,7 +116,7 @@ public class StockUpdateReport extends Report implements hasId{
         FileHandler.saveToFile(filePath, stockUpdateReport, StockUpdateReport::toString);
     }
     
-    public static List<StockUpdateReport> read(String filePath){
-        return FileHandler.readFromFile(filePath, StockUpdateReport::fromString);
+    public static List<StockUpdateReport> read(String fileName){
+        return FileHandler.readFromFile(filePath + fileName, StockUpdateReport::fromString);
     }
 }

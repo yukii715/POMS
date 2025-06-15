@@ -231,80 +231,65 @@ public class PODetails extends javax.swing.JDialog {
         pnlMain.setBackground(new java.awt.Color(255, 204, 204));
 
         jLabel2.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel2.setText("ID:");
 
         lblPOID.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblPOID.setForeground(new java.awt.Color(0, 0, 0));
         lblPOID.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblPOID.setText("[POID]");
 
         jLabel4.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel4.setText("Supplier ID:");
 
         lblSupplierID.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblSupplierID.setForeground(new java.awt.Color(0, 0, 0));
         lblSupplierID.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblSupplierID.setText("[SupplierID]");
 
         jLabel6.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel6.setText("Supplier:");
 
         lblSupplierName.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblSupplierName.setForeground(new java.awt.Color(0, 0, 0));
         lblSupplierName.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblSupplierName.setText("[SupplierName]");
 
         jLabel8.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel8.setText("Generated Date Time:");
 
         lblGeneratedDateTime.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblGeneratedDateTime.setForeground(new java.awt.Color(0, 0, 0));
         lblGeneratedDateTime.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblGeneratedDateTime.setText("[GeneratedDateTime]");
         lblGeneratedDateTime.setToolTipText("");
 
         jLabel10.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(0, 0, 0));
         jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel10.setText("Delivery Date:");
 
         lblDeliveryDate.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblDeliveryDate.setForeground(new java.awt.Color(0, 0, 0));
         lblDeliveryDate.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblDeliveryDate.setText("[DeliveryDate]");
 
         jLabel12.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel12.setForeground(new java.awt.Color(0, 0, 0));
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel12.setText("Created By:");
 
         lblCreatedBy.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblCreatedBy.setForeground(new java.awt.Color(0, 0, 0));
         lblCreatedBy.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblCreatedBy.setText("[CreatedBy]");
         lblCreatedBy.setToolTipText("");
 
         jLabel14.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel14.setForeground(new java.awt.Color(0, 0, 0));
         jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel14.setText("Status:");
 
         lblStatus.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblStatus.setForeground(new java.awt.Color(0, 0, 0));
         lblStatus.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblStatus.setText("[Status]");
         lblStatus.setToolTipText("");
 
         jLabel16.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel16.setForeground(new java.awt.Color(0, 0, 0));
         jLabel16.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel16.setText("Items:");
 
@@ -350,7 +335,6 @@ public class PODetails extends javax.swing.JDialog {
         });
 
         lblEdit.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblEdit.setForeground(new java.awt.Color(0, 0, 0));
         lblEdit.setText("Edit");
         lblEdit.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -359,34 +343,28 @@ public class PODetails extends javax.swing.JDialog {
         });
 
         lblPerform.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblPerform.setForeground(new java.awt.Color(0, 0, 0));
         lblPerform.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblPerform.setText("Performed By:");
 
         lblPerformdBy.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblPerformdBy.setForeground(new java.awt.Color(0, 0, 0));
         lblPerformdBy.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblPerformdBy.setText("[PerformedBy]");
         lblPerformdBy.setToolTipText("");
 
         jLabel9.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel9.setForeground(new java.awt.Color(0, 0, 0));
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel9.setText("Total Price:");
 
         lblTotalPrice.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblTotalPrice.setForeground(new java.awt.Color(0, 0, 0));
         lblTotalPrice.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblTotalPrice.setText("[TotalPrice]");
         lblTotalPrice.setToolTipText("");
 
         jLabel3.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel3.setText("From PR:");
 
         lblPRID.setFont(new java.awt.Font("Berlin Sans FB", 0, 14)); // NOI18N
-        lblPRID.setForeground(new java.awt.Color(0, 0, 0));
         lblPRID.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lblPRID.setText("[PRID]");
 
@@ -428,7 +406,6 @@ public class PODetails extends javax.swing.JDialog {
                         .addGap(143, 143, 143)
                         .addComponent(lblSupplierID))
                     .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(srlItems, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlMainLayout.createSequentialGroup()
                         .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel8)
@@ -455,7 +432,8 @@ public class PODetails extends javax.swing.JDialog {
                         .addGap(154, 154, 154)
                         .addGroup(pnlMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblPOID)
-                            .addComponent(lblPRID))))
+                            .addComponent(lblPRID)))
+                    .addComponent(srlItems, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 71, Short.MAX_VALUE))
         );
         pnlMainLayout.setVerticalGroup(

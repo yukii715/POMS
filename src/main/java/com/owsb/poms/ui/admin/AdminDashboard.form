@@ -1230,26 +1230,31 @@
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace min="-2" pref="273" max="-2" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <EmptySpace max="32767" attributes="0"/>
                                   <Component id="lbltest" min="-2" pref="406" max="-2" attributes="0"/>
                                   <EmptySpace max="32767" attributes="0"/>
                               </Group>
-                              <Group type="102" alignment="1" attributes="0">
-                                  <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="btnBankSetting" min="-2" pref="180" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace pref="146" max="32767" attributes="0"/>
+                                  <Component id="pnlReport" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace pref="201" max="32767" attributes="0"/>
+                                  <Component id="pnlBank" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace pref="149" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="1" attributes="0">
-                                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
-                                  <Component id="btnBankSetting" min="-2" pref="58" max="-2" attributes="0"/>
-                                  <EmptySpace pref="232" max="32767" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <EmptySpace max="32767" attributes="0"/>
                                   <Component id="lbltest" min="-2" pref="301" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
+                                  <EmptySpace pref="34" max="32767" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="pnlReport" min="-2" max="-2" attributes="0"/>
+                                      <Component id="pnlBank" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace pref="35" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -1260,23 +1265,116 @@
                             <Property name="horizontalAlignment" type="int" value="0"/>
                           </Properties>
                         </Component>
-                        <Component class="javax.swing.JButton" name="btnBankSetting">
+                        <Container class="javax.swing.JPanel" name="pnlBank">
                           <Properties>
                             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                               <Color blue="cc" green="cc" red="ff" type="rgb"/>
                             </Property>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Berlin Sans FB" size="18" style="0"/>
-                            </Property>
-                            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                              <Color blue="0" green="0" red="0" type="rgb"/>
-                            </Property>
-                            <Property name="text" type="java.lang.String" value="Bank Setting"/>
                           </Properties>
                           <Events>
-                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBankSettingActionPerformed"/>
+                            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="pnlBankMouseClicked"/>
+                            <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="pnlBankMouseEntered"/>
+                            <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="pnlBankMouseExited"/>
                           </Events>
-                        </Component>
+
+                          <Layout>
+                            <DimensionLayout dim="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <EmptySpace pref="62" max="32767" attributes="0"/>
+                                      <Component id="lblBank" min="-2" pref="125" max="-2" attributes="0"/>
+                                      <EmptySpace pref="62" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="lblBankTitle" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
+                            </DimensionLayout>
+                            <DimensionLayout dim="1">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
+                                      <Component id="lblBank" min="-2" pref="125" max="-2" attributes="0"/>
+                                      <EmptySpace pref="92" max="32767" attributes="0"/>
+                                      <Component id="lblBankTitle" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                            </DimensionLayout>
+                          </Layout>
+                          <SubComponents>
+                            <Component class="javax.swing.JLabel" name="lblBank">
+                            </Component>
+                            <Component class="javax.swing.JLabel" name="lblBankTitle">
+                              <Properties>
+                                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                                  <Font name="Berlin Sans FB" size="24" style="0"/>
+                                </Property>
+                                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                                  <Color blue="0" green="0" red="0" type="rgb"/>
+                                </Property>
+                                <Property name="text" type="java.lang.String" value="Bank"/>
+                              </Properties>
+                            </Component>
+                          </SubComponents>
+                        </Container>
+                        <Container class="javax.swing.JPanel" name="pnlReport">
+                          <Properties>
+                            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                              <Color blue="cc" green="cc" red="ff" type="rgb"/>
+                            </Property>
+                          </Properties>
+                          <Events>
+                            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="pnlReportMouseClicked"/>
+                            <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="pnlReportMouseEntered"/>
+                            <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="pnlReportMouseExited"/>
+                          </Events>
+
+                          <Layout>
+                            <DimensionLayout dim="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="lblReportTitle" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <EmptySpace pref="82" max="32767" attributes="0"/>
+                                      <Component id="lblReport" min="-2" pref="125" max="-2" attributes="0"/>
+                                      <EmptySpace pref="42" max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
+                            </DimensionLayout>
+                            <DimensionLayout dim="1">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
+                                      <Component id="lblReport" min="-2" pref="125" max="-2" attributes="0"/>
+                                      <EmptySpace pref="92" max="32767" attributes="0"/>
+                                      <Component id="lblReportTitle" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                            </DimensionLayout>
+                          </Layout>
+                          <SubComponents>
+                            <Component class="javax.swing.JLabel" name="lblReport">
+                            </Component>
+                            <Component class="javax.swing.JLabel" name="lblReportTitle">
+                              <Properties>
+                                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                                  <Font name="Berlin Sans FB" size="24" style="0"/>
+                                </Property>
+                                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                                  <Color blue="0" green="0" red="0" type="rgb"/>
+                                </Property>
+                                <Property name="text" type="java.lang.String" value="Report"/>
+                              </Properties>
+                            </Component>
+                          </SubComponents>
+                        </Container>
                       </SubComponents>
                     </Container>
                     <Container class="javax.swing.JPanel" name="pnlUsers">
@@ -1937,13 +2035,6 @@
                                               <Component id="lblItemName" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
-                                      <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                                          <Component id="btnNewItem" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="btnRemoveItem" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="btnEditItem" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="btnUpdateStock" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="btnUpdateStatus" alignment="0" min="-2" pref="128" max="-2" attributes="0"/>
-                                      </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <Group type="103" groupAlignment="0" attributes="0">
                                               <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -1970,8 +2061,16 @@
                                               <Component id="lblItemStatus" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
+                                      <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                          <Component id="btnEditStock" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="btnNewItem" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="btnRemoveItem" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="btnEditItem" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="btnUpdateStock" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="btnUpdateStatus" alignment="0" pref="128" max="32767" attributes="0"/>
+                                      </Group>
                                   </Group>
-                                  <EmptySpace max="32767" attributes="0"/>
+                                  <EmptySpace pref="45" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -1980,7 +2079,8 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" attributes="0">
+                                      <Component id="srlItems" alignment="0" max="32767" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
                                           <Group type="103" groupAlignment="3" attributes="0">
                                               <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                                               <Component id="lblItemID" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -2029,10 +2129,11 @@
                                           <EmptySpace type="separate" max="-2" attributes="0"/>
                                           <Component id="btnUpdateStock" min="-2" pref="36" max="-2" attributes="0"/>
                                           <EmptySpace type="separate" max="-2" attributes="0"/>
+                                          <Component id="btnEditStock" min="-2" pref="36" max="-2" attributes="0"/>
+                                          <EmptySpace type="separate" max="-2" attributes="0"/>
                                           <Component id="btnUpdateStatus" min="-2" pref="36" max="-2" attributes="0"/>
-                                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                          <EmptySpace min="0" pref="96" max="32767" attributes="0"/>
                                       </Group>
-                                      <Component id="srlItems" max="32767" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
@@ -2272,6 +2373,20 @@
                             </Property>
                             <Property name="text" type="java.lang.String" value="Supplier"/>
                           </Properties>
+                        </Component>
+                        <Component class="javax.swing.JButton" name="btnEditStock">
+                          <Properties>
+                            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                              <Color blue="cc" green="cc" red="ff" type="rgb"/>
+                            </Property>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                              <Font name="Berlin Sans FB" size="14" style="0"/>
+                            </Property>
+                            <Property name="text" type="java.lang.String" value="Edit Stock"/>
+                          </Properties>
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEditStockActionPerformed"/>
+                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>

@@ -170,6 +170,4 @@ public class Transaction implements hasFile<Transaction>, hasId{
 
         return "TRS-" + timestamp + "-" + randomPart;
     }
-    
-    
 }

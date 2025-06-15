@@ -122,4 +122,8 @@ public class PurchaseReport implements hasId, hasFile<PurchaseReport>{
         purs.add(this);
         this.saveToFile(purs);
     }
+    
+    public static PurchaseReport getReportById(String id){
+        return DataHandler.getByKey(toList(), id, PurchaseReport::getReportID);
+    }
 }
