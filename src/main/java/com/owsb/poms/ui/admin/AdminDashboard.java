@@ -55,8 +55,8 @@ public class AdminDashboard extends javax.swing.JFrame {
     private DefaultTableModel salesModel = new DefaultTableModel(){
        public boolean isCellEditable(int row, int column){
            return column == 6;
-       } 
-    } ;
+       }  
+    } ; 
     private String[] salesColumnName = {"ID", "Category", "Type", "Name", "Price", "Stock", "Quantity", "New"};
     
     // Orders

@@ -7,6 +7,7 @@ import java.util.function.Function;
 public class FileHandler {
     
     // Generic write method
+    // Write objects into a file by toString method
     public static <T> void saveToFile(String filePath, List<T> list, Function<T, String> mapper) {
         File file = new File(filePath);
         file.getParentFile().mkdirs(); 
@@ -22,6 +23,7 @@ public class FileHandler {
     }
 
     // Generic read method
+    // Read file line by line and convert to an object and save it to a list
     public static <T> List<T> readFromFile(String filePath, Function<String, T> parser) {
         List<T> list = new ArrayList<>();
         File file = new File(filePath);
@@ -38,7 +40,8 @@ public class FileHandler {
         return list;
     }
     
-    public static File findFileByPrefix(String directoryPath, String prefix) {
+    // Find stock report by stock report ID
+    public static File findFileByPrefix(String directoryPath, String prefix) { 
         File dir = new File(directoryPath);
         if (!dir.exists() || !dir.isDirectory()) return null;
 

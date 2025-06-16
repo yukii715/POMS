@@ -1,7 +1,6 @@
 package com.owsb.poms.system.model.User;
 
 import com.owsb.poms.system.functions.*;
-import static com.owsb.poms.system.functions.SecurePassword.newPassword;
 import com.owsb.poms.system.functions.interfaces.*;
 import com.owsb.poms.system.model.company.OWSB;
 import com.owsb.poms.ui.common.Login;

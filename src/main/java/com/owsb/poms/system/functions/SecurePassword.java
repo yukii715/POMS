@@ -13,6 +13,7 @@ public class SecurePassword {
     
     private static final String ALL = UPPER + LOWER + DIGITS + SYMBOLS;
     
+    // Create strong random password when create a new user or reset password
     public static String newPassword(){
         SecureRandom random = new SecureRandom();
         List<Character> passwordChars = new ArrayList<>();
@@ -38,6 +39,7 @@ public class SecurePassword {
         return password.toString();
     }
     
+    // Process of Vigenère cipher
     public static char encryptChar(char plainChar, char keyChar) {
         if (!Character.isLetter(plainChar)) return plainChar;
 
@@ -48,6 +50,7 @@ public class SecurePassword {
         return (char)((plainIndex + keyIndex) % 26 + base);
     }
     
+    // Encrypt hash by Vigenère cipher
     public static String encrypt(String plaintext, String key) {
         StringBuilder encrypted = new StringBuilder();
         key = key.toUpperCase();
@@ -65,6 +68,7 @@ public class SecurePassword {
         return encrypted.toString();
     }
     
+    // SHA-256 Hashing
     public static String sha256(String password) {
         try {
             // Get SHA-256 MessageDigest instance

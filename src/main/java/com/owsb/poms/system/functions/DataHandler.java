@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 public class DataHandler {
     // A Set automatically rejects duplicates
+    // E.g. Get all non-repeated category from Item Object
     public static <T, R> List<R> extractUniqueField(List<T> list, Function<T, R> extractor) {
         Set<R> uniqueSet = new LinkedHashSet<>();
 
@@ -16,6 +17,7 @@ public class DataHandler {
         return new ArrayList<>(uniqueSet);
     }
     
+    // E.g. Get all non-repeated types from a category
     public static <T, R> List<R> filterAndExtractUnique(
         List<T> list,
         Predicate<T> filter,
@@ -32,6 +34,7 @@ public class DataHandler {
         return new ArrayList<>(resultSet);
     }
     
+    // Update properties of an object
     public static <T> void updateFieldAndSave(
         List<T> list,
         Predicate<T> matcher,
@@ -47,6 +50,8 @@ public class DataHandler {
         }
     }
     
+    // Get a property from another property
+    // E.g. Get supplier name by supplier ID
     public static <T, K, V> V getValueByKey(List<T> list,
                                         Function<T, K> keyExtractor,
                                         K keyToMatch,
@@ -59,6 +64,8 @@ public class DataHandler {
         return null;
     }
     
+    // Return a list if a property is match to another property
+    // E.g. Get all items that supplied by a same supplier ID
     public static <T, K> List<T> getValuesByKey(List<T> list,
                                            Function<T, K> keyExtractor,
                                            K keyToMatch) {
@@ -73,6 +80,8 @@ public class DataHandler {
         return result;
     }
 
+    // Return a list that match a property from object in another list
+    // E.g. Get all corresponding item from prItem to Item 
     public static <K, S, T> List<S> findMatchingByKey(
             List<S> sourceList,                      // the list with full objects (e.g., Item)
             List<T> keyList,                         // the list with references (e.g., PRItem)
@@ -91,7 +100,9 @@ public class DataHandler {
             .collect(Collectors.toList());
     }
     
-    public static <K, V> V getByKey(List<V> list, K key, Function<V, K> keyExtractor) {
+    // Get an object by a property
+    // E.g. get a User by UID
+    public static <K, V> V getByKey(List<V> list, K key, Function<V, K> keyExtractor) { 
         for (V obj : list) {
             if (keyExtractor.apply(obj).equals(key)) {
                 return obj;
